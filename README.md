@@ -1,4 +1,6 @@
-# Пример приложения
+# Мини-приложение рейтинга преподавателей
+
+[<img src="https://cdn.profcomff.com/easycode/easycode.svg" width="200"></img>](https://easycode.profcomff.com/templates/docker-node/workspace?mode=manual&param.Repository+URL=https://github.com/profcomff/rating-ui.git&param.Working+directory=rating-ui)
 
 В этом репозитории представлен пример простейшего фронтенд-сервиса с Vue.js.
 
