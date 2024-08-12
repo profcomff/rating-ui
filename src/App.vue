@@ -10,18 +10,25 @@ onMounted(() => {
 </script>
 
 <template>
-	<main class="container">
-		<RouterView />
-	</main>
-	<footer>
+	<v-app>
+		<main class="main">
+			<RouterView />
+		</main>
+	</v-app>
+	<!-- <footer>
 		Made by
 		<a href="https://app.profcomff.com"><img src="https://app.profcomff.com/favicon.png" class="logo" /></a>
 		in association with
 		<a href="https://dyakov.space"><img src="https://dyakov.space/files/Icon.svg" class="logo" /></a>
-	</footer>
+	</footer> -->
 </template>
 
 <style scoped>
+.main {
+	width: min(900px, 100%);
+	margin: 0 auto;
+}
+
 .container {
 	width: 100%;
 	height: 100%;

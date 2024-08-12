@@ -32,7 +32,7 @@ const lecturerFirstName = lecturer.data['first_name'];
 const lecturerMiddleName = lecturer.data['middle_name'];
 
 const lecturerPhoto =
-	`${import.meta.env.VITE_AUTH_API_BASE_URL}${lecturer.data['avatar_link']}` ?? '../assets/example.jpg';
+	`${import.meta.env.VITE_AUTH_API_BASE_URL}${lecturer.data['avatar_link']}` ?? '../assets/logo.svg';
 const lecturerInfo = lecturer.data['description'] ?? 'Информации нет';
 const screenWidth = window.innerWidth;
 </script>

@@ -11,7 +11,7 @@ setupAuth(profileStore.token);
 const lecturers = await apiClient.GET('/timetable/lecturer/');
 const lecturersPhotos = lecturers.data?.items.map(
 	(item: (typeof lecturers.data.items)[0]) =>
-		`${import.meta.env.VITE_AUTH_API_BASE_URL}${item['avatar_link']}` ?? '../assets/example.jpg',
+		`${import.meta.env.VITE_AUTH_API_BASE_URL}${item['avatar_link']}` ?? '../assets/logo.svg',
 );
 
 function toLecturerPage(id: number) {
