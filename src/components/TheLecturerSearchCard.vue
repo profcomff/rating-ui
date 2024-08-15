@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
+defineProps({
 	lecturer: { type: Object, required: true },
 	photo: { type: String, required: true },
 });
