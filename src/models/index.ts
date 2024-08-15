@@ -1,1 +1,0 @@
-import { Lecturer } from "./Lecturer";
