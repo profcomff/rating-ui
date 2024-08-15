@@ -1,167 +1,128 @@
 <script setup lang="ts">
 import { router } from '../router';
-import { ref } from 'vue';
+import { ref, Ref } from 'vue';
 import apiClient from '../api';
+// import { loadLecturers, loadPhotos, findLecturers, OrderBy } from '../api/LecturersAsyncApi';
 import Placeholder from '../assets/profile_image_placeholder.webp';
+import TheSearchBar from '../components/TheSearchBar.vue';
+import AppOrderByButton from '../components/AppOrderByButton.vue';
+import TheLecturerSearchCard from '../components/TheLecturerSearchCard.vue';
+// import { useGoTo } from 'vuetify';
 
 const lecturersQuery = await apiClient.GET('/timetable/lecturer/');
 const lecturers = ref(lecturersQuery.data?.items);
-const lecturersPhotos = ref([]);
+const lecturersPhotos = ref<string[]>(Array<string>(10));
 loadPhotos();
+
+type OrderBy = Ref<'first_name' | 'last_name' | null | undefined>;
+let order_by: OrderBy = ref(null);
+
+async function loadLecturers(query: string, offset: number, order_by: OrderBy) {
+	const res = await apiClient.GET('/timetable/lecturer/', {
+		params: {
+			query: {
+				query,
+				offset,
+				order_by: order_by.value,
+			},
+		},
+	});
+	lecturers.value = res.data?.items;
+	loadPhotos();
+}
 
 function loadPhotos() {
 	lecturersPhotos.value = lecturers.value?.map(item =>
 		item.avatar_link ? `${import.meta.env.VITE_AUTH_API_BASE_URL}${item.avatar_link}` : Placeholder,
-	);
+	) ?? [Placeholder];
 }
-
-async function loadLecturers(order_by) {
-	const query = await apiClient.GET('/timetable/lecturer/', {
-		params: {
-			query: {
-				order_by: order_by,
-			},
-		},
-	});
-	lecturers.value = query.data?.items;
-	loadPhotos();
-}
-
-let offset = 0;
-let order_by: string | undefined = undefined;
 
 function toLecturerPage(id: number) {
 	router.push({ path: 'teacher-page', query: { lecturer_id: id } });
 }
 
-async function loadMoreLectors() {
-	offset += 10;
-	const query = await apiClient.GET('/timetable/lecturer/', {
-		params: {
-			query: {
-				offset,
-				order_by,
-			},
-		},
-	});
-	lecturers.value = lecturers.value?.concat(query.data?.items);
+const query = ref('');
+async function findLecturer() {
+	await loadLecturers(query.value, 0, order_by);
 	loadPhotos();
 }
 
-const findLecturer = ref('');
-async function findLecturers(order_by) {
-	const query = await apiClient.GET('/timetable/lecturer/', {
-		params: {
-			query: {
-				query: findLecturer.value,
-				order_by: order_by,
-			},
-		},
-	});
-	lecturers.value = query.data?.items;
-	loadPhotos();
+async function orderByLastName() {
+	if (order_by.value) {
+		order_by.value = null;
+	} else {
+		order_by.value = 'last_name';
+	}
+	await loadLecturers('', 0, order_by);
 }
 
-async function filterByLastName() {
-	if (order_by) {
-		order_by = undefined;
+async function orderByFirstName() {
+	if (order_by.value) {
+		order_by.value = undefined;
 	} else {
-		order_by = 'last_name';
+		order_by.value = 'first_name';
 	}
-	await loadLecturers(order_by);
+	await loadLecturers('', 0, order_by);
 }
 
-async function filterByFirstName() {
-	if (order_by) {
-		order_by = undefined;
-	} else {
-		order_by = 'first_name';
-	}
-	await loadLecturers(order_by);
+function filterWithAvatar() {
+	lecturers.value = lecturers.value?.filter(item => item.avatar_link);
+}
+
+let page = ref(1);
+async function changePage() {
+	await loadLecturers('', (page.value - 1) * 10, order_by);
+	// // automatically scroll to top (don't know why it's not working)
+	// useGoTo({
+	// 	duration: 100,
+	// 	easing: 'easeInOutCubic',
+	// 	offset: 0,
+	// 	container: '#start',
+	// });
 }
 </script>
 
 <template>
-	<v-card max-width="750px">
-		<v-text-field
-			v-model="findLecturer"
-			prepend-inner-icon="mdi-magnify"
-			class="mx-2 py-2"
-			max-width="750px"
-			variant="outlined"
-			density="compact"
-			placeholder="Найдите преподавателя"
-			clearable
-			hide-details="auto"
-			single-line
-			rounded="pill"
-			@update:model-value="findLecturers(order_by)"
-		/>
+	<v-card>
+		<TheSearchBar v-model="query" @find-lecturer="findLecturer()"></TheSearchBar>
 		<div class="d-flex align-center mb-2">
-			<v-sheet prepend-icon="mdn-magnify" class="mx-2 px-2 text-body-2">фильтры</v-sheet>
+			<v-menu location-strategy="connected">
+				<template #activator="{ props }">
+					<v-btn class="mr-3" v-bind="props">Фильтры</v-btn>
+				</template>
+				<v-list>
+					<v-list-item>
+						<v-btn @click="filterWithAvatar"> С аватарками </v-btn>
+					</v-list-item>
+				</v-list>
+			</v-menu>
+
 			<v-divider vertical />
+
 			<v-slide-group>
-				<v-btn
-					class="ma-1 text-body-2"
-					rounded
-					variant="tonal"
-					density="compact"
-					text="по фамилии"
-					@click="filterByLastName"
-				/>
-				<v-btn
-					class="ma-1 text-body-2"
-					rounded
-					variant="tonal"
-					density="compact"
-					text="по имени"
-					@click="filterByFirstName"
-				/>
-				<v-btn class="ma-1 text-body-2" rounded variant="tonal" density="compact" text="по рейтингу" />
-				<v-btn class="ma-1 text-body-2" rounded variant="tonal" density="compact" text="по доброте" />
-				<v-btn class="ma-1 text-body-2" rounded variant="tonal" density="compact" text="по доброте" />
-				<v-btn class="ma-1 text-body-2" rounded variant="tonal" density="compact" text="по понятности" />
+				<AppOrderByButton text="по фамилии" @click="orderByLastName" />
+				<AppOrderByButton text="по имени" @click="orderByFirstName" />
+				<AppOrderByButton text="по рейтингу" />
+				<AppOrderByButton text="по доброте" />
+				<AppOrderByButton text="по доброте" />
+				<AppOrderByButton text="по понятности" />
 			</v-slide-group>
 		</div>
 	</v-card>
-	<v-card
+
+	<TheLecturerSearchCard
 		v-for="(lecturer, idx) in lecturers"
 		:key="idx"
+		:lecturer="lecturer"
+		:photo="lecturersPhotos[idx]"
 		class="my-2 py-2"
 		variant="elevated"
-		max-width="750px"
 		@click="toLecturerPage(lecturer.id)"
 	>
-		<template #prepend>
-			<v-avatar size="100" rounded="rounded" class="pr-2 mr-2">
-				<v-img :src="lecturersPhotos[idx]"></v-img>
-			</v-avatar>
-		</template>
-		<template #title>
-			<v-sheet class="text-h4">{{ lecturer.last_name }}</v-sheet>
-		</template>
-		<template #subtitle>
-			<v-sheet class="text-body-1">{{ lecturer.first_name }} {{ lecturer.middle_name }}</v-sheet>
-			<div class="text-body-2">
-				<v-sheet>предмет: английский</v-sheet>
-				<v-sheet>отзывов: 123</v-sheet>
-				<div class="d-flex">
-					<v-sheet>общая оценка: +100</v-sheet>
-					<v-spacer />
-					<v-btn
-						class="text-caption"
-						variant="tonal"
-						color="primary"
-						size="x-small"
-						justify="right"
-						text="+отзыв"
-					/>
-				</div>
-			</div>
-		</template>
-	</v-card>
+	</TheLecturerSearchCard>
+
 	<v-container>
-		<v-btn class="d-flex mx-auto" text="Загрузить еще" @click="loadMoreLectors" />
+		<v-pagination v-model="page" length="10" @update:model-value="changePage"></v-pagination>
 	</v-container>
 </template>
 
@@ -176,6 +137,5 @@ async function filterByFirstName() {
 
 .main {
 	align-items: center;
-	max-width: 750px;
 }
 </style>
