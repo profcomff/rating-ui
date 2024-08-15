@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import Markdown from '../components/MarkdownRenderer.vue';
-import { createClient, setupAuth } from '@profcomff/api-uilib';
-import { useProfileStore } from '../store';
 import { useRouter } from 'vue-router';
+import apiClient from '../api';
+import Placeholder from '../assets/profile_image_placeholder.webp';
 
 const router = useRouter();
-const profileStore = useProfileStore();
-
-const apiClient = createClient('https://api.profcomff.com');
-setupAuth(profileStore.token);
 
 const url = new URL(document.location.toString());
 const lecturerId = url.searchParams.get('lecturer_id');
@@ -27,13 +23,14 @@ let howKind: number = 10;
 let howEasy: number = 35;
 let howUnderstandable: number = 60;
 
-const lecturerLastName = lecturer.data['last_name'];
-const lecturerFirstName = lecturer.data['first_name'];
-const lecturerMiddleName = lecturer.data['middle_name'];
-
-const lecturerPhoto =
-	`${import.meta.env.VITE_AUTH_API_BASE_URL}${lecturer.data['avatar_link']}` ?? '../assets/logo.svg';
-const lecturerInfo = lecturer.data['description'] ?? 'Информации нет';
+const lecturerLastName = lecturer.data?.last_name;
+const lecturerFirstName = lecturer.data?.first_name;
+const lecturerMiddleName = lecturer.data?.middle_name;
+const lecturerPhoto = lecturer.data?.avatar_link
+	? `${import.meta.env.VITE_AUTH_API_BASE_URL}${lecturer.data?.avatar_link}`
+	: Placeholder;
+console.log(lecturer.data?.avatar_link);
+const lecturerInfo = lecturer.data?.description ?? 'Информации нет';
 const screenWidth = window.innerWidth;
 </script>
 
@@ -88,7 +85,7 @@ const screenWidth = window.innerWidth;
 				</v-col>
 			</v-row>
 		</v-container>
-		<v-container class="">
+		<v-container class="justify-start">
 			<Markdown :text="lecturerInfo" />
 		</v-container>
 	</div>
