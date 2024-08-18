@@ -12,7 +12,10 @@ onMounted(() => {
 <template>
 	<v-app>
 		<main class="main">
-			<RouterView />
+			<Suspense>
+				<RouterView />
+				<template #fallback>Loading...</template>
+			</Suspense>
 		</main>
 	</v-app>
 </template>

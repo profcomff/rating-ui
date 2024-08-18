@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script async setup lang="ts">
 import { router } from '../router';
 import { ref, Ref } from 'vue';
 import apiClient from '../api';
@@ -17,9 +17,9 @@ const query = ref('');
 const filter = ref<string>('');
 const oldFilter = ref<string>('');
 let page = ref(1);
+let totalPages: Ref<number | undefined> = ref(1);
 
 const lecturers: Ref<Lecturer> = ref([]);
-let totalPages: Ref<number | undefined> = ref(1);
 const lecturersPhotos = ref<string[]>(Array<string>(10));
 await loadLecturers(query, offset, order_by);
 
