@@ -7,15 +7,21 @@ import Placeholder from '../assets/profile_image_placeholder.webp';
 import TheSearchBar from '../components/TheSearchBar.vue';
 import AppOrderByButton from '../components/AppOrderByButton.vue';
 import TheLecturerSearchCard from '../components/TheLecturerSearchCard.vue';
+import { Lecturer } from '../models/Lecturer';
 // import { useGoTo } from 'vuetify';
-
-const lecturersQuery = await apiClient.GET('/timetable/lecturer/');
-const lecturers = ref(lecturersQuery.data?.items);
-const lecturersPhotos = ref<string[]>(Array<string>(10));
-loadPhotos();
 
 type OrderBy = Ref<'first_name' | 'last_name' | null | undefined>;
 let order_by: OrderBy = ref(null);
+const offset = ref<number>(0);
+const query = ref('');
+const filter = ref<string>('');
+const oldFilter = ref<string>('');
+let page = ref(1);
+
+const lecturers: Ref<Lecturer> = ref([]);
+let totalPages: Ref<number | undefined> = ref(1);
+const lecturersPhotos = ref<string[]>(Array<string>(10));
+await loadLecturers(query, offset, order_by);
 
 async function loadLecturers(query: string, offset: number, order_by: OrderBy) {
 	const res = await apiClient.GET('/timetable/lecturer/', {
@@ -28,7 +34,9 @@ async function loadLecturers(query: string, offset: number, order_by: OrderBy) {
 		},
 	});
 	lecturers.value = res.data?.items;
+	totalPages.value = Math.ceil(res.data?.total / 10);
 	loadPhotos();
+	filterLecturers();
 }
 
 function loadPhotos() {
@@ -41,37 +49,49 @@ function toLecturerPage(id: number) {
 	router.push({ path: 'teacher-page', query: { lecturer_id: id } });
 }
 
-const query = ref('');
 async function findLecturer() {
+	console.log('Find Lecturers');
 	await loadLecturers(query.value, 0, order_by);
-	loadPhotos();
 }
 
 async function orderByLastName() {
+	console.log('Last Name Order');
 	if (order_by.value) {
 		order_by.value = null;
 	} else {
 		order_by.value = 'last_name';
 	}
-	await loadLecturers('', 0, order_by);
+	page.value = 1;
+	await loadLecturers(query.value, 0, order_by);
 }
 
 async function orderByFirstName() {
+	console.log('First Name Order');
 	if (order_by.value) {
 		order_by.value = undefined;
 	} else {
 		order_by.value = 'first_name';
 	}
-	await loadLecturers('', 0, order_by);
+	page.value = 1;
+	await loadLecturers(query.value, 0, order_by);
 }
 
-function filterWithAvatar() {
-	lecturers.value = lecturers.value?.filter(item => item.avatar_link);
+function filterLecturers() {
+	console.log('Filter: ', filter.value);
+	if (oldFilter.value !== filter.value) {
+		oldFilter.value = filter.value;
+		loadLecturers(query.value, offset.value, order_by);
+		page.value = 1;
+	}
+	if (filter.value) {
+		lecturers.value = lecturers.value?.filter(item => item[filter.value] != null);
+		loadPhotos();
+	}
 }
 
-let page = ref(1);
 async function changePage() {
-	await loadLecturers('', (page.value - 1) * 10, order_by);
+	offset.value = (page.value - 1) * 10;
+	await loadLecturers(query.value, offset.value, order_by);
 	// // automatically scroll to top (don't know why it's not working)
 	// useGoTo({
 	// 	duration: 100,
@@ -83,29 +103,34 @@ async function changePage() {
 </script>
 
 <template>
-	<v-card>
-		<TheSearchBar v-model="query" @find-lecturer="findLecturer()"></TheSearchBar>
+	<v-card rounded="xl">
+		<TheSearchBar v-model:searchQuery="query" @find-lecturer="findLecturer"></TheSearchBar>
 		<div class="d-flex align-center mb-2">
 			<v-menu location-strategy="connected">
 				<template #activator="{ props }">
-					<v-btn class="mr-3" v-bind="props">Фильтры</v-btn>
+					<v-btn class="ml-2 mr-1 text-body-2" rounded v-bind="props" density="compact" variant="tonal"
+						>фильтры</v-btn
+					>
 				</template>
 				<v-list>
 					<v-list-item>
-						<v-btn @click="filterWithAvatar"> С аватарками </v-btn>
+						<v-radio-group v-model="filter" @update:model-value="filterLecturers">
+							<v-radio label="С аватарками" value="avatar_link" density="compact"></v-radio>
+							<v-radio label="Сбросить" value="" density="compact"></v-radio>
+						</v-radio-group>
 					</v-list-item>
 				</v-list>
 			</v-menu>
 
-			<v-divider vertical />
+			<v-divider class="mx-1" vertical />
 
-			<v-slide-group>
-				<AppOrderByButton text="по фамилии" @click="orderByLastName" />
-				<AppOrderByButton text="по имени" @click="orderByFirstName" />
-				<AppOrderByButton text="по рейтингу" />
-				<AppOrderByButton text="по доброте" />
-				<AppOrderByButton text="по доброте" />
-				<AppOrderByButton text="по понятности" />
+			<v-slide-group selected-class="selected-order" show-arrows>
+				<AppOrderByButton text="по фамилии" :selected="order_by === 'last_name'" @click="orderByLastName" />
+				<AppOrderByButton text="по имени" :selected="order_by === 'first_name'" @click="orderByFirstName" />
+				<AppOrderByButton text="по рейтингу" :selected="false" />
+				<AppOrderByButton text="по доброте" :selected="false" />
+				<AppOrderByButton text="по доброте" :selected="false" />
+				<AppOrderByButton text="по понятности" :selected="false" />
 			</v-slide-group>
 		</div>
 	</v-card>
@@ -122,20 +147,12 @@ async function changePage() {
 	</TheLecturerSearchCard>
 
 	<v-container>
-		<v-pagination v-model="page" length="10" @update:model-value="changePage"></v-pagination>
+		<v-pagination v-model="page" :length="totalPages" @update:model-value="changePage"></v-pagination>
 	</v-container>
 </template>
 
-<style>
-.toolbar {
-	display: table;
-}
-
-.contact a {
-	display: table;
-}
-
-.main {
-	align-items: center;
+<style scoped>
+.selected-order {
+	background-color: blue;
 }
 </style>

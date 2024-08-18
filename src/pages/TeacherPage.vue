@@ -3,6 +3,7 @@ import Markdown from '../components/AppMarkdownRenderer.vue';
 import { useRouter } from 'vue-router';
 import apiClient from '../api';
 import Placeholder from '../assets/profile_image_placeholder.webp';
+import AppRatingBar from '../components/AppRatingBar.vue';
 
 const router = useRouter();
 
@@ -21,7 +22,7 @@ const lecturer = await apiClient.GET(`/timetable/lecturer/{id}`, {
 
 let howKind: number = 10;
 let howEasy: number = 35;
-let howUnderstandable: number = 60;
+let howUnderstandable: number = 85;
 
 const lecturerLastName = lecturer.data?.last_name;
 const lecturerFirstName = lecturer.data?.first_name;
@@ -56,20 +57,9 @@ const screenWidth = window.innerWidth;
 				</template>
 			</v-card>
 			<v-container>
-				<v-progress-circular class="rating-bar text-body-2" :size="130" :width="8" :model-value="howKind">
-					Доброта
-				</v-progress-circular>
-				<v-progress-circular class="rating-bar text-body-2" :size="130" :width="8" :model-value="howEasy">
-					Халявность
-				</v-progress-circular>
-				<v-progress-circular
-					class="rating-bar text-body-2"
-					:size="130"
-					:width="8"
-					:model-value="howUnderstandable"
-				>
-					Понятность
-				</v-progress-circular>
+				<AppRatingBar :value="howKind" label="Доброта"></AppRatingBar>
+				<AppRatingBar :value="howEasy" label="Халявность"></AppRatingBar>
+				<AppRatingBar :value="howUnderstandable" label="Понятность"></AppRatingBar>
 			</v-container>
 			<v-container max-width="750px">
 				<v-row justify="center" no-gutters>

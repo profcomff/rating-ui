@@ -1,9 +1,9 @@
 <template>
 	<v-text-field
 		id="start"
+		v-model="searchQuery"
 		prepend-inner-icon="mdi-magnify"
 		class="mx-2 py-2"
-		max-width="750px"
 		variant="outlined"
 		density="compact"
 		placeholder="Найдите преподавателя"
@@ -11,11 +11,13 @@
 		hide-details="auto"
 		single-line
 		rounded="pill"
-		@update:model-value="$emit('find-lecturer')"
+		@update:model-value="emits('find-lecturer')"
 	/>
 </template>
 
 <script setup lang="ts">
+const searchQuery = defineModel('searchQuery', { type: String });
+
 const emits = defineEmits({
 	'find-lecturer': () => {
 		return true;
