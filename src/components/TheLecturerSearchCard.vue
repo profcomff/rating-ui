@@ -3,8 +3,8 @@
 		<template #prepend>
 			<div class="d-flex align-center">
 				<v-sheet class="text-body-1 d-flex justify-center" min-width="35px">{{ lecturer.id }}</v-sheet>
-				<v-avatar size="130" rounded="xl" class="px-2 mx-2">
-					<v-img :src="photo" rounded="xl"></v-img>
+				<v-avatar size="130" rounded="xl" class="mx-2">
+					<v-img :src="photo"></v-img>
 				</v-avatar>
 			</div>
 		</template>
@@ -18,25 +18,32 @@
 				<v-sheet>отзывов: 123</v-sheet>
 				<div class="d-flex">
 					<v-sheet>общая оценка: +100</v-sheet>
-					<!-- <v-spacer /> -->
 				</div>
 			</div>
 		</template>
 		<v-spacer />
 		<v-btn
 			class="text-caption position-absolute bottom-0 right-0 ma-5"
+			:prepend-icon="'mdi-plus'"
 			variant="elevated"
-			base-color="#0000FF"
+			base-color="primary"
 			size="small"
 			rounded="pill"
-			text="+отзыв"
+			text="отзыв"
+			@click.stop="toReviewPage"
 		/>
 	</v-card>
 </template>
 
 <script setup lang="ts">
-defineProps({
+import { router } from '../router';
+
+const props = defineProps({
 	lecturer: { type: Object, required: true },
 	photo: { type: String, required: true },
 });
+
+function toReviewPage() {
+	router.push({ path: 'review', query: { lecturer_id: props.lecturer.id } });
+}
 </script>

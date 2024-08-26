@@ -11,6 +11,7 @@
 		hide-details="auto"
 		single-line
 		rounded="pill"
+		:bg-color="'grey'"
 		@update:model-value="emits('find-lecturer')"
 	/>
 </template>

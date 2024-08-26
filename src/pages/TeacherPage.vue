@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import Markdown from '../components/AppMarkdownRenderer.vue';
 import { useRouter } from 'vue-router';
+import { useDisplay } from 'vuetify';
+import { ref } from 'vue';
+import Markdown from '../components/AppMarkdownRenderer.vue';
 import apiClient from '../api';
 import Placeholder from '../assets/profile_image_placeholder.webp';
 import AppRatingBar from '../components/AppRatingBar.vue';
-import { ref } from 'vue';
+import TheReviewCard from '../components/TheReviewCard.vue';
+
+const { smAndDown } = useDisplay();
 
 const router = useRouter();
 
@@ -35,7 +39,6 @@ let howUnderstandable: number = 85;
 
 const lecturerPhoto = avatarLink.value ? `${import.meta.env.VITE_AUTH_API_BASE_URL}${avatarLink.value}` : Placeholder;
 const lecturerInfo = description.value ?? 'Информации нет';
-const screenWidth = window.innerWidth;
 </script>
 
 <template>
@@ -48,10 +51,10 @@ const screenWidth = window.innerWidth;
 				</v-avatar>
 			</template>
 			<template #title>
-				<v-sheet class="text-h4">{{ lastName }}</v-sheet>
+				<div class="text-h4">{{ lastName }}</div>
 			</template>
 			<template #subtitle>
-				<v-sheet class="text-body-1">{{ firstName }} {{ middleName }}</v-sheet>
+				<div class="text-body-1">{{ firstName }} {{ middleName }}</div>
 				<div class="contact text-body-2">
 					<a href="mailto:ivanovii@example.com">a@example.com</a>
 					<a href="tel:+7(999)999-99-99">+7(999)999-99-99</a>
@@ -59,37 +62,55 @@ const screenWidth = window.innerWidth;
 			</template>
 		</v-card>
 		<v-container>
-			<AppRatingBar :value="howKind" label="Доброта"></AppRatingBar>
-			<AppRatingBar :value="howEasy" label="Халявность"></AppRatingBar>
-			<AppRatingBar :value="howUnderstandable" label="Понятность"></AppRatingBar>
+			<AppRatingBar :value="howKind" label="доброта"></AppRatingBar>
+			<AppRatingBar :value="howEasy" label="халявность"></AppRatingBar>
+			<AppRatingBar :value="howUnderstandable" label="понятность"></AppRatingBar>
 		</v-container>
 		<v-container>
 			<v-row justify="center" no-gutters>
 				<v-col cols="md-2">
-					<v-card class="pr-1 mr-1" height="100px" variant="tonal" min-width="100px">
+					<v-card class="pr-1 mr-1" height="100px" variant="tonal" min-width="100px" rounded="xl">
 						<template #prepend>
-							<v-icon icon="$vuetify"></v-icon>
+							<v-icon :icon="'mdi-tree-outline'"></v-icon>
 						</template>
 						<template #title>+100</template>
 						<template #text>123 отзыва</template>
 					</v-card>
 				</v-col>
 				<v-col cols="xs-2">
-					<v-card class="pl-1 ml-1" height="100px" color="#eee" variant="flat">
-						<v-card-item :class="screenWidth < 600 ? 'text-caption' : 'text-body-1'">
+					<v-card class="pl-1 ml-1" height="100px" color="#eee" variant="flat" rounded="xl">
+						<v-card-item :class="smAndDown ? 'text-caption' : 'text-body-1'">
 							<p>В рейтинге учитываются лишь отзывы, оставленные за последние 3 года</p>
 						</v-card-item>
 					</v-card>
 				</v-col>
 			</v-row>
 		</v-container>
+
 		<v-container class="justify-start">
 			<Markdown :text="lecturerInfo" />
 		</v-container>
+
+		<TheReviewCard :photo="Placeholder" />
+		<TheReviewCard class="mb-11" :photo="Placeholder" />
 	</div>
+
+	<!-- TODO: fix position and width -->
+	<v-footer width="auto">
+		<div class="d-flex justify-end w-100">
+			<v-fab
+				class="mb-3"
+				text="Оставить отзыв"
+				width="w-100"
+				rounded="pill"
+				variant="flat"
+				@click="router.push({ path: 'review', query: { lecturer_id: lecturerId } })"
+			/>
+		</div>
+	</v-footer>
 </template>
 
-<style>
+<style scoped>
 .contact a {
 	display: table;
 }
@@ -104,13 +125,10 @@ const screenWidth = window.innerWidth;
 	align-items: center;
 }
 
-.v-col {
-	margin: auto;
-}
-
-.rating-bar {
-	color: #999;
-	margin: auto;
-	font-size: small;
+.v-footer {
+	bottom: 0;
+	position: fixed;
+	width: 100%;
+	background-color: #0000;
 }
 </style>
