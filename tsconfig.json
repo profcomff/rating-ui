@@ -15,6 +15,7 @@
 		"jsx": "preserve",
 
 		/* Linting */
+		"baseUrl": ".",
 		 "paths": {
       			"vuetify/*": ["node_modules/vuetify/*"]
     		 }
