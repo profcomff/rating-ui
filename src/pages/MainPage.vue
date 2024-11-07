@@ -2,166 +2,118 @@
 import { router } from '../router';
 import { ref, Ref } from 'vue';
 import apiClient from '../api';
+import { useProfileStore } from '../store';
 import Placeholder from '../assets/profile_image_placeholder.webp';
 import TheSearchBar from '../components/TheSearchBar.vue';
 import TheLecturerSearchCard from '../components/TheLecturerSearchCard.vue';
-import { Lecturer } from '../models/Lecturer';
+import { Lecturer, Order, Subject } from '../models';
+import { PHOTO_BASE_PATH } from '../constants';
 // import { useGoTo } from 'vuetify';
 
-type OrderBy = Ref<'first_name' | 'last_name' | null | undefined>;
-type Filter = Ref<'id' | 'avatar_link'>;
-let orderBy: OrderBy = ref(null);
+const profileStore = useProfileStore();
+
+const orderValues: Ref<Order> = ref(['']);
+let order: Ref<string> = ref('');
 let offset = 0;
 const query = ref('');
-const filter: Filter = ref('id');
-const oldFilter: Filter = ref('id');
-let page = ref(1);
-let totalPages: Ref<number | undefined> = ref(1);
+const subject: Ref<Subject> = ref('');
+const page = ref(1);
+const itemsPerPage = 10;
+const totalPages: Ref<number | undefined> = ref(1);
+
+const userAdmin = ref<boolean>(false);
+userAdmin.value = profileStore.isAdmin();
 
 const lecturers: Ref<Lecturer[] | undefined> = ref();
 const lecturersPhotos = ref<string[]>(Array<string>(10));
-await loadLecturers(query.value, offset, orderBy);
+await loadLecturers(query.value, offset, orderValues, subject);
 
 function toLecturerPage(id: number) {
-	router.push({ path: 'teacher', query: { lecturer_id: id } });
+	router.push({ path: 'lecturer', query: { lecturer_id: id } });
 }
 
-async function loadLecturers(query: string, offset: number, orderBy: OrderBy) {
-	console.log(query, offset, orderBy.value);
-	const res = await apiClient.GET('/timetable/lecturer/', {
+async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<Order>, subjectQuery: Ref<Subject>) {
+	const res = await apiClient.GET('/rating/lecturer', {
 		params: {
 			query: {
-				query,
+				name: nameQuery,
 				offset,
-				order_by: orderBy.value,
+				info: ['comments', 'mark'],
+				subject: subjectQuery.value,
+				order_by: orderQuery.value,
 			},
 		},
 	});
-	lecturers.value = res.data?.items;
-	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / 10) : 1;
-	console.log(res);
+	lecturers.value = res.data?.lecturers;
+	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
 	loadPhotos();
-	filterLecturers();
 }
 
 function loadPhotos() {
 	lecturersPhotos.value = lecturers.value?.map(item =>
-		item.avatar_link ? `${import.meta.env.VITE_AUTH_API_BASE_URL}${item.avatar_link}` : Placeholder,
+		item.avatar_link ? `${PHOTO_BASE_PATH}${item.avatar_link}` : Placeholder,
 	) ?? [Placeholder];
 }
 
 async function findLecturer() {
 	console.log('Find Lecturers');
-	await loadLecturers(query.value, 0, orderBy);
+	await loadLecturers(query.value, 0, orderValues, subject);
 }
 
 async function orderLecturers() {
 	page.value = 1;
-	await loadLecturers(query.value, 0, orderBy);
+	orderValues.value[0] = order.value == 'по общей оценке' ? 'general' : '';
+	await loadLecturers(query.value, 0, orderValues, subject);
 }
 
-function filterLecturers() {
-	if (oldFilter.value !== filter.value) {
-		oldFilter.value = filter.value;
-		offset = 0;
-		loadLecturers(query.value, offset, orderBy);
-		page.value = 1;
-	}
-	if (filter.value) {
-		lecturers.value = lecturers.value?.filter(item => item[filter.value] != null);
-		loadPhotos();
-	}
-}
-
-async function changePage() {
-	offset = (page.value - 1) * 10;
-	await loadLecturers(query.value, offset, orderBy);
-	// // automatically scroll to top (don't know why it's not working)
-	// useGoTo({
-	// 	duration: 100,
-	// 	easing: 'easeInOutCubic',
-	// 	offset: 0,
-	// 	container: '#start',
-	// });
+async function filterLecturers() {
+	page.value = 1;
+	await loadLecturers(query.value, 0, orderValues, subject);
 }
 </script>
 
 <template>
-	<v-data-iterator :items="lecturers" :page="page" :items-per-page="10">
-		<template #header>
-			<v-card rounded="xl">
-				<TheSearchBar v-model:searchQuery="query" @find-lecturer="findLecturer" />
-				<div class="d-flex align-center mb-2">
-					<v-menu location-strategy="connected">
-						<template #activator="{ props }">
-							<v-btn
-								class="ml-2 mr-1 text-body-2"
-								rounded
-								:prepend-icon="'mdi-tune'"
-								v-bind="props"
-								density="compact"
-								variant="flat"
-								>фильтры</v-btn
-							>
-						</template>
-						<v-card>
-							<v-radio-group v-model="filter" @update:model-value="filterLecturers">
-								<v-radio
-									:color="'primary'"
-									:base-color="'gray'"
-									label="С аватарками"
-									value="avatar_link"
-									density="compact"
-								/>
-								<v-radio
-									:color="'primary'"
-									:base-color="'gray'"
-									label="Сбросить"
-									value=""
-									density="compact"
-								></v-radio>
-							</v-radio-group>
-						</v-card>
-					</v-menu>
+	<v-container class="ma-0 pa-0">
+		<v-data-iterator :items="lecturers" :page="page" :items-per-page="itemsPerPage">
+			<template #header>
+				<v-card rounded="0" color="primary">
+					<TheSearchBar
+						v-model:search-query="query"
+						v-model:subject="subject"
+						v-model:order="order"
+						:is-admin="userAdmin"
+						@update:subject="filterLecturers"
+						@update:order="orderLecturers"
+						@update:search-query="findLecturer"
+					/>
+				</v-card>
+			</template>
 
-					<v-divider class="mx-1" vertical />
+			<template #default="{ items }">
+				<TheLecturerSearchCard
+					v-for="(item, idx) in items"
+					:key="idx"
+					:lecturer="item.raw"
+					:photo="lecturersPhotos[idx]"
+					class="py-0"
+					variant="elevated"
+					@click="toLecturerPage(item.raw.id)"
+				/>
+			</template>
 
-					<v-chip-group
-						v-model="orderBy"
-						class="ml-3"
-						selected-class="bg-primary"
-						@update:model-value="orderLecturers"
-					>
-						<v-chip density="compact" :value="'last_name'">по фамилии</v-chip>
-						<v-chip density="compact" :value="'first_name'">по имени</v-chip>
-					</v-chip-group>
-				</div>
-			</v-card>
-		</template>
-
-		<template #default>
-			<TheLecturerSearchCard
-				v-for="(lecturer, idx) in lecturers"
-				:key="idx"
-				:lecturer="lecturer"
-				:photo="lecturersPhotos[idx]"
-				class="my-2 py-2"
-				variant="elevated"
-				@click="toLecturerPage(lecturer.id)"
-			/>
-		</template>
-
-		<template #footer>
-			<v-pagination
-				v-model="page"
-				active-color="secondary"
-				variant="flat"
-				:length="totalPages"
-				:show-first-last-page="false"
-				@update:model-value="changePage"
-			></v-pagination>
-		</template>
-	</v-data-iterator>
+			<template #footer="{ pageCount, nextPage, prevPage }">
+				<v-pagination
+					v-model="page"
+					active-color="primary"
+					variant="elevated"
+					:length="pageCount"
+					:show-first-last-page="false"
+					@next="nextPage"
+					@prev="prevPage"
+				></v-pagination>
+			</template>
+		</v-data-iterator>
+	</v-container>
 </template>
 
 <style scoped></style>

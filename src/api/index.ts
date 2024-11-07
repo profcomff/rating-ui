@@ -1,7 +1,4 @@
-import { createClient, setupAuth } from '@profcomff/api-uilib';
-import { useProfileStore } from '../store';
+import { createClient } from '@profcomff/api-uilib';
 
-const profileStore = useProfileStore();
 const apiClient = createClient(import.meta.env.VITE_AUTH_API_BASE_URL);
-setupAuth(profileStore.token);
 export default apiClient;

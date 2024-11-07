@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { useProfileStore } from './store';
 import { onMounted } from 'vue';
+import { setupAuth } from '@profcomff/api-uilib';
+import ToastList from './components/ToastList.vue';
 
 const profileStore = useProfileStore();
 
 onMounted(() => {
 	profileStore.fromUrl();
+	console.log(document.location.toString());
+	console.log(profileStore.token);
+	setupAuth(profileStore.token);
 });
 </script>
 
@@ -16,6 +21,7 @@ onMounted(() => {
 				<RouterView />
 				<template #fallback>Loading...</template>
 			</Suspense>
+			<ToastList />
 		</main>
 	</v-app>
 </template>
@@ -24,23 +30,5 @@ onMounted(() => {
 .main {
 	width: min(900px, 100%);
 	margin: 0 auto;
-}
-
-.container {
-	width: 100%;
-	height: 100%;
-}
-
-footer {
-	position: sticky;
-	bottom: 0;
-	width: 100%;
-	color: gray;
-	text-align: center;
-
-	& .logo {
-		height: 30px;
-		vertical-align: middle;
-	}
 }
 </style>

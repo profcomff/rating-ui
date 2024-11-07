@@ -16,13 +16,13 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineModel } from 'vue';
 const review = defineModel('review', { type: Number });
-const props = defineProps({
+defineProps({
 	property: { type: String, required: true },
 });
 
-function getReview() {
-	console.log(props.property, review.value);
+function getReview(value: number) {
+	review.value = value;
+	console.log('child', review.value);
 }
 </script>
