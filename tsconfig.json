@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"types": ["...", "vuetify"],
+		"types": ["vuetify/src"],
 		"target": "ES2020",
 		"useDefineForClassFields": true,
 		"module": "ESNext",
