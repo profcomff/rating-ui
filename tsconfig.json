@@ -15,7 +15,9 @@
 		"jsx": "preserve",
 
 		/* Linting */
-		 "types": ["vuetify"],
+		 "paths": {
+      			"vuetify/*": ["node_modules/vuetify/*"]
+    		 }
 		"strict": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
