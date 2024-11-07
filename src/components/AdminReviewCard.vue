@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import apiClient from "../api";
 import { Review, ToastType } from "../models";
-import { DataIteratorItem } from "/vuetify/src/components/items";
+import { DataIteratorItem } from '/vuetify/src/components/items';
 import { useToastStore } from "../store/toastStore";
 
 const props = defineProps({
