@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "axios": "^1.7.7",
-    "pinia": "^2.2.4",
+    "pinia": "^2.2.6",
     "query-string": "^8.2.0",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5"
@@ -28,9 +28,9 @@
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-vue": "^9.29.1",
+    "eslint-plugin-vue": "^9.30.0",
     "markdown-it": "^14.1.0",
-    "openapi-typescript": "^7.4.1",
+    "openapi-typescript": "^7.4.2",
     "postcss-preset-env": "^9.6.0",
     "prettier": "^3.3.3",
     "stylelint": "^15.11.0",
@@ -43,7 +43,7 @@
     "vite-plugin-stylelint": "^5.3.1",
     "vite-plugin-vuetify": "^2.0.4",
     "vite-svg-loader": "^5.1.0",
-    "vue-tsc": "^2.1.6",
-    "vuetify": "^3.7.3"
+    "vue-tsc": "^2.1.10",
+    "vuetify": "^3.7.4"
   }
 }
