@@ -4,7 +4,7 @@ import { ref } from 'vue';
 export const useProfileStore = defineStore('profile', () => {
 	const id = ref<number | null>(null);
 	const email = ref<string | null>(null);
-	const token = ref<string | null>(null);
+	const token = ref<string | undefined>();
 	const groups = ref<number[] | null>(null);
 	const indirectGroups = ref<number[] | null>(null);
 	const userScopes = ref<string[] | null>(null);
@@ -28,6 +28,14 @@ export const useProfileStore = defineStore('profile', () => {
 		}
 	};
 
+	const isAdmin = () => {
+		return (
+			(sessionScopes.value?.includes('rating.comment.review') &&
+				sessionScopes.value?.includes('rating.comment.review')) ??
+			false
+		);
+	};
+
 	return {
 		id,
 		email,
@@ -40,5 +48,6 @@ export const useProfileStore = defineStore('profile', () => {
 		full_name,
 
 		fromUrl,
+		isAdmin,
 	};
 });
