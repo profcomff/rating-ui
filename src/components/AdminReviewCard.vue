@@ -53,13 +53,13 @@
 
 <script setup lang="ts">
 import apiClient from "../api";
-import { Review, ToastType } from "../models";
-import { DataIteratorItem } from '/vuetify/src/components/items';
+import { ToastType } from "../models";
+// import { DataIteratorItem } from "/vuetify/src/components/items";
 import { useToastStore } from "../store/toastStore";
 
 const props = defineProps({
   photo: { type: String, required: true },
-  comment: { type: Object as DataIteratorItem<Review>, required: true },
+  comment: { type: Object, required: true },
 });
 
 const emit = defineEmits(["decided"]);

@@ -1,4 +1,4 @@
-import { Toast } from '@/src/models';
+import { Toast } from '../models';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 

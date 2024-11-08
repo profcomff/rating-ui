@@ -91,7 +91,7 @@ const lecturerPhoto = avatarLink.value ? `${PHOTO_BASE_PATH}${avatarLink.value}`
 		<div v-if="lecturer?.comments">
 			<v-data-iterator class="mr-0 pa-0" :page="page" :items="lecturer?.comments" :items-per-page="itemsPerPage">
 				<template #default="{ items: reviews }">
-					<template v-for="(review, i) in reviews" :key="i">
+					<template v-for="review in reviews" :key="review.uuid">
 						<TheReviewCard :comment="review" :photo="Placeholder" @comment-deleted="$router.go" />
 					</template>
 				</template>
