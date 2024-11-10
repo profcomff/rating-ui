@@ -7,13 +7,8 @@
     "build": "vue-tsc && vite build",
     "docker-build": "vue-tsc && vite build --base=/ui",
     "preview": "vite preview",
-<<<<<<< HEAD
-    "lint": "eslint src/ --fix",
-    "format": "prettier src/",
-=======
     "lint": "eslint .",
     "format": "prettier src/ --write",
->>>>>>> refs/remotes/origin/rating-ui-batuev
     "stylelint": "stylelint 'src/**/*.{vue,css}' --fix",
     "check": "vue-tsc && pnpm run format && pnpm run lint && pnpm run stylelint",
     "test": "echo ok"
@@ -31,18 +26,12 @@
     "@eslint/js": "^9.14.0",
     "@mdi/font": "^7.4.47",
     "@profcomff/api-uilib": "^2024.10.22",
-<<<<<<< HEAD
-    "@typescript-eslint/typescript-estree": "^8.13.0",
-    "@vitejs/plugin-vue": "^4.6.2",
-    "@vue/eslint-config-typescript": "^12.0.0",
-=======
     "@types/eslint__js": "^8.42.3",
     "@typescript-eslint/eslint-plugin": "^8.13.0",
     "@typescript-eslint/parser": "^8.13.0",
     "@vitejs/plugin-vue": "^4.6.2",
     "@vue/eslint-config-typescript": "^12.0.0",
     "eslint": "^9.14.0",
->>>>>>> refs/remotes/origin/rating-ui-batuev
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-vue": "^9.30.0",

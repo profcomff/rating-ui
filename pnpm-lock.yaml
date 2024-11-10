@@ -11,9 +11,6 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
-      eslint:
-        specifier: ^9.14.0
-        version: 9.14.0
       pinia:
         specifier: ^2.2.6
         version: 2.2.6(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))
@@ -39,11 +36,6 @@ importers:
       '@profcomff/api-uilib':
         specifier: ^2024.10.22
         version: 2024.10.22
-<<<<<<< HEAD
-      '@typescript-eslint/typescript-estree':
-        specifier: ^8.13.0
-        version: 8.13.0(typescript@5.6.3)
-=======
       '@types/eslint__js':
         specifier: ^8.42.3
         version: 8.42.3
@@ -53,38 +45,24 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^8.13.0
         version: 8.13.0(eslint@9.14.0)(typescript@5.6.3)
->>>>>>> refs/remotes/origin/rating-ui-batuev
       '@vitejs/plugin-vue':
         specifier: ^4.6.2
         version: 4.6.2(vite@4.5.5)(vue@3.5.12(typescript@5.6.3))
       '@vue/eslint-config-typescript':
         specifier: ^12.0.0
         version: 12.0.0(eslint-plugin-vue@9.30.0(eslint@9.14.0))(eslint@9.14.0)(typescript@5.6.3)
-<<<<<<< HEAD
-=======
       eslint:
         specifier: ^9.14.0
         version: 9.14.0
->>>>>>> refs/remotes/origin/rating-ui-batuev
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.0(eslint@9.14.0)
       eslint-plugin-prettier:
         specifier: ^5.2.1
-<<<<<<< HEAD
-        version: 5.2.1(eslint-config-prettier@9.1.0(eslint@9.14.0))(eslint@9.14.0)(prettier@3.3.3)
-      eslint-plugin-vue:
-        specifier: ^9.30.0
-        version: 9.30.0(eslint@9.14.0)
-      globals:
-        specifier: ^15.12.0
-        version: 15.12.0
-=======
         version: 5.2.1(@types/eslint@9.6.1)(eslint-config-prettier@9.1.0(eslint@9.14.0))(eslint@9.14.0)(prettier@3.3.3)
       eslint-plugin-vue:
         specifier: ^9.30.0
         version: 9.30.0(eslint@9.14.0)
->>>>>>> refs/remotes/origin/rating-ui-batuev
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
@@ -1325,13 +1303,6 @@ packages:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
     engines: {node: '>=18'}
 
-<<<<<<< HEAD
-  globals@15.12.0:
-    resolution: {integrity: sha512-1+gLErljJFhbOVyaetcwJiJ4+eLe45S2E7P5UiZ9xGfeq3ATQf5DOv9G7MH3gGbKQLkzmNh2DxfZwLdw+j6oTQ==}
-    engines: {node: '>=18'}
-
-=======
->>>>>>> refs/remotes/origin/rating-ui-batuev
   globby@11.1.0:
     resolution: {integrity: sha512-jhIXaOzy1sb8IyocaruWSn1TjmnBVs8Ayhcy83rmxNJ8q2uWKCAj3CnJY+KpGSXCueAPc0i05kVvVKtP1t9S3g==}
     engines: {node: '>=10'}
@@ -3363,21 +3334,14 @@ snapshots:
     dependencies:
       eslint: 9.14.0
 
-<<<<<<< HEAD
-  eslint-plugin-prettier@5.2.1(eslint-config-prettier@9.1.0(eslint@9.14.0))(eslint@9.14.0)(prettier@3.3.3):
-=======
   eslint-plugin-prettier@5.2.1(@types/eslint@9.6.1)(eslint-config-prettier@9.1.0(eslint@9.14.0))(eslint@9.14.0)(prettier@3.3.3):
->>>>>>> refs/remotes/origin/rating-ui-batuev
     dependencies:
       eslint: 9.14.0
       prettier: 3.3.3
       prettier-linter-helpers: 1.0.0
       synckit: 0.9.2
     optionalDependencies:
-<<<<<<< HEAD
-=======
       '@types/eslint': 9.6.1
->>>>>>> refs/remotes/origin/rating-ui-batuev
       eslint-config-prettier: 9.1.0(eslint@9.14.0)
 
   eslint-plugin-vue@9.30.0(eslint@9.14.0):
@@ -3580,11 +3544,6 @@ snapshots:
 
   globals@14.0.0: {}
 
-<<<<<<< HEAD
-  globals@15.12.0: {}
-
-=======
->>>>>>> refs/remotes/origin/rating-ui-batuev
   globby@11.1.0:
     dependencies:
       array-union: 2.1.0

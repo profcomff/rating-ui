@@ -54,10 +54,7 @@
 <script setup lang="ts">
 import apiClient from "../api";
 import { ToastType } from "../models";
-<<<<<<< HEAD
-=======
 // import { DataIteratorItem } from "/vuetify/src/components/items";
->>>>>>> refs/remotes/origin/rating-ui-batuev
 import { useToastStore } from "../store/toastStore";
 
 const props = defineProps({
