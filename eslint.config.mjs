@@ -26,6 +26,6 @@ export default [
 		files: ['**/*.ts', '**/*.vue'],
 	},
 	{
-		ignorePatterns: ['/node_modules'],
+		ignores: ['/node_modules'],
 	},
 ];
