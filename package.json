@@ -7,7 +7,7 @@
     "build": "vue-tsc && vite build",
     "docker-build": "vue-tsc && vite build --base=/ui",
     "preview": "vite preview",
-    "lint": "eslint .",
+    "lint": "eslint src/",
     "format": "prettier src/ --write",
     "stylelint": "stylelint 'src/**/*.{vue,css}' --fix",
     "check": "vue-tsc && pnpm run format && pnpm run lint && pnpm run stylelint",
