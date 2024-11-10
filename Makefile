@@ -14,7 +14,6 @@ configure:
 
 format:
 	npm run format
-	npm run stylelint
 
 rename:
 	./utils/rename.sh
