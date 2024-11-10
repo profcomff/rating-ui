@@ -1,55 +1,128 @@
-<script setup lang="ts">
-import { userdataUserApi } from '../api';
+<script async setup lang="ts">
+import { router } from '../router';
+import { ref, Ref } from 'vue';
+import apiClient from '../api';
 import { useProfileStore } from '../store';
-import { onMounted, ref } from 'vue';
+import Placeholder from '../assets/profile_image_placeholder.webp';
+import TheSearchBar from '../components/TheSearchBar.vue';
+import TheLecturerSearchCard from '../components/TheLecturerSearchCard.vue';
+import { Lecturer, Order, Subject } from '../models';
+import { PHOTO_BASE_PATH } from '../constants';
+// import { useGoTo } from 'vuetify';
 
 const profileStore = useProfileStore();
 
-const showUserWarn = ref(false);
+const orderValues: Ref<Order> = ref(['']);
+let order: Ref<string> = ref('');
+let offset = 0;
+const query = ref('');
+const subject: Ref<Subject> = ref('');
+const page = ref(1);
+const itemsPerPage = 10;
+const totalPages: Ref<number | undefined> = ref(1);
 
-onMounted(async () => {
-	// Get username
-	if (!profileStore.full_name && profileStore.id) {
-		const resp = await userdataUserApi.getById(profileStore.id);
-		if (resp.status != 200) {
-			showUserWarn.value = true;
-			return;
-		}
-		const data = resp.data;
-		if (!data || !data.items) {
-			showUserWarn.value = true;
-			return;
-		}
-		const nameItem = data.items.find(item => {
-			return item.category == 'Личная информация' && item.param == 'Полное имя';
-		});
-		if (!nameItem) {
-			showUserWarn.value = true;
-			return;
-		}
-		profileStore.full_name = nameItem?.value ?? null;
-	}
-});
+const userAdmin = ref<boolean>(false);
+userAdmin.value = profileStore.isAdmin();
 
-const location = document.location.origin + '/docs/';
+const lecturers: Ref<Lecturer[] | undefined> = ref();
+const lecturersPhotos = ref<string[]>(Array<string>(10));
+await loadLecturers(query.value, offset, orderValues, subject);
+
+function toLecturerPage(id: number) {
+	router.push({ path: 'lecturer', query: { lecturer_id: id } });
+}
+
+async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<Order>, subjectQuery: Ref<Subject>) {
+	const res = await apiClient.GET('/rating/lecturer', {
+		params: {
+			query: {
+				limit: itemsPerPage,
+				name: nameQuery,
+				offset,
+				info: ['comments', 'mark'],
+				subject: subjectQuery.value,
+				order_by: orderQuery.value,
+			},
+		},
+	});
+	lecturers.value = res.data?.lecturers;
+	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
+	loadPhotos();
+}
+async function loadNextLecturers() {
+	offset += itemsPerPage;
+	loadLecturers(query.value, offset, orderValues, subject);
+}
+
+async function loadPrevLecturers() {
+	offset -= itemsPerPage;
+	loadLecturers(query.value, offset, orderValues, subject);
+}
+
+function loadPhotos() {
+	lecturersPhotos.value = lecturers.value?.map(item =>
+		item.avatar_link ? `${PHOTO_BASE_PATH}${item.avatar_link}` : Placeholder,
+	) ?? [Placeholder];
+}
+
+async function findLecturer() {
+	console.log('Find Lecturers');
+	await loadLecturers(query.value, 0, orderValues, subject);
+}
+
+async function orderLecturers() {
+	page.value = 1;
+	orderValues.value[0] = order.value == 'по общей оценке' ? 'general' : '';
+	await loadLecturers(query.value, 0, orderValues, subject);
+}
+
+async function filterLecturers() {
+	page.value = 1;
+	await loadLecturers(query.value, 0, orderValues, subject);
+}
 </script>
 
 <template>
-	<div>
-		<h1 class="text-h1">
-			Привет<span v-if="profileStore.full_name">, {{ profileStore.full_name }}</span
-			>!
-		</h1>
-		<p v-if="!profileStore.full_name">
-			Не удалось получить твое имя из
-			<a href="https://api.profcomff.com/?urls.primaryName=userdata">Userdata API</a>
-			=(
-		</p>
-		<p>Твой id: {{ profileStore.id }}</p>
-		<div>
-			<p>
-				Документация к этому коду находится по адресу <a href="/docs/">{{ location }}</a>
-			</p>
-		</div>
-	</div>
+	<v-container class="ma-0 pa-0">
+		<v-data-iterator :items="lecturers" :page="page" :items-per-page="itemsPerPage">
+			<template #header>
+				<v-card rounded="0" color="primary">
+					<TheSearchBar
+						v-model:search-query="query"
+						v-model:subject="subject"
+						v-model:order="order"
+						:is-admin="userAdmin"
+						@update:subject="filterLecturers"
+						@update:order="orderLecturers"
+						@update:search-query="findLecturer"
+					/>
+				</v-card>
+			</template>
+
+			<template #default="{ items }">
+				<TheLecturerSearchCard
+					v-for="(item, idx) in items"
+					:key="idx"
+					:lecturer="item.raw"
+					:photo="lecturersPhotos[idx]"
+					class="py-0"
+					variant="elevated"
+					@click="toLecturerPage(item.raw.id)"
+				/>
+			</template>
+
+			<template #footer>
+				<v-pagination
+					v-model="page"
+					active-color="primary"
+					variant="elevated"
+					:length="totalPages"
+					:total-visible="2"
+					:show-first-last-page="false"
+					@next="loadNextLecturers"
+					@prev="loadPrevLecturers"
+				></v-pagination>
+			</template>
+		</v-data-iterator>
+	</v-container>
 </template>
