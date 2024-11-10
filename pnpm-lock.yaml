@@ -11,6 +11,9 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      eslint:
+        specifier: ^9.14.0
+        version: 9.14.0
       pinia:
         specifier: ^2.2.6
         version: 2.2.6(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))
@@ -51,9 +54,6 @@ importers:
       '@vue/eslint-config-typescript':
         specifier: ^12.0.0
         version: 12.0.0(eslint-plugin-vue@9.30.0(eslint@9.14.0))(eslint@9.14.0)(typescript@5.6.3)
-      eslint:
-        specifier: ^9.14.0
-        version: 9.14.0
       eslint-config-prettier:
         specifier: ^9.1.0
         version: 9.1.0(eslint@9.14.0)
@@ -63,12 +63,18 @@ importers:
       eslint-plugin-vue:
         specifier: ^9.30.0
         version: 9.30.0(eslint@9.14.0)
+      globals:
+        specifier: ^15.12.0
+        version: 15.12.0
       markdown-it:
         specifier: ^14.1.0
         version: 14.1.0
       openapi-typescript:
         specifier: ^7.4.2
         version: 7.4.2(typescript@5.6.3)
+      postcss-html:
+        specifier: ^1.7.0
+        version: 1.7.0
       postcss-preset-env:
         specifier: ^9.6.0
         version: 9.6.0(postcss@8.4.47)
@@ -1301,6 +1307,10 @@ packages:
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
+    engines: {node: '>=18'}
+
+  globals@15.12.0:
+    resolution: {integrity: sha512-1+gLErljJFhbOVyaetcwJiJ4+eLe45S2E7P5UiZ9xGfeq3ATQf5DOv9G7MH3gGbKQLkzmNh2DxfZwLdw+j6oTQ==}
     engines: {node: '>=18'}
 
   globby@11.1.0:
@@ -3543,6 +3553,8 @@ snapshots:
       type-fest: 0.20.2
 
   globals@14.0.0: {}
+
+  globals@15.12.0: {}
 
   globby@11.1.0:
     dependencies:
