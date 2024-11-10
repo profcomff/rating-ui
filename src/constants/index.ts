@@ -1,4 +1,4 @@
-export const PHOTO_BASE_PATH = 'https://api.test.profcomff.com/timetable/static/photo/lecturer/';
+export const PHOTO_BASE_PATH = 'https://api.profcomff.com/timetable/static/photo/lecturer/';
 
 export const SUBJECTS = [
 	'Аналитическая геометрия',

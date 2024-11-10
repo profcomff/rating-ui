@@ -1,4 +1,3 @@
-
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
@@ -25,5 +24,8 @@ export default [
 			'prettier/prettier': 'warn',
 		},
 		files: ['**/*.ts', '**/*.vue'],
+	},
+	{
+		ignorePatterns: ['/node_modules'],
 	},
 ];

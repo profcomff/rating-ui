@@ -13,6 +13,7 @@
 		"ecmaVersion": 2020
 	},
 	"rules": {
+		"ignores": ["node_modules/"],
 		"no-duplicate-imports": "error",
 		"vue/html-self-closing": [
 			"error",
