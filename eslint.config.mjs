@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 import globals from 'globals';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
+=======
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import js from '@eslint/js';
+>>>>>>> refs/remotes/origin/rating-ui-batuev
 import { FlatCompat } from '@eslint/eslintrc';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,6 +19,7 @@ const compat = new FlatCompat({
 	allConfig: js.configs.all,
 });
 
+<<<<<<< HEAD
 
 export default tseslint.config(
 	...tseslint.configs.recommended,
@@ -50,3 +57,20 @@ export default tseslint.config(
 		},
 	},
 );
+=======
+export default [
+	...compat.extends(
+		'eslint:recommended',
+		'plugin:vue/vue3-recommended',
+		'@vue/typescript',
+		'plugin:prettier/recommended',
+	),
+	{
+		rules: {
+			'no-duplicate-imports': 'error',
+			'prettier/prettier': 'warn',
+		},
+		files: ['**/*.ts', '**/*.vue'],
+	},
+];
+>>>>>>> refs/remotes/origin/rating-ui-batuev

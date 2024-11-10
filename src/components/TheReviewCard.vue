@@ -66,14 +66,13 @@
 <script setup lang="ts">
 import apiClient from "../api";
 import { ref } from "vue";
-import { Review } from "../models";
 import { useProfileStore } from "../store";
 
 const profileStore = useProfileStore();
 const isUserAdmin = ref(false);
 isUserAdmin.value = profileStore.isAdmin();
 
-const props = defineProps({
+const propsLocal = defineProps({
   photo: { type: String, required: true },
   comment: { type: Object, required: true },
 });
@@ -81,15 +80,15 @@ const props = defineProps({
 const emit = defineEmits(["comment-deleted"]);
 
 const mark_general =
-  (props.comment.raw.mark_clarity +
-    props.comment.raw.mark_kindness +
-    props.comment.raw.mark_freebie) /
+  (propsLocal.comment.raw.mark_clarity +
+    propsLocal.comment.raw.mark_kindness +
+    propsLocal.comment.raw.mark_freebie) /
   3;
 
 async function deleteComment() {
-  console.log(props.comment);
+  console.log(propsLocal.comment);
   await apiClient.DELETE("/rating/comment/{uuid}", {
-    params: { path: { uuid: props.comment.raw.uuid } },
+    params: { path: { uuid: propsLocal.comment.raw.uuid } },
   });
   emit("comment-deleted");
 }

@@ -54,7 +54,10 @@
 <script setup lang="ts">
 import { router } from "../router";
 import { useDisplay } from "vuetify";
+<<<<<<< HEAD
 import { Lecturer } from "../models";
+=======
+>>>>>>> refs/remotes/origin/rating-ui-batuev
 
 const { mobile } = useDisplay();
 
