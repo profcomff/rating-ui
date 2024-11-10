@@ -105,7 +105,7 @@ jobs:
             name: Testing
             url: https://rating.test.profcomff.com/
         env:
-            CONTAINER_NAME: com_profcomff_api_rating_test
+            CONTAINER_NAME: com_profcomff_api_rating_ui_test
         permissions:
             packages: read
         steps:
