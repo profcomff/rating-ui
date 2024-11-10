@@ -98,7 +98,7 @@ jobs:
             name: Preprod
             url: https://rating.preprod.profcomff.com/
         env:
-            CONTAINER_NAME: com_profcomff_api_rating_preprod
+            CONTAINER_NAME: com_profcomff_api_rating_ui_preprod
         permissions:
             packages: read
         steps:
@@ -136,7 +136,7 @@ jobs:
             name: Production
             url: https://rating.profcomff.com/
         env:
-            CONTAINER_NAME: com_profcomff_api_rating
+            CONTAINER_NAME: com_profcomff_api_rating_ui
         permissions:
             packages: read
         steps:
