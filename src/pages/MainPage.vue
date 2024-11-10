@@ -36,6 +36,7 @@ async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<
 	const res = await apiClient.GET('/rating/lecturer', {
 		params: {
 			query: {
+				limit: itemsPerPage,
 				name: nameQuery,
 				offset,
 				info: ['comments', 'mark'],
@@ -48,6 +49,16 @@ async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<
 	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
 	loadPhotos();
 }
+async function loadNextLecturers() {
+	offset += itemsPerPage;
+	loadLecturers(query.value, offset, orderValues, subject);
+}
+
+async function loadPrevLecturers() {
+	offset -= itemsPerPage;
+	loadLecturers(query.value, offset, orderValues, subject);
+}
+
 
 function loadPhotos() {
 	lecturersPhotos.value = lecturers.value?.map(item =>
@@ -101,15 +112,16 @@ async function filterLecturers() {
 				/>
 			</template>
 
-			<template #footer="{ pageCount, nextPage, prevPage }">
+			<template #footer="{ nextPage, prevPage }">
 				<v-pagination
 					v-model="page"
 					active-color="primary"
 					variant="elevated"
-					:length="pageCount"
+					:length="totalPages"
+					:total-visible="2"
 					:show-first-last-page="false"
-					@next="nextPage"
-					@prev="prevPage"
+					@next="loadNextLecturers"
+					@prev="loadPrevLecturers"
 				></v-pagination>
 			</template>
 		</v-data-iterator>

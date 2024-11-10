@@ -54,13 +54,12 @@
 <script setup lang="ts">
 import { router } from "../router";
 import { useDisplay } from "vuetify";
-import { DataIteratorItem } from "/vuetify/src/components/items";
 import { Lecturer } from "../models";
 
 const { mobile } = useDisplay();
 
 const props = defineProps({
-  lecturer: { type: Object as DataIteratorItem<Lecturer>, required: true },
+  lecturer: { type: Object, required: true },
   photo: { type: String, required: true },
 });
 

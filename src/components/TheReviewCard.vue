@@ -68,7 +68,6 @@ import apiClient from "../api";
 import { ref } from "vue";
 import { Review } from "../models";
 import { useProfileStore } from "../store";
-import { DataIteratorItem } from "/vuetify/src/components/items";
 
 const profileStore = useProfileStore();
 const isUserAdmin = ref(false);
@@ -76,7 +75,7 @@ isUserAdmin.value = profileStore.isAdmin();
 
 const props = defineProps({
   photo: { type: String, required: true },
-  comment: { type: Object as DataIteratorItem<Review>, required: true },
+  comment: { type: Object, required: true },
 });
 
 const emit = defineEmits(["comment-deleted"]);
