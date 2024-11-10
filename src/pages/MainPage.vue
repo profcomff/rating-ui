@@ -59,7 +59,6 @@ async function loadPrevLecturers() {
 	loadLecturers(query.value, offset, orderValues, subject);
 }
 
-
 function loadPhotos() {
 	lecturersPhotos.value = lecturers.value?.map(item =>
 		item.avatar_link ? `${PHOTO_BASE_PATH}${item.avatar_link}` : Placeholder,
@@ -112,7 +111,7 @@ async function filterLecturers() {
 				/>
 			</template>
 
-			<template #footer="{ nextPage, prevPage }">
+			<template #footer>
 				<v-pagination
 					v-model="page"
 					active-color="primary"
