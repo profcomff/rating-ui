@@ -126,5 +126,3 @@ async function filterLecturers() {
 		</v-data-iterator>
 	</v-container>
 </template>
-
-<style scoped></style>
