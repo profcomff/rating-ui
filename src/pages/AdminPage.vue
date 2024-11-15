@@ -20,6 +20,8 @@ import { Comment } from '../models';
 import AdminReviewCard from '../components/AdminReviewCard.vue';
 import { router } from '../router';
 
+// комментарий
+
 const comments = ref<Comment | undefined>();
 await loadComments(0);
 
