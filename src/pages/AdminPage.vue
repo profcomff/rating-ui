@@ -21,6 +21,7 @@ import AdminReviewCard from '../components/AdminReviewCard.vue';
 import { router } from '../router';
 
 // комментарий
+// второй комментарий
 
 const comments = ref<Comment | undefined>();
 await loadComments(0);
