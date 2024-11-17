@@ -2,13 +2,12 @@
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { ref } from 'vue';
-// import Markdown from '@/components/AppMarkdownRenderer.vue';
 import apiClient from '@/api';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import AppRatingBar from '@/components/AppRatingBar.vue';
 import TheReviewCard from '@/components/TheReviewCard.vue';
 import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
-import { getPhoto } from '@/utils';
+import { adaptNumeral, getPhoto } from '@/utils';
 
 const { mobile } = useDisplay();
 
@@ -25,7 +24,6 @@ const firstName = ref(lecturer?.first_name);
 const lastName = ref(lecturer?.last_name);
 const middleName = ref(lecturer?.middle_name);
 const avatarLink = ref(lecturer?.avatar_link);
-// const description = ref(null); // ref(lecturer?.description);
 
 async function loadLecturer() {
 	const res = await apiClient.GET(`/rating/lecturer/{id}`, {
@@ -46,7 +44,6 @@ let howFree = lecturer?.mark_freebie ?? 0;
 let howClear = lecturer?.mark_clarity ?? 0;
 
 const lecturerPhoto = getPhoto(avatarLink.value);
-// const lecturerInfo = description.value ?? 'Информации нет';
 </script>
 
 <template>
@@ -71,7 +68,10 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 							<v-icon :icon="'mdi-tree-outline'"></v-icon>
 						</template>
 						<template #title>{{ lecturer?.mark_general?.toFixed(2) ?? 'нет оценки' }}</template>
-						<template #text>{{ lecturer?.comments?.length ?? 'нет' }} отзыва</template>
+						<template #text
+							>{{ lecturer?.comments?.length ?? 'нет' }}
+							{{ adaptNumeral(lecturer?.comments?.length, 'отзыв', 'отзыва', 'отзывов') }}</template
+						>
 					</v-card>
 				</v-col>
 				<v-col cols="xs-2">
@@ -83,10 +83,6 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 				</v-col>
 			</v-row>
 		</div>
-		<!-- 
-		<div class="justify-start">
-			<Markdown :text="lecturerInfo" />
-		</div> -->
 
 		<div v-if="lecturer?.comments">
 			<v-data-iterator class="mr-0 pa-0" :page="page" :items="lecturer?.comments" :items-per-page="itemsPerPage">
