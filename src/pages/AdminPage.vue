@@ -2,7 +2,8 @@
 	<v-container>
 		<v-btn class="mb-4" color="primary" text="На главную" @click="router.push('/')"></v-btn>
 		<p class="text-body-2 ml-4">
-			Перед одобрением отзыва убедитесь, что он соответствует <a href="/">правилам</a>.
+			Перед одобрением отзыва убедитесь, что он соответствует
+			<a href="https://pages.profcomff.com/rating_review_rules">правилам</a>.
 		</p>
 		<v-data-iterator v-if="comments && comments?.comments.length > 0" :items="comments.comments">
 			<template #default="{ items }">
