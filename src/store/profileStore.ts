@@ -9,7 +9,7 @@ export const useProfileStore = defineStore('profile', () => {
 	const groups = ref<number[] | null>(null);
 	const indirectGroups = ref<number[] | null>(null);
 	const userScopes = ref<string[] | null>(null);
-	const sessionScopes = ref<string[] | null>(null);
+	const sessionScopes = ref<string[] | null | undefined>(null);
 
 	const full_name = ref<string | null>(null);
 
@@ -17,22 +17,17 @@ export const useProfileStore = defineStore('profile', () => {
 		const url = new URL(document.location.toString());
 
 		const localToken = LocalStorage.get(LocalStorageItem.Token);
-		const urlToken = url.searchParams.get('token');
-
-		if (urlToken === undefined) {
-			token.value = localToken;
-		} else {
-			token.value = urlToken;
-			LocalStorage.set(LocalStorageItem.Token, urlToken);
-		}
-
 		const localScopes = LocalStorage.getObject<string[]>(LocalStorageItem.TokenScopes);
+		const urlToken = url.searchParams.get('token');
 		const urlScopes = url.searchParams.get('scopes')?.split(',');
 
-		if (urlScopes === undefined) {
+		if (urlToken === undefined && urlScopes === undefined) {
+			token.value = localToken;
 			sessionScopes.value = localScopes;
 		} else {
+			token.value = urlToken;
 			sessionScopes.value = urlScopes;
+			LocalStorage.set(LocalStorageItem.Token, urlToken);
 			LocalStorage.set(LocalStorageItem.TokenScopes, urlScopes);
 		}
 
