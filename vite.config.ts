@@ -4,6 +4,7 @@ import stylelint from 'vite-plugin-stylelint';
 import svgLoader from 'vite-svg-loader';
 import vue from '@vitejs/plugin-vue';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
+import { fileURLToPath } from 'url';
 
 export default defineConfig({
 	plugins: [
@@ -31,5 +32,8 @@ export default defineConfig({
 				}),
 			],
 		},
+	},
+	resolve: {
+		alias: [{ find: '@', replacement: fileURLToPath(new URL('./src', import.meta.url)) }],
 	},
 });
