@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import { useToastStore } from "../store/toastStore";
-import ToastView from "./ToastView.vue";
-
-const toastStore = useToastStore();
-</script>
-
 <template>
   <div class="toast-list">
     <ToastView
@@ -15,6 +8,13 @@ const toastStore = useToastStore();
     />
   </div>
 </template>
+
+<script setup lang="ts">
+import { useToastStore } from "@/store/toastStore";
+import ToastView from "./ToastView.vue";
+
+const toastStore = useToastStore();
+</script>
 
 <style scoped>
 .toast-list {

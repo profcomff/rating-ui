@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { SUBJECTS } from "../constants";
+import { SUBJECTS } from "@/constants";
 defineProps({
   isAdmin: { type: Boolean, required: true },
 });

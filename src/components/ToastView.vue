@@ -1,5 +1,23 @@
+<template>
+  <div class="toast">
+    <v-icon :icon="icon" />
+    <div class="description">
+      <h6 class="title">{{ props.toast.title }}</h6>
+      <p>{{ props.toast.description }}</p>
+    </div>
+    <v-btn
+      type="button"
+      class="close"
+      icon="close"
+      size="xs"
+      variant="plain"
+      @click="$emit('close')"
+    />
+  </div>
+</template>
+
 <script setup lang="ts">
-import { Toast, ToastType } from "../models";
+import { Toast, ToastType } from "@/models";
 import { computed } from "vue";
 
 const props = defineProps<{
@@ -21,24 +39,6 @@ const icon = computed(() => {
   }
 });
 </script>
-
-<template>
-  <div class="toast">
-    <v-icon :icon="icon" />
-    <div class="description">
-      <h6 class="title">{{ props.toast.title }}</h6>
-      <p>{{ props.toast.description }}</p>
-    </div>
-    <v-btn
-      type="button"
-      class="close"
-      icon="close"
-      size="xs"
-      variant="plain"
-      @click="$emit('close')"
-    />
-  </div>
-</template>
 
 <style scoped>
 .toast {

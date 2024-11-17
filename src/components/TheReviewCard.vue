@@ -64,9 +64,9 @@
 </template>
 
 <script setup lang="ts">
-import apiClient from "../api";
+import apiClient from "@/api";
 import { ref } from "vue";
-import { useProfileStore } from "../store";
+import { useProfileStore } from "@/store";
 
 const profileStore = useProfileStore();
 const isUserAdmin = ref(false);

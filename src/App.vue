@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useProfileStore } from './store';
+import { useProfileStore } from '@/store';
 import { onMounted } from 'vue';
 import { setupAuth } from '@profcomff/api-uilib';
-import ToastList from './components/ToastList.vue';
+import ToastList from '@/components/ToastList.vue';
 
 const profileStore = useProfileStore();
 

@@ -2,13 +2,13 @@
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { ref } from 'vue';
-import { PHOTO_BASE_PATH } from '../constants';
-// import Markdown from '../components/AppMarkdownRenderer.vue';
-import apiClient from '../api';
-import Placeholder from '../assets/profile_image_placeholder.webp';
-import AppRatingBar from '../components/AppRatingBar.vue';
-import TheReviewCard from '../components/TheReviewCard.vue';
-import LecturerHeaderCard from '../components/LecturerHeaderCard.vue';
+// import Markdown from '@/components/AppMarkdownRenderer.vue';
+import apiClient from '@/api';
+import Placeholder from '@/assets/profile_image_placeholder.webp';
+import AppRatingBar from '@/components/AppRatingBar.vue';
+import TheReviewCard from '@/components/TheReviewCard.vue';
+import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
+import { getPhoto } from '@/utils';
 
 const { mobile } = useDisplay();
 
@@ -45,7 +45,7 @@ let howKind = lecturer?.mark_kindness ?? 0;
 let howFree = lecturer?.mark_freebie ?? 0;
 let howClear = lecturer?.mark_clarity ?? 0;
 
-const lecturerPhoto = avatarLink.value ? `${PHOTO_BASE_PATH}${avatarLink.value}` : Placeholder;
+const lecturerPhoto = getPhoto(avatarLink.value);
 // const lecturerInfo = description.value ?? 'Информации нет';
 </script>
 

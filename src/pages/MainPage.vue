@@ -1,14 +1,13 @@
 <script async setup lang="ts">
-import { router } from '../router';
+import { router } from '@/router';
 import { ref, Ref } from 'vue';
-import apiClient from '../api';
-import { useProfileStore } from '../store';
-import Placeholder from '../assets/profile_image_placeholder.webp';
-import TheSearchBar from '../components/TheSearchBar.vue';
-import TheLecturerSearchCard from '../components/TheLecturerSearchCard.vue';
-import { Lecturer, Order, Subject } from '../models';
-import { PHOTO_BASE_PATH } from '../constants';
-// import { useGoTo } from 'vuetify';
+import apiClient from '@/api';
+import { useProfileStore } from '@/store';
+import Placeholder from '@/assets/profile_image_placeholder.webp';
+import TheSearchBar from '@/components/TheSearchBar.vue';
+import TheLecturerSearchCard from '@/components/TheLecturerSearchCard.vue';
+import { Lecturer, Order, Subject } from '@/models';
+import { getPhoto } from '@/utils';
 
 const profileStore = useProfileStore();
 
@@ -49,6 +48,7 @@ async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<
 	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
 	loadPhotos();
 }
+
 async function loadNextLecturers() {
 	offset += itemsPerPage;
 	loadLecturers(query.value, offset, orderValues, subject);
@@ -60,9 +60,7 @@ async function loadPrevLecturers() {
 }
 
 function loadPhotos() {
-	lecturersPhotos.value = lecturers.value?.map(item =>
-		item.avatar_link ? `${PHOTO_BASE_PATH}${item.avatar_link}` : Placeholder,
-	) ?? [Placeholder];
+	lecturersPhotos.value = lecturers.value?.map(item => getPhoto(item.avatar_link)) ?? [Placeholder];
 }
 
 async function findLecturer() {

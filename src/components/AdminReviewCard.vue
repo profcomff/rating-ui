@@ -52,10 +52,10 @@
 </template>
 
 <script setup lang="ts">
-import apiClient from "../api";
-import { ToastType } from "../models";
+import apiClient from "@/api";
+import { ToastType } from "@/models";
 // import { DataIteratorItem } from "/vuetify/src/components/items";
-import { useToastStore } from "../store/toastStore";
+import { useToastStore } from "@/store/toastStore";
 
 const props = defineProps({
   photo: { type: String, required: true },

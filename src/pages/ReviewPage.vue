@@ -1,66 +1,13 @@
-<template>
-	<v-container>
-		<v-btn
-			class="mb-4"
-			color="primary"
-			text="К лектору"
-			@click="
-				router.push({
-					path: 'lecturer',
-					query: { lecturer_id: lecturerId },
-				})
-			"
-		></v-btn>
-		<LecturerHeaderCard
-			class="mb-2"
-			:photo="photo"
-			:first-name="firstName ?? 'Ошибка'"
-			:last-name="lastName ?? 'Ошибка'"
-			:middle-name="middleName ?? 'Ошибка'"
-		/>
-
-		<v-combobox
-			v-model="subject"
-			:error-messages="warningMessage"
-			hide-details="auto"
-			label="Выберите предмет"
-			required
-			:items="SUBJECTS"
-		/>
-
-		<the-review-buttons v-model:review="kindReview" property="Доброта"></the-review-buttons>
-		<the-review-buttons v-model:review="freebieReview" property="Халявность"></the-review-buttons>
-		<the-review-buttons v-model:review="clearReview" property="Понятность"></the-review-buttons>
-
-		<div class="mx-2 mt-2">
-			<v-textarea
-				v-model="reviewText"
-				density="compact"
-				label="Ваше мнение о преподавателе (необязательно)"
-				hide-details
-			></v-textarea>
-			<div class="d-flex align-center mt-4">
-				<v-icon :icon="'mdi-star'"></v-icon>
-				<div class="ml-2 text-body-1">
-					Общая оценка: {{ Number(generalReview) > 0 ? '+' + generalReview : generalReview }}
-				</div>
-			</div>
-
-			<v-btn color="secondary" class="mt-3" rounded="pill" text="отправить" @click="sendReview"></v-btn>
-		</div>
-	</v-container>
-</template>
-
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import apiClient from '../api';
-import Placeholder from '../assets/profile_image_placeholder.webp';
-import TheReviewButtons from '../components/TheReviewButtons.vue';
-import LecturerHeaderCard from '../components/LecturerHeaderCard.vue';
-import { useToastStore } from '../store/toastStore';
-import { ToastType } from '../models';
-import { router } from '../router';
-import { PHOTO_BASE_PATH, SUBJECTS } from '../constants';
+import apiClient from '@/api';
+import Placeholder from '@/assets/profile_image_placeholder.webp';
+import TheReviewButtons from '@/components/TheReviewButtons.vue';
+import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
+import { useToastStore } from '@/store/toastStore';
+import { ToastType } from '@/models';
+import { router } from '@/router';
+import { PHOTO_BASE_PATH, SUBJECTS } from '@/constants';
 
 const toastStore = useToastStore();
 
@@ -149,6 +96,59 @@ async function sendReview() {
 	}
 }
 </script>
+
+<template>
+	<v-container>
+		<v-btn
+			class="mb-4"
+			color="primary"
+			text="К лектору"
+			@click="
+				router.push({
+					path: 'lecturer',
+					query: { lecturer_id: lecturerId },
+				})
+			"
+		></v-btn>
+		<LecturerHeaderCard
+			class="mb-2"
+			:photo="photo"
+			:first-name="firstName ?? 'Ошибка'"
+			:last-name="lastName ?? 'Ошибка'"
+			:middle-name="middleName ?? 'Ошибка'"
+		/>
+
+		<v-combobox
+			v-model="subject"
+			:error-messages="warningMessage"
+			hide-details="auto"
+			label="Выберите предмет"
+			required
+			:items="SUBJECTS"
+		/>
+
+		<the-review-buttons v-model:review="kindReview" property="Доброта"></the-review-buttons>
+		<the-review-buttons v-model:review="freebieReview" property="Халявность"></the-review-buttons>
+		<the-review-buttons v-model:review="clearReview" property="Понятность"></the-review-buttons>
+
+		<div class="mx-2 mt-2">
+			<v-textarea
+				v-model="reviewText"
+				density="compact"
+				label="Ваше мнение о преподавателе (необязательно)"
+				hide-details
+			></v-textarea>
+			<div class="d-flex align-center mt-4">
+				<v-icon :icon="'mdi-star'"></v-icon>
+				<div class="ml-2 text-body-1">
+					Общая оценка: {{ Number(generalReview) > 0 ? '+' + generalReview : generalReview }}
+				</div>
+			</div>
+
+			<v-btn color="secondary" class="mt-3" rounded="pill" text="отправить" @click="sendReview"></v-btn>
+		</div>
+	</v-container>
+</template>
 
 <style scoped>
 .contact a {
