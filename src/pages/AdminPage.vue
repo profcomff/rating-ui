@@ -1,6 +1,9 @@
 <template>
 	<v-container>
 		<v-btn class="mb-4" color="primary" text="На главную" @click="router.push('/')"></v-btn>
+		<p class="text-body-2 ml-4">
+			Перед одобрением отзыва убедитесь, что он соответствует <a href="/">правилам</a>.
+		</p>
 		<v-data-iterator v-if="comments && comments?.comments.length > 0" :items="comments.comments">
 			<template #default="{ items }">
 				<template v-for="(item, i) in items" :key="i">
@@ -38,3 +41,15 @@ async function loadComments(offset: number) {
 	comments.value = res.data;
 }
 </script>
+
+<style scoped>
+a {
+	color: black;
+	opacity: 0.87;
+
+	&visited {
+		color: black;
+		opacity: 0.87;
+	}
+}
+</style>
