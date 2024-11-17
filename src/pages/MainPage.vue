@@ -11,8 +11,8 @@ import { getPhoto } from '@/utils';
 
 const profileStore = useProfileStore();
 
-const orderValues: Ref<Order> = ref(['']);
-let order: Ref<string> = ref('');
+const orderValues: Ref<Order> = ref(['general']);
+let order: Ref<string> = ref('по общей оценке');
 let offset = 0;
 const query = ref('');
 const subject: Ref<Subject> = ref('');
