@@ -21,7 +21,7 @@ export const useProfileStore = defineStore('profile', () => {
 		const urlToken = url.searchParams.get('token');
 		const urlScopes = url.searchParams.get('scopes')?.split(',');
 
-		if (urlToken === undefined && urlScopes === undefined) {
+		if (urlToken === null && urlScopes === undefined) {
 			token.value = localToken;
 			sessionScopes.value = localScopes;
 		} else {
@@ -33,7 +33,7 @@ export const useProfileStore = defineStore('profile', () => {
 
 		const currId = url.searchParams.get('user_id') ?? LocalStorage.get(LocalStorageItem.UserId) ?? undefined;
 		if (currId) {
-			id.value = +currId;
+			id.value = Number(currId);
 		}
 	};
 
