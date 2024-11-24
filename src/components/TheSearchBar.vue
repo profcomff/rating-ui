@@ -20,7 +20,7 @@
         <template #activator="{ props }">
           <v-btn
             v-bind="props"
-            :icon="'mdi-table-of-contents'"
+            :icon="'mdi-filter-variant'"
             color="grey"
             variant="flat"
             focused
