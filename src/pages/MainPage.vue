@@ -1,19 +1,18 @@
 <script async setup lang="ts">
-import { router } from '../router';
+import { router } from '@/router';
 import { ref, Ref } from 'vue';
-import apiClient from '../api';
-import { useProfileStore } from '../store';
-import Placeholder from '../assets/profile_image_placeholder.webp';
-import TheSearchBar from '../components/TheSearchBar.vue';
-import TheLecturerSearchCard from '../components/TheLecturerSearchCard.vue';
-import { Lecturer, Order, Subject } from '../models';
-import { PHOTO_BASE_PATH } from '../constants';
-// import { useGoTo } from 'vuetify';
+import apiClient from '@/api';
+import { useProfileStore } from '@/store';
+import Placeholder from '@/assets/profile_image_placeholder.webp';
+import TheSearchBar from '@/components/TheSearchBar.vue';
+import TheLecturerSearchCard from '@/components/TheLecturerSearchCard.vue';
+import { Lecturer, Order, Subject } from '@/models';
+import { getPhoto } from '@/utils';
 
 const profileStore = useProfileStore();
 
-const orderValues: Ref<Order> = ref(['']);
-let order: Ref<string> = ref('');
+const orderValues: Ref<Order> = ref(['mark_general']);
+let order: Ref<string> = ref('по общей оценке');
 let offset = 0;
 const query = ref('');
 const subject: Ref<Subject> = ref('');
@@ -49,20 +48,19 @@ async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<
 	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
 	loadPhotos();
 }
+
 async function loadNextLecturers() {
 	offset += itemsPerPage;
-	loadLecturers(query.value, offset, orderValues, subject);
+	await loadLecturers(query.value, offset, orderValues, subject);
 }
 
 async function loadPrevLecturers() {
 	offset -= itemsPerPage;
-	loadLecturers(query.value, offset, orderValues, subject);
+	await loadLecturers(query.value, offset, orderValues, subject);
 }
 
 function loadPhotos() {
-	lecturersPhotos.value = lecturers.value?.map(item =>
-		item.avatar_link ? `${PHOTO_BASE_PATH}${item.avatar_link}` : Placeholder,
-	) ?? [Placeholder];
+	lecturersPhotos.value = lecturers.value?.map(item => getPhoto(item.avatar_link)) ?? [Placeholder];
 }
 
 async function findLecturer() {
@@ -72,7 +70,23 @@ async function findLecturer() {
 
 async function orderLecturers() {
 	page.value = 1;
-	orderValues.value[0] = order.value == 'по общей оценке' ? 'general' : '';
+	switch (order.value) {
+		case 'по общей оценке':
+			orderValues.value[0] = 'mark_general';
+			break;
+		case 'по доброте':
+			orderValues.value[0] = 'mark_kindness';
+			break;
+		case 'по халявности':
+			orderValues.value[0] = 'mark_freebie';
+			break;
+		case 'по понятности':
+			orderValues.value[0] = 'mark_clarity';
+			break;
+		case 'по фамилии':
+			orderValues.value[0] = 'last_name';
+			break;
+	}
 	await loadLecturers(query.value, 0, orderValues, subject);
 }
 
@@ -112,16 +126,18 @@ async function filterLecturers() {
 			</template>
 
 			<template #footer>
-				<v-pagination
-					v-model="page"
-					active-color="primary"
-					variant="elevated"
-					:length="totalPages"
-					:total-visible="2"
-					:show-first-last-page="false"
-					@next="loadNextLecturers"
-					@prev="loadPrevLecturers"
-				></v-pagination>
+				<div v-if="lecturers">
+					<v-pagination
+						v-model="page"
+						active-color="primary"
+						variant="elevated"
+						:length="totalPages"
+						:total-visible="2"
+						:show-first-last-page="false"
+						@next="loadNextLecturers"
+						@prev="loadPrevLecturers"
+					/>
+				</div>
 			</template>
 		</v-data-iterator>
 	</v-container>

@@ -31,9 +31,9 @@
 </template>
 
 <script setup lang="ts">
-import apiClient from "../api";
-import { ToastType } from "../models";
-import { useToastStore } from "../store/toastStore";
+import apiClient from "@/api";
+import { ToastType } from "@/models";
+import { useToastStore } from "@/store/toastStore";
 
 defineProps({
   comment: { type: Object, required: true },

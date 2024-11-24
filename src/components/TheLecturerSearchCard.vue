@@ -28,10 +28,10 @@
             size="small"
           ></v-chip>
         </v-chip-group>
-        <div>отзывы: {{ lecturer.comments?.length ?? "нет" }}</div>
+        <div>отзывы: {{ lecturer.comments?.length ?? "—" }}</div>
         <div>
           оценка: {{ lecturer.mark_general > 0 ? "+" : ""
-          }}{{ lecturer.mark_general?.toFixed(2) ?? "нет" }}
+          }}{{ lecturer.mark_general?.toFixed(2) ?? "—" }}
         </div>
       </div>
     </template>
@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { router } from "../router";
+import { router } from "@/router";
 import { useDisplay } from "vuetify";
 
 const { mobile } = useDisplay();

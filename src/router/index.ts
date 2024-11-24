@@ -1,22 +1,22 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
-import { useProfileStore } from '../store';
+import { useProfileStore } from '@/store';
 
 const routes: RouteRecordRaw[] = [
 	{
 		path: '/',
-		component: () => import('../pages/MainPage.vue'),
+		component: () => import('@/pages/MainPage.vue'),
 	},
 	{
 		path: '/lecturer',
-		component: () => import('../pages/LecturerPage.vue'),
+		component: () => import('@/pages/LecturerPage.vue'),
 	},
 	{
 		path: '/review',
-		component: () => import('../pages/ReviewPage.vue'),
+		component: () => import('@/pages/ReviewPage.vue'),
 	},
 	{
 		path: '/admin',
-		component: () => import('../pages/AdminPage.vue'),
+		component: () => import('@/pages/AdminPage.vue'),
 		beforeEnter: adminValidation,
 	},
 ];
@@ -34,7 +34,3 @@ async function adminValidation() {
 		return { path: '/' };
 	}
 }
-
-router.beforeEach(to => {
-	console.log(to);
-});
