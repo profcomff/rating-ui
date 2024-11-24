@@ -9,7 +9,7 @@ export const useProfileStore = defineStore('profile', () => {
 	const groups = ref<number[] | null>(null);
 	const indirectGroups = ref<number[] | null>(null);
 	const userScopes = ref<string[] | null>(null);
-	const sessionScopes = ref<string[] | null | undefined>(null);
+	const sessionScopes = ref<string[] | null>(null);
 
 	const full_name = ref<string | null>(null);
 
@@ -26,7 +26,7 @@ export const useProfileStore = defineStore('profile', () => {
 			sessionScopes.value = localScopes;
 		} else {
 			token.value = urlToken;
-			sessionScopes.value = urlScopes;
+			sessionScopes.value = urlScopes || [];
 			LocalStorage.set(LocalStorageItem.Token, urlToken);
 			LocalStorage.set(LocalStorageItem.TokenScopes, urlScopes);
 		}
