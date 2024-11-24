@@ -15,6 +15,6 @@ export interface Toast {
 	description?: string;
 }
 
-export type Order = ('mark_general' | 'mark_kindness' | 'mark_freebie' | 'mark_clarity' | 'last_name')[];
+export type Order = ('mark_general' | 'mark_kindness' | 'mark_freebie' | 'mark_clarity' | 'last_name' | undefined)[];
 export type Subject = string;
 export type Lecturer = components['schemas']['LecturerGet'];
