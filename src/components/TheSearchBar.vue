@@ -41,7 +41,7 @@
               v-model="order"
               class="text-body-1"
               label="Сортировка"
-              :items="['', 'по общей оценке']"
+              :items="orderTypes"
               density="compact"
               @click.stop
             />
@@ -70,6 +70,13 @@ defineProps({
 const searchQuery = defineModel("searchQuery", { type: String });
 const subject = defineModel("subject", { type: String });
 const order = defineModel("order", { type: String });
+const orderTypes = [
+  "по общей оценке",
+  "по доброте",
+  "по халявности",
+  "по понятности",
+  "по фамилии",
+];
 
 const emits = defineEmits({
   "find-lecturer": () => {

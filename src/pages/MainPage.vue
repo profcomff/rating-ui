@@ -11,7 +11,7 @@ import { getPhoto } from '@/utils';
 
 const profileStore = useProfileStore();
 
-const orderValues: Ref<Order> = ref(['general']);
+const orderValues: Ref<Order> = ref(['mark_general']);
 let order: Ref<string> = ref('по общей оценке');
 let offset = 0;
 const query = ref('');
@@ -51,12 +51,12 @@ async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<
 
 async function loadNextLecturers() {
 	offset += itemsPerPage;
-	loadLecturers(query.value, offset, orderValues, subject);
+	await loadLecturers(query.value, offset, orderValues, subject);
 }
 
 async function loadPrevLecturers() {
 	offset -= itemsPerPage;
-	loadLecturers(query.value, offset, orderValues, subject);
+	await loadLecturers(query.value, offset, orderValues, subject);
 }
 
 function loadPhotos() {
@@ -70,7 +70,23 @@ async function findLecturer() {
 
 async function orderLecturers() {
 	page.value = 1;
-	orderValues.value[0] = order.value == 'по общей оценке' ? 'general' : '';
+	switch (order.value) {
+		case 'по общей оценке':
+			orderValues.value[0] = 'mark_general';
+			break;
+		case 'по доброте':
+			orderValues.value[0] = 'mark_kindness';
+			break;
+		case 'по халявности':
+			orderValues.value[0] = 'mark_freebie';
+			break;
+		case 'по понятности':
+			orderValues.value[0] = 'mark_clarity';
+			break;
+		case 'по фамилии':
+			orderValues.value[0] = 'last_name';
+			break;
+	}
 	await loadLecturers(query.value, 0, orderValues, subject);
 }
 
@@ -110,16 +126,18 @@ async function filterLecturers() {
 			</template>
 
 			<template #footer>
-				<v-pagination
-					v-model="page"
-					active-color="primary"
-					variant="elevated"
-					:length="totalPages"
-					:total-visible="2"
-					:show-first-last-page="false"
-					@next="loadNextLecturers"
-					@prev="loadPrevLecturers"
-				></v-pagination>
+				<div v-if="lecturers">
+					<v-pagination
+						v-model="page"
+						active-color="primary"
+						variant="elevated"
+						:length="totalPages"
+						:total-visible="2"
+						:show-first-last-page="false"
+						@next="loadNextLecturers"
+						@prev="loadPrevLecturers"
+					/>
+				</div>
 			</template>
 		</v-data-iterator>
 	</v-container>
