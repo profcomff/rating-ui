@@ -28,7 +28,7 @@ export const useProfileStore = defineStore('profile', () => {
 			token.value = urlToken === null ? undefined : urlToken;
 			sessionScopes.value = urlScopes || [];
 			LocalStorage.set(LocalStorageItem.Token, urlToken);
-			LocalStorage.set(LocalStorageItem.TokenScopes, urlScopes);
+			LocalStorage.set(LocalStorageItem.TokenScopes, urlScopes ?? []);
 		}
 
 		const currId = url.searchParams.get('user_id') ?? LocalStorage.get(LocalStorageItem.UserId) ?? undefined;
@@ -38,6 +38,7 @@ export const useProfileStore = defineStore('profile', () => {
 	};
 
 	const isAdmin = () => {
+		console.log(sessionScopes);
 		return (
 			(sessionScopes.value?.includes('rating.comment.review') &&
 				sessionScopes.value?.includes('rating.comment.review')) ??
