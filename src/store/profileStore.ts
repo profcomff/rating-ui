@@ -5,7 +5,7 @@ import { LocalStorage, LocalStorageItem } from '../models/LocalStorage';
 export const useProfileStore = defineStore('profile', () => {
 	const id = ref<number | null>(null);
 	const email = ref<string | null>(null);
-	const token = ref<string | null>();
+	const token = ref<string | undefined>(undefined);
 	const groups = ref<number[] | null>(null);
 	const indirectGroups = ref<number[] | null>(null);
 	const userScopes = ref<string[] | null>(null);
@@ -22,10 +22,10 @@ export const useProfileStore = defineStore('profile', () => {
 		const urlScopes = url.searchParams.get('scopes')?.split(',');
 
 		if (urlToken === null && urlScopes === undefined) {
-			token.value = localToken;
+			token.value = localToken === null ? undefined : localToken;
 			sessionScopes.value = localScopes;
 		} else {
-			token.value = urlToken;
+			token.value = urlToken === null ? undefined : urlToken;
 			sessionScopes.value = urlScopes || [];
 			LocalStorage.set(LocalStorageItem.Token, urlToken);
 			LocalStorage.set(LocalStorageItem.TokenScopes, urlScopes);
