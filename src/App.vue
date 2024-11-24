@@ -9,7 +9,6 @@ const profileStore = useProfileStore();
 onMounted(() => {
 	profileStore.fromUrl();
 	console.log(document.location.toString());
-	console.log(profileStore.token);
 	setupAuth(profileStore.token);
 });
 </script>
