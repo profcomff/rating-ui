@@ -11,7 +11,7 @@ import { getPhoto } from '@/utils';
 
 const profileStore = useProfileStore();
 
-const orderValues: Ref<Order> = ref(['mark_general']);
+const orderValues: Ref<Order> = ref('mark_general');
 let order: Ref<string> = ref('по общей оценке');
 let offset = 0;
 const query = ref('');
@@ -72,19 +72,19 @@ async function orderLecturers() {
 	page.value = 1;
 	switch (order.value) {
 		case 'по общей оценке':
-			orderValues.value[0] = 'mark_general';
+			orderValues.value = 'mark_general';
 			break;
 		case 'по доброте':
-			orderValues.value[0] = 'mark_kindness';
+			orderValues.value = 'mark_kindness';
 			break;
 		case 'по халявности':
-			orderValues.value[0] = 'mark_freebie';
+			orderValues.value = 'mark_freebie';
 			break;
 		case 'по понятности':
-			orderValues.value[0] = 'mark_clarity';
+			orderValues.value = 'mark_clarity';
 			break;
 		case 'по фамилии':
-			orderValues.value[0] = 'last_name';
+			orderValues.value = 'last_name';
 			break;
 	}
 	await loadLecturers(query.value, 0, orderValues, subject);
