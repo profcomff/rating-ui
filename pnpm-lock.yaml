@@ -37,8 +37,8 @@ importers:
         specifier: ^7.4.47
         version: 7.4.47
       '@profcomff/api-uilib':
-        specifier: ^2024.10.22
-        version: 2024.10.22
+        specifier: ^2024.11.24
+        version: 2024.11.24
       '@types/eslint__js':
         specifier: ^8.42.3
         version: 8.42.3
@@ -592,8 +592,8 @@ packages:
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@profcomff/api-uilib@2024.10.22':
-    resolution: {integrity: sha512-4uoXLxWnXmXiLxrxOohbQFEM9L8+VaQfQjuL+m/ibdupvEyu72J0KuXGX7EbRfnCywDXY0m93/BxGK9Kal7Eaw==}
+  '@profcomff/api-uilib@2024.11.24':
+    resolution: {integrity: sha512-Ox8bB5MyJYSmUUIuY6qJVQyDr9/bzwBdQ0EhlI/t/qnr7vvZBPqlPvLwDrqsElD3h4ZnwrH4JNCLhctLWjXiFQ==}
 
   '@redocly/ajv@8.11.2':
     resolution: {integrity: sha512-io1JpnwtIcvojV7QKDUSIuMN/ikdOUd1ReEnUnMKGfDVridQZ31J0MmIuqwuRjWDZfmvr+Q0MqCcfHM2gTivOg==}
@@ -2700,7 +2700,7 @@ snapshots:
 
   '@pkgr/core@0.1.1': {}
 
-  '@profcomff/api-uilib@2024.10.22':
+  '@profcomff/api-uilib@2024.11.24':
     dependencies:
       openapi-fetch: 0.10.6
 
