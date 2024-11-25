@@ -8,6 +8,19 @@
     </template>
     <template #subtitle>
       <div class="text-body-1">{{ firstName }} {{ middleName }}</div>
+      <!--<div class="text-body-2">{{ subjectsName }}</div> -->
+      <div class="text-body-2">
+        <v-chip-group v-if="subjectsName">
+          <v-chip
+            v-for="(subject, index) in subjectsName"
+            :key="index"
+            outlined
+            size="small"
+          >
+            {{ subject }}
+          </v-chip>
+        </v-chip-group>
+      </div>
     </template>
   </v-card>
 </template>
@@ -22,5 +35,6 @@ defineProps({
   lastName: { type: String, required: true },
   firstName: { type: String, required: true },
   middleName: { type: String, required: true },
+  subjectsName: { type: String, required: true },
 });
 </script>

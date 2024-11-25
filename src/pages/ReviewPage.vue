@@ -39,6 +39,7 @@ const lecturer = await loadLecturer();
 const firstName = ref(lecturer?.first_name);
 const lastName = ref(lecturer?.last_name);
 const middleName = ref(lecturer?.middle_name);
+const Subjects = ref(lecturer?.subjects);
 const photo = lecturer?.avatar_link ? `${PHOTO_BASE_PATH}${lecturer?.avatar_link}` : Placeholder;
 const subject = ref('');
 const warningMessage = ref('');
@@ -118,8 +119,8 @@ async function sendReview() {
 			:first-name="firstName ?? 'Ошибка'"
 			:last-name="lastName ?? 'Ошибка'"
 			:middle-name="middleName ?? 'Ошибка'"
+			:subjects-name="Subjects ?? 'Ошибка'"
 		/>
-
 		<v-combobox
 			v-model="subject"
 			:error-messages="warningMessage"
