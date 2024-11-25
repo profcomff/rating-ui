@@ -119,7 +119,7 @@ async function sendReview() {
 			:first-name="firstName ?? 'Ошибка'"
 			:last-name="lastName ?? 'Ошибка'"
 			:middle-name="middleName ?? 'Ошибка'"
-			:subjects-name="Subjects ??"
+			:subjects-name="Subjects"
 		/>
 		<v-combobox
 			v-model="subject"
