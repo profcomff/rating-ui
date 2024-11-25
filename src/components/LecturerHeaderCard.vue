@@ -8,7 +8,7 @@
     </template>
     <template #subtitle>
       <div class="text-body-1">{{ firstName }} {{ middleName }}</div>
-      <!--<div class="text-body-2">{{ subjectsName }}</div> -->
+      <!--<div class="text-body-2">{{ subjectsName }}</div> выводит просто [ "Военная подготовка", "Линейная алгебра", "Английский язык" ]-->
       <div class="text-body-2">
         <v-chip-group v-if="subjectsName">
           <v-chip
