@@ -22,16 +22,22 @@
       <div class="text-body-2">
         <v-chip-group>
           <v-chip
-            v-for="subject in lecturer.subjects"
+            v-for="(subject, index) in lecturer.subjects.slice(0, 2)"
             :key="subject"
             :text="subject"
             size="small"
           ></v-chip>
+          <v-chip
+            v-if="lecturer.subjects.length > 2"
+            :key="'more'"
+            size="small"
+          >
+            еще {{ lecturer.subjects.length - 2 }}
+          </v-chip>
         </v-chip-group>
         <div>отзывы: {{ lecturer.comments?.length ?? "—" }}</div>
         <div>
-          оценка: {{ lecturer.mark_general > 0 ? "+" : ""
-          }}{{ lecturer.mark_general?.toFixed(2) ?? "—" }}
+          оценка: {{ lecturer.mark_general > 0 ? "+" : "" }}{{ lecturer.mark_general?.toFixed(2) ?? "—" }}
         </div>
       </div>
     </template>
