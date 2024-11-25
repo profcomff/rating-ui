@@ -55,7 +55,7 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 			:first-name="firstName ?? 'Ошибка'"
 			:last-name="lastName ?? 'Ошибка'"
 			:middle-name="middleName ?? 'Ошибка'"
-			:subjects-name="Subjects ?? 'Ошибка'"
+			:subjects-name="Subjects"
 		/>
 		<div class="d-table w-100 my-4">
 			<AppRatingBar :value="howKind" label="доброта"></AppRatingBar>
