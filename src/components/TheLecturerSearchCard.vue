@@ -22,7 +22,7 @@
       <div class="text-body-2">
         <v-chip-group>
           <v-chip
-            v-for="(subject, index) in lecturer.subjects.slice(0, 2)"
+            v-for="subject in lecturer.subjects.slice(0, 2)"
             :key="subject"
             :text="subject"
             size="small"
@@ -37,7 +37,8 @@
         </v-chip-group>
         <div>отзывы: {{ lecturer.comments?.length ?? "—" }}</div>
         <div>
-          оценка: {{ lecturer.mark_general > 0 ? "+" : "" }}{{ lecturer.mark_general?.toFixed(2) ?? "—" }}
+          оценка: {{ lecturer.mark_general > 0 ? "+" : ""
+          }}{{ lecturer.mark_general?.toFixed(2) ?? "—" }}
         </div>
       </div>
     </template>
