@@ -24,7 +24,7 @@ const firstName = ref(lecturer?.first_name);
 const lastName = ref(lecturer?.last_name);
 const middleName = ref(lecturer?.middle_name);
 const avatarLink = ref(lecturer?.avatar_link);
-const Subjects = ref(lecturer?.subjects);
+const lecturerSubjects = ref(lecturer?.subjects);
 
 async function loadLecturer() {
 	const res = await apiClient.GET(`/rating/lecturer/{id}`, {
@@ -55,7 +55,7 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 			:first-name="firstName ?? 'Ошибка'"
 			:last-name="lastName ?? 'Ошибка'"
 			:middle-name="middleName ?? 'Ошибка'"
-			:subjects-name="Subjects"
+			:subjects="lecturerSubjects"
 		/>
 		<div class="d-table w-100 my-4">
 			<AppRatingBar :value="howKind" label="доброта"></AppRatingBar>
