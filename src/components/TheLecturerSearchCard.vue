@@ -35,7 +35,7 @@
             еще {{ lecturer.subjects.length - 2 }}
           </v-chip>
         </v-chip-group>
-        <div v-else-if="lecturer.subjects === null"> </div>
+        <div v-else-if="lecturer.subjects === null"></div>
         <div v-else>Нет предметов</div>
         <div>отзывы: {{ lecturer.comments?.length ?? "—" }}</div>
         <div>
@@ -70,7 +70,6 @@ const props = defineProps({
   lecturer: { type: Object, required: true },
   photo: { type: String, required: true },
 });
-
 
 function toReviewPage() {
   router.push({ path: "review", query: { lecturer_id: props.lecturer.id } });
