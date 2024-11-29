@@ -39,19 +39,19 @@ const lecturer = await loadLecturer();
 const firstName = ref(lecturer?.first_name);
 const lastName = ref(lecturer?.last_name);
 const middleName = ref(lecturer?.middle_name);
-const Subjects = ref(lecturer?.subjects);
+const lecturerSubjects = ref(lecturer?.subjects);
 const photo = lecturer?.avatar_link ? `${PHOTO_BASE_PATH}${lecturer?.avatar_link}` : Placeholder;
-const subject = ref('');
+const subjectQuery = ref('');
 const warningMessage = ref('');
 const isAnonymous = ref(false);
 
 async function sendReview() {
 	warningMessage.value = '';
-	if (lecturer && lecturerId && subject.value !== '' && SUBJECTS.includes(subject.value)) {
+	if (lecturer && lecturerId && subjectQuery.value !== '' && SUBJECTS.includes(subjectQuery.value)) {
 		const { response } = await apiClient.POST('/rating/comment', {
 			params: { query: { lecturer_id: Number(lecturerId) } },
 			body: {
-				subject: subject.value,
+				subject: subjectQuery.value,
 				text: reviewText.value,
 				mark_kindness: kindReview.value,
 				mark_freebie: freebieReview.value,
@@ -85,9 +85,9 @@ async function sendReview() {
 			}
 		}
 	} else {
-		if (subject.value == '' || subject.value == null) {
+		if (subjectQuery.value == '' || subjectQuery.value == null) {
 			warningMessage.value = 'Выберите предмет';
-		} else if (!SUBJECTS.includes(subject.value)) {
+		} else if (!SUBJECTS.includes(subjectQuery.value)) {
 			warningMessage.value = 'Введите корректный предмет';
 		} else {
 			toastStore.push({
@@ -119,10 +119,10 @@ async function sendReview() {
 			:first-name="firstName ?? 'Ошибка'"
 			:last-name="lastName ?? 'Ошибка'"
 			:middle-name="middleName ?? 'Ошибка'"
-			:subjects-name="Subjects"
+			:subjects="lecturerSubjects"
 		/>
 		<v-combobox
-			v-model="subject"
+			v-model="subjectQuery"
 			:error-messages="warningMessage"
 			hide-details="auto"
 			label="Выберите предмет"
