@@ -1,4 +1,4 @@
-// vite.config.ts
+vite.config.ts
 import { defineConfig } from "file:///home/filipenkovda/rating-ui/node_modules/.pnpm/vite@4.5.5_@types+node@22.9.0/node_modules/vite/dist/node/index.js";
 import postcssPresetEnv from "file:///home/filipenkovda/rating-ui/node_modules/.pnpm/postcss-preset-env@9.6.0_postcss@8.4.47/node_modules/postcss-preset-env/dist/index.mjs";
 import stylelint from "file:///home/filipenkovda/rating-ui/node_modules/.pnpm/vite-plugin-stylelint@5.3.1_postcss@8.4.47_rollup@3.29.5_stylelint@15.11.0_typescript@5.6.3___z6uzuetynkfmdqosjfz4hucaeq/node_modules/vite-plugin-stylelint/dist/index.mjs";
