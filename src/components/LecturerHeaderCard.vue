@@ -9,9 +9,9 @@
     <template #subtitle>
       <div class="text-body-1">{{ firstName }} {{ middleName }}</div>
       <div class="text-body-2">
-        <v-chip-group v-if="subjectsName">
+        <v-chip-group v-if="subjects">
           <v-chip
-            v-for="(subject, index) in subjectsName"
+            v-for="(subject, index) in subjects"
             :key="index"
             outlined
             size="small"
@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import { PropType } from "vue";
 import { useDisplay } from "vuetify";
 
 const { mobile } = useDisplay();
@@ -34,6 +35,10 @@ defineProps({
   lastName: { type: String, required: true },
   firstName: { type: String, required: true },
   middleName: { type: String, required: true },
-  subjectsName: { type: String, required: true },
+  subjects: {
+    type: null as unknown as PropType<Array<String> | null>,
+    required: false,
+    default: null,
+  },
 });
 </script>
