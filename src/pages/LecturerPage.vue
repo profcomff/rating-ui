@@ -129,7 +129,7 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 				class="btn-text"
 				@click="router.push({ path: 'review', query: { lecturer_id: lecturerId } })"
 			>
-				Оставить первый комментарий
+				Оставить первый отзыв
 			</v-btn>
 		</div>
 		<!-- <v-fab class="position-fixed bottom-0 mb-10" :icon="'mdi-pen'" color="primary" /> -->
