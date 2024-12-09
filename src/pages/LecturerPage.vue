@@ -8,7 +8,6 @@ import AppRatingBar from '@/components/AppRatingBar.vue';
 import TheReviewCard from '@/components/TheReviewCard.vue';
 import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
 import { adaptNumeral, getPhoto } from '@/utils';
-import ReviewPage from './ReviewPage.vue';
 
 const { mobile } = useDisplay();
 
