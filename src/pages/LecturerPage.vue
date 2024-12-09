@@ -8,7 +8,6 @@ import AppRatingBar from '@/components/AppRatingBar.vue';
 import TheReviewCard from '@/components/TheReviewCard.vue';
 import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
 import { adaptNumeral, getPhoto } from '@/utils';
-import ReviewPage from './ReviewPage.vue';
 
 const { mobile } = useDisplay();
 
@@ -119,19 +118,6 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 			</v-footer>
 		</div>
 
-		<div v-else>
-			<v-btn
-				no-gutters
-				color="secondary"
-				rounded="xl"
-				height="100px"
-				width="1000px"
-				class="btn-text"
-				@click="router.push({ path: 'review', query: { lecturer_id: lecturerId } })"
-			>
-				Оставить первый отзыв
-			</v-btn>
-		</div>
 		<!-- <v-fab class="position-fixed bottom-0 mb-10" :icon="'mdi-pen'" color="primary" /> -->
 	</v-container>
 </template>
@@ -150,9 +136,5 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 	position: absolute;
 	right: 10px;
 	bottom: 0;
-}
-
-.btn-text {
-	font-size: 28px;
 }
 </style>
