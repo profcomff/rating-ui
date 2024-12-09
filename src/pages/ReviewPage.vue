@@ -148,7 +148,7 @@ async function sendReview() {
 				</div>
 			</div>
 			<div>
-				<v-switch v-model="isAnonymous" color="primary" label="Аноимный отзыв" hide-details />
+				<v-switch v-model="isAnonymous" color="primary" label="Анонимный отзыв" hide-details />
 			</div>
 
 			<v-btn color="secondary" class="mt-3" rounded="pill" text="отправить" @click="sendReview"></v-btn>
