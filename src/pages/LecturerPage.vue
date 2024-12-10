@@ -124,9 +124,7 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 				no-gutters
 				color="secondary"
 				rounded="xl"
-				height="100px"
-				width="1000px"
-				class="btn-text"
+				class="w-100"
 				@click="router.push({ path: 'review', query: { lecturer_id: lecturerId } })"
 			>
 				Оставить первый отзыв
@@ -150,9 +148,5 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 	position: absolute;
 	right: 10px;
 	bottom: 0;
-}
-
-.btn-text {
-	font-size: 28px;
 }
 </style>
