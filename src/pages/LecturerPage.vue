@@ -118,6 +118,19 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 			</v-footer>
 		</div>
 
+
+		<div v-else>
+			<v-btn
+				no-gutters
+				color="secondary"
+				rounded="xl"
+				class="w-100"
+				@click="router.push({ path: 'review', query: { lecturer_id: lecturerId } })"
+			>
+				Оставить первый отзыв
+			</v-btn>
+		</div>
+
 		<!-- <v-fab class="position-fixed bottom-0 mb-10" :icon="'mdi-pen'" color="primary" /> -->
 	</v-container>
 </template>
