@@ -118,7 +118,6 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 			</v-footer>
 		</div>
 
-
 		<div v-else>
 			<v-btn
 				no-gutters
