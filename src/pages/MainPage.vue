@@ -13,6 +13,7 @@ const profileStore = useProfileStore();
 
 const orderValues: Ref<Order> = ref('mark_general');
 let order: Ref<string> = ref('по общей оценке');
+const ascOrderQuery = ref(true);
 let offset = 0;
 const query = ref('');
 const subject: Ref<Subject> = ref('');
@@ -41,12 +42,12 @@ async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<
 				info: ['comments', 'mark'],
 				subject: subjectQuery.value,
 				order_by: orderQuery.value,
+				asc_order: ascOrderQuery.value,
 			},
 		},
 	});
 	lecturers.value = res.data?.lecturers;
 	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
-	console.log(lecturers.value);
 	loadPhotos();
 }
 
@@ -89,6 +90,11 @@ async function filterLecturers() {
 	page.value = 1;
 	await loadLecturers(query.value, 0, orderValues, subject);
 }
+
+async function changeAscOrder() {
+	ascOrderQuery.value = !ascOrderQuery.value;
+	await loadLecturers(query.value, 0, orderValues, subject);
+}
 </script>
 
 <template>
@@ -104,6 +110,7 @@ async function filterLecturers() {
 						@update:subject="filterLecturers"
 						@update:order="orderLecturers"
 						@update:search-query="findLecturer"
+						@changed-asc-desc="changeAscOrder"
 					/>
 				</v-card>
 			</template>
