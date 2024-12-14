@@ -20,7 +20,13 @@
         {{ lecturer.first_name }} {{ lecturer.middle_name }}
       </div>
       <div class="text-body-2">
-        <v-chip-group v-if="lecturer.subjects && lecturer.subjects.length > 0">
+        <v-chip-group
+          v-if="
+            lecturer.subjects &&
+            lecturer.subjects.length > 0 &&
+            lecturer.subjects[0] !== null
+          "
+        >
           <v-chip
             v-for="subject in lecturer.subjects.slice(0, 2)"
             :key="subject"
@@ -36,7 +42,7 @@
           </v-chip>
         </v-chip-group>
         <div v-else-if="lecturer.subjects === null"></div>
-        <div v-else>Нет предметов</div>
+        <!-- <div v-else class="text-caption-2">Нет предметов</div> -->
         <div>отзывы: {{ lecturer.comments?.length ?? "—" }}</div>
         <div>
           оценка: {{ lecturer.mark_general > 0 ? "+" : ""

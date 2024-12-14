@@ -9,7 +9,7 @@
     <template #subtitle>
       <div class="text-body-1">{{ firstName }} {{ middleName }}</div>
       <div class="text-body-2">
-        <v-chip-group v-if="subjects">
+        <v-chip-group v-if="subjects && subjects[0] !== null">
           <v-chip
             v-for="(subject, index) in subjects"
             :key="index"
