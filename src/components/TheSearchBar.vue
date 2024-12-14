@@ -95,12 +95,6 @@ const emits = defineEmits({
   "find-lecturer": () => {
     return true;
   },
-  "to-admin": () => {
-    return true;
-  },
-  "selected-order": (order) => {
-    return order;
-  },
   "changed-asc-desc": () => {
     return true;
   },
