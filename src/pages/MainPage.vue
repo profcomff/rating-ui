@@ -6,7 +6,7 @@ import { useProfileStore } from '@/store';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import TheSearchBar from '@/components/TheSearchBar.vue';
 import TheLecturerSearchCard from '@/components/TheLecturerSearchCard.vue';
-import { Lecturer, Order, Subject } from '@/models';
+import { Lecturer, Order, OrderFromText, Subject } from '@/models';
 import { getPhoto } from '@/utils';
 
 const profileStore = useProfileStore();
@@ -18,7 +18,7 @@ const query = ref('');
 const subject: Ref<Subject> = ref('');
 const page = ref(1);
 const itemsPerPage = 10;
-const totalPages: Ref<number | undefined> = ref(1);
+const totalPages: Ref<number> = ref(1);
 
 const userAdmin = ref<boolean>(false);
 userAdmin.value = profileStore.isAdmin();
@@ -46,16 +46,27 @@ async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<
 	});
 	lecturers.value = res.data?.lecturers;
 	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
+	console.log(lecturers.value);
 	loadPhotos();
 }
 
-async function loadNextLecturers() {
+async function goToNextPage() {
 	offset += itemsPerPage;
 	await loadLecturers(query.value, offset, orderValues, subject);
 }
 
-async function loadPrevLecturers() {
+async function goToPreviousPage() {
 	offset -= itemsPerPage;
+	await loadLecturers(query.value, offset, orderValues, subject);
+}
+
+async function goToFirstPage() {
+	offset = 0;
+	await loadLecturers(query.value, offset, orderValues, subject);
+}
+
+async function goToLastPage() {
+	offset = (totalPages.value - 1) * itemsPerPage;
 	await loadLecturers(query.value, offset, orderValues, subject);
 }
 
@@ -70,23 +81,7 @@ async function findLecturer() {
 
 async function orderLecturers() {
 	page.value = 1;
-	switch (order.value) {
-		case 'по общей оценке':
-			orderValues.value = 'mark_general';
-			break;
-		case 'по доброте':
-			orderValues.value = 'mark_kindness';
-			break;
-		case 'по халявности':
-			orderValues.value = 'mark_freebie';
-			break;
-		case 'по понятности':
-			orderValues.value = 'mark_clarity';
-			break;
-		case 'по фамилии':
-			orderValues.value = 'last_name';
-			break;
-	}
+	orderValues.value = OrderFromText[order.value as keyof typeof OrderFromText];
 	await loadLecturers(query.value, 0, orderValues, subject);
 }
 
@@ -125,17 +120,24 @@ async function filterLecturers() {
 				/>
 			</template>
 
+			<template #no-data>
+				<div class="ma-2">Ничего не нашли :(</div>
+			</template>
+
 			<template #footer>
-				<div v-if="lecturers">
+				<div v-if="lecturers && totalPages > 1">
 					<v-pagination
 						v-model="page"
 						active-color="primary"
 						variant="elevated"
 						:length="totalPages"
-						:total-visible="2"
-						:show-first-last-page="false"
-						@next="loadNextLecturers"
-						@prev="loadPrevLecturers"
+						:total-visible="1"
+						:show-first-last-page="true"
+						ellipsis=""
+						@next="goToNextPage"
+						@prev="goToPreviousPage"
+						@first="goToFirstPage"
+						@last="goToLastPage"
 					/>
 				</div>
 			</template>

@@ -16,5 +16,12 @@ export interface Toast {
 }
 
 export type Order = 'mark_general' | 'mark_kindness' | 'mark_freebie' | 'mark_clarity' | 'last_name' | undefined;
+export enum OrderFromText {
+	'по общей оценке' = 'mark_general',
+	'по доброте' = 'mark_kindness',
+	'по халявности' = 'mark_freebie',
+	'по понятности' = 'mark_clarity',
+	'по фамилии' = 'last_name',
+}
 export type Subject = string;
 export type Lecturer = components['schemas']['LecturerGet'];
