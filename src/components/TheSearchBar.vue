@@ -27,24 +27,34 @@
             density="compact"
           />
         </template>
-        <v-card width="200">
+        <v-card width="400">
           <template #text>
             <v-combobox
               v-model="subject"
-              class="text-body-1"
+              class="text-body-1 mb-2"
               label="Предмет"
               :items="[''].concat(SUBJECTS)"
               density="compact"
+              hide-details="auto"
               @click.stop
             />
-            <v-select
-              v-model="order"
-              class="text-body-1"
-              label="Сортировка"
-              :items="orderTypes"
-              density="compact"
-              @click.stop
-            />
+            <v-row class="w-100" no-gutters>
+              <v-select
+                v-model="order"
+                class="text-body-1"
+                label="Сортировка"
+                :items="orderTypes"
+                density="compact"
+                hide-details="auto"
+                @click.stop
+              />
+              <v-btn
+                :icon="iconAscDesc"
+                density="comfortable"
+                variant="flat"
+                @click.stop="changeAscDesc"
+              ></v-btn>
+            </v-row>
             <v-btn
               v-if="isAdmin"
               class="w-100"
@@ -63,6 +73,8 @@
 
 <script setup lang="ts">
 import { SUBJECTS } from "@/constants";
+import { ref } from "vue";
+
 defineProps({
   isAdmin: { type: Boolean, required: true },
 });
@@ -77,6 +89,7 @@ const orderTypes = [
   "по понятности",
   "по фамилии",
 ];
+const iconAscDesc = ref<string>("mdi-sort-alphabetical-ascending");
 
 const emits = defineEmits({
   "find-lecturer": () => {
@@ -88,5 +101,16 @@ const emits = defineEmits({
   "selected-order": (order) => {
     return order;
   },
+  "changed-asc-desc": () => {
+    return true;
+  },
 });
+
+function changeAscDesc() {
+  iconAscDesc.value =
+    iconAscDesc.value === "mdi-sort-alphabetical-ascending"
+      ? "mdi-sort-alphabetical-descending"
+      : "mdi-sort-alphabetical-ascending";
+  emits("changed-asc-desc");
+}
 </script>
