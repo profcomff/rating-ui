@@ -8,67 +8,60 @@ import TheSearchBar from '@/components/TheSearchBar.vue';
 import TheLecturerSearchCard from '@/components/TheLecturerSearchCard.vue';
 import { Lecturer, Order, OrderFromText, Subject } from '@/models';
 import { getPhoto } from '@/utils';
+import { useSearchStore } from '@/store/searchStore';
 
+// const
 const profileStore = useProfileStore();
-
-const orderValues: Ref<Order> = ref('mark_general');
-let order: Ref<string> = ref('по общей оценке');
-const ascOrderQuery = ref(true);
-let offset = 0;
-const query = ref('');
-const subject: Ref<Subject> = ref('');
-const page = ref(1);
-const itemsPerPage = 10;
-const totalPages: Ref<number> = ref(1);
-
+const searchStore = useSearchStore();
 const userAdmin = ref<boolean>(false);
 userAdmin.value = profileStore.isAdmin();
+const itemsPerPage = 10;
 
-const lecturers: Ref<Lecturer[] | undefined> = ref();
-const lecturersPhotos = ref<string[]>(Array<string>(10));
-await loadLecturers(query.value, offset, orderValues, subject);
+// utils
+const totalPages: Ref<number> = ref(1);
+
+// search state
+console.log(searchStore.getParams());
+const name = ref(searchStore.name);
+const subject: Ref<Subject> = ref(searchStore.subject);
+let order = ref(searchStore.order);
+const orderValues: Ref<Order> = ref(OrderFromText[order.value as keyof typeof OrderFromText]);
+const ascending = ref(searchStore.ascending);
+const page = ref(searchStore.page);
+
+const lecturers: Ref<Lecturer[] | undefined> = ref(searchStore.lecturers);
+console.log(lecturers.value);
+const lecturersPhotos = ref<string[]>(Array<string>(itemsPerPage));
+
+await loadLecturers();
+
+// Эти две строчки -- колдовство с тем, чтобы при возвращении не на 1 страницу
+// отображались лекторы
 
 function toLecturerPage(id: number) {
+	searchStore.setParams(name.value, subject.value, order.value, ascending.value, page.value, lecturers.value);
 	router.push({ path: 'lecturer', query: { lecturer_id: id } });
 }
 
-async function loadLecturers(nameQuery: string, offset: number, orderQuery: Ref<Order>, subjectQuery: Ref<Subject>) {
+async function loadLecturers() {
+	const offset = (page.value - 1) * itemsPerPage;
 	const res = await apiClient.GET('/rating/lecturer', {
 		params: {
 			query: {
 				limit: itemsPerPage,
-				name: nameQuery,
+				name: name.value,
 				offset,
 				info: ['comments', 'mark'],
-				subject: subjectQuery.value,
-				order_by: orderQuery.value,
-				asc_order: ascOrderQuery.value,
+				subject: subject.value,
+				order_by: orderValues.value,
+				asc_order: ascending.value,
 			},
 		},
 	});
 	lecturers.value = res.data?.lecturers;
+	console.log(lecturers.value);
 	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
 	loadPhotos();
-}
-
-async function goToNextPage() {
-	offset += itemsPerPage;
-	await loadLecturers(query.value, offset, orderValues, subject);
-}
-
-async function goToPreviousPage() {
-	offset -= itemsPerPage;
-	await loadLecturers(query.value, offset, orderValues, subject);
-}
-
-async function goToFirstPage() {
-	offset = 0;
-	await loadLecturers(query.value, offset, orderValues, subject);
-}
-
-async function goToLastPage() {
-	offset = (totalPages.value - 1) * itemsPerPage;
-	await loadLecturers(query.value, offset, orderValues, subject);
 }
 
 function loadPhotos() {
@@ -76,37 +69,39 @@ function loadPhotos() {
 }
 
 async function findLecturer() {
-	console.log('Find Lecturers');
-	await loadLecturers(query.value, 0, orderValues, subject);
+	page.value = 1;
+	await loadLecturers();
 }
 
 async function orderLecturers() {
 	page.value = 1;
 	orderValues.value = OrderFromText[order.value as keyof typeof OrderFromText];
-	await loadLecturers(query.value, 0, orderValues, subject);
+	await loadLecturers();
 }
 
 async function filterLecturers() {
 	page.value = 1;
-	await loadLecturers(query.value, 0, orderValues, subject);
+	await loadLecturers();
 }
 
 async function changeAscOrder() {
-	ascOrderQuery.value = !ascOrderQuery.value;
-	await loadLecturers(query.value, 0, orderValues, subject);
+	page.value = 1;
+	ascending.value = !ascending.value;
+	await loadLecturers();
 }
 </script>
 
 <template>
 	<v-container class="ma-0 pa-0">
-		<v-data-iterator :items="lecturers" :page="page" :items-per-page="itemsPerPage">
+		<v-data-iterator :items="lecturers" :items-per-page="itemsPerPage">
 			<template #header>
 				<v-card rounded="0" color="primary">
 					<TheSearchBar
-						v-model:search-query="query"
+						v-model:search-query="name"
 						v-model:subject="subject"
 						v-model:order="order"
 						:is-admin="userAdmin"
+						:ascending="ascending"
 						@update:subject="filterLecturers"
 						@update:order="orderLecturers"
 						@update:search-query="findLecturer"
@@ -141,10 +136,10 @@ async function changeAscOrder() {
 						:total-visible="1"
 						:show-first-last-page="true"
 						ellipsis=""
-						@next="goToNextPage"
-						@prev="goToPreviousPage"
-						@first="goToFirstPage"
-						@last="goToLastPage"
+						@next="loadLecturers"
+						@prev="loadLecturers"
+						@first="loadLecturers"
+						@last="loadLecturers"
 					/>
 				</div>
 			</template>
