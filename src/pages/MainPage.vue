@@ -29,8 +29,7 @@ const orderValues: Ref<Order> = ref(OrderFromText[order.value as keyof typeof Or
 const ascending = ref(searchStore.ascending);
 const page = ref(searchStore.page);
 
-const lecturers: Ref<Lecturer[] | undefined> = ref(searchStore.lecturers);
-console.log(lecturers.value);
+const lecturers: Ref<Lecturer[] | undefined> = ref();
 const lecturersPhotos = ref<string[]>(Array<string>(itemsPerPage));
 
 await loadLecturers();
@@ -39,7 +38,7 @@ await loadLecturers();
 // отображались лекторы
 
 function toLecturerPage(id: number) {
-	searchStore.setParams(name.value, subject.value, order.value, ascending.value, page.value, lecturers.value);
+	searchStore.setParams(name.value, subject.value, order.value, ascending.value, page.value);
 	router.push({ path: 'lecturer', query: { lecturer_id: id } });
 }
 
