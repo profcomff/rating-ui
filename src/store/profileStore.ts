@@ -38,7 +38,6 @@ export const useProfileStore = defineStore('profile', () => {
 	};
 
 	const isAdmin = () => {
-		console.log(sessionScopes);
 		return (
 			(sessionScopes.value?.includes('rating.comment.review') &&
 				sessionScopes.value?.includes('rating.comment.review')) ??
