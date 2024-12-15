@@ -1,12 +1,10 @@
 <template>
   <v-card class="my-1 px-0" rounded>
     <template #title>
-      <div class="text-h6 font-weight-bold">{{ "Иванов Иван" }}</div>
+      <div class="text-h6 font-weight-bold">{{ lecturerName }}</div>
     </template>
     <template #subtitle>
-      <div class="text-h7">
-        {{ "31 октября 2018 20:31" }} | {{ "Анонимный отзыв" }}
-      </div>
+      <div class="text-h7">{{ formattedDate }} | {{ "Анонимный отзыв" }}</div>
     </template>
     <template #text>
       <p class="text-subtitle-2">{{ comment.raw.text }}</p>
@@ -15,33 +13,55 @@
       <v-btn
         class="font-weight-bold"
         color="primary"
-        text="Одобрить"
         variant="text"
         @click="approveComment(comment.raw.uuid)"
-      ></v-btn>
+      >
+        Одобрить
+      </v-btn>
       <v-btn
         class="font-weight-bold"
         color="#B3261E"
-        text="Отклонить"
         variant="text"
         @click="dismissComment(comment.raw.uuid)"
-      ></v-btn>
+      >
+        Отклонить
+      </v-btn>
     </template>
   </v-card>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import apiClient from "@/api";
 import { ToastType } from "@/models";
 import { useToastStore } from "@/store/toastStore";
 
-defineProps({
+const props = defineProps({
   comment: { type: Object, required: true },
 });
 
 const emit = defineEmits(["decided"]);
 
 const toastStore = useToastStore();
+const lecturerName = ref("");
+const formattedDate = ref("");
+
+onMounted(async () => {
+  const lecturer = await getLecturerName(props.comment.raw.lecturer_id);
+  lecturerName.value = lecturer
+    ? [lecturer.last_name, lecturer.first_name, lecturer.middle_name].join(" ")
+    : "Неизвестный лектор";
+  formattedDate.value = Intl.DateTimeFormat().format(
+    Date.parse(props.comment.raw.create_ts),
+  );
+});
+
+async function getLecturerName(lecturerId: string) {
+  const { data } = await apiClient.GET("/rating/lecturer/{id}", {
+    params: { path: { id: Number(lecturerId) } },
+  });
+  return data;
+}
 
 async function approveComment(id: string) {
   const { response } = await apiClient.PATCH("/rating/comment/{uuid}", {
@@ -58,7 +78,7 @@ async function approveComment(id: string) {
     emit("decided");
   } else {
     toastStore.push({
-      title: "Что-то не так",
+      title: "Что-то пошло не так при одобрении отзыва",
       type: ToastType.Error,
       description: response.statusText,
     });
@@ -80,7 +100,7 @@ async function dismissComment(id: string) {
     emit("decided");
   } else {
     toastStore.push({
-      title: "Что-то не так",
+      title: "Что-то пошло не так при отклонении отзыва",
       type: ToastType.Error,
       description: response.statusText,
     });
