@@ -36,6 +36,8 @@
               :items="[''].concat(SUBJECTS)"
               density="compact"
               hide-details="auto"
+              clearable
+              @click:clear="subject = ''"
               @click.stop
             />
             <v-row class="w-100" no-gutters>
@@ -75,8 +77,9 @@
 import { SUBJECTS } from "@/constants";
 import { ref } from "vue";
 
-defineProps({
+const propsParent = defineProps({
   isAdmin: { type: Boolean, required: true },
+  ascending: { type: Boolean, required: true },
 });
 
 const searchQuery = defineModel("searchQuery", { type: String });
@@ -89,7 +92,7 @@ const orderTypes = [
   "по понятности",
   "по фамилии",
 ];
-const iconAscDesc = ref<string>("mdi-sort-alphabetical-ascending");
+const iconAscDesc = ref<string>("");
 
 const emits = defineEmits({
   "find-lecturer": () => {
@@ -99,6 +102,10 @@ const emits = defineEmits({
     return true;
   },
 });
+
+iconAscDesc.value = propsParent.ascending
+  ? "mdi-sort-alphabetical-ascending"
+  : "mdi-sort-alphabetical-descending";
 
 function changeAscDesc() {
   iconAscDesc.value =
