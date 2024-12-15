@@ -91,22 +91,20 @@ async function changeAscOrder() {
 </script>
 
 <template>
-	<v-container class="ma-0 pa-0">
+	<v-container class="ma-0 py-2">
 		<v-data-iterator :items="lecturers" :items-per-page="itemsPerPage">
 			<template #header>
-				<v-card rounded="0" color="primary">
-					<TheSearchBar
-						v-model:search-query="name"
-						v-model:subject="subject"
-						v-model:order="order"
-						:is-admin="userAdmin"
-						:ascending="ascending"
-						@update:subject="filterLecturers"
-						@update:order="orderLecturers"
-						@update:search-query="findLecturer"
-						@changed-asc-desc="changeAscOrder"
-					/>
-				</v-card>
+				<TheSearchBar
+					v-model:search-query="name"
+					v-model:subject="subject"
+					v-model:order="order"
+					:is-admin="userAdmin"
+					:ascending="ascending"
+					@update:subject="filterLecturers"
+					@update:order="orderLecturers"
+					@update:search-query="findLecturer"
+					@changed-asc-desc="changeAscOrder"
+				/>
 			</template>
 
 			<template #default="{ items }">
