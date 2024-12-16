@@ -109,9 +109,9 @@ iconAscDesc.value = propsParent.ascending
 
 function changeAscDesc() {
   iconAscDesc.value =
-    iconAscDesc.value === "mdi-sort-alphabetical-ascending"
-      ? "mdi-sort-alphabetical-descending"
-      : "mdi-sort-alphabetical-ascending";
+    iconAscDesc.value === "mdi-sort-alphabetical-descending"
+      ? "mdi-sort-alphabetical-ascending"
+      : "mdi-sort-alphabetical-descending";
   emits("changed-asc-desc");
 }
 </script>

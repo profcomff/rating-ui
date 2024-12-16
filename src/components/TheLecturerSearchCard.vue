@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { Subject } from "@/models";
-import { onUpdated, ref } from "vue";
+import { onMounted, onUpdated, ref } from "vue";
 import { useDisplay } from "vuetify";
 
 const { mobile } = useDisplay();
@@ -74,6 +74,16 @@ const props = defineProps({
 const displaySubjects = ref(false);
 const subjectsToShow = ref<Subject[]>([]);
 const height = ref(120);
+
+onMounted(() => {
+  subjectsToShow.value =
+    props.lecturer.subjects !== null
+      ? props.lecturer.subjects.filter((item: string) => item !== null)
+      : null;
+  displaySubjects.value =
+    subjectsToShow.value && subjectsToShow.value.length > 0;
+  height.value = displaySubjects.value ? 160 : 120;
+});
 
 onUpdated(() => {
   subjectsToShow.value =

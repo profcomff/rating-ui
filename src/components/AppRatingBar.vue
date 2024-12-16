@@ -1,13 +1,28 @@
 <template>
-  <v-progress-linear
-    class="rating-bar text-body-2 my-2 text-small"
-    :size="smAndDown ? 110 : 130"
-    height="20"
-    max="4"
-    :model-value="value + 2"
-    :color="color"
-  >
-    <v-row no-gutters justify="space-between">
+  <div class="d-flex position-relative">
+    <v-progress-linear
+      class="w-50 text-body-2 my-2 text-small"
+      :size="mobile ? 110 : 130"
+      height="20"
+      max="4"
+      reverse
+      :model-value="value < 0 ? -value : 0"
+      :color="color"
+    ></v-progress-linear>
+    <v-progress-linear
+      class="w-50 text-body-2 my-2 text-small"
+      :size="mobile ? 110 : 130"
+      height="20"
+      max="4"
+      :model-value="value > 0 ? value : 0"
+      :color="color"
+    ></v-progress-linear>
+    <v-row
+      class="w-100 position-absolute my-1"
+      no-gutters
+      justify="space-between"
+      align="center"
+    >
       <v-col cols="3">
         <span class="text-left ml-1 font-weight-bold">-2</span>
       </v-col>
@@ -18,13 +33,13 @@
       </v-col>
       <v-col cols="3" class="text-right mr-1 font-weight-bold">+2</v-col>
     </v-row>
-  </v-progress-linear>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useDisplay } from "vuetify";
 
-const { smAndDown } = useDisplay();
+const { mobile } = useDisplay();
 
 const props = defineProps({
   value: { type: Number, required: true },
@@ -36,11 +51,9 @@ const displayValue =
 const value = props.value;
 
 let color = "rgb(0, 0, 0)";
-if (value < -0.67) {
-  color = "rgb(255, 153, 0)";
-} else if (value < 0.66) {
-  color = "rgb(255, 204, 0)";
-} else {
-  color = "rgb(0, 255, 0)";
+if (value < 0) {
+  color = "#B3261E66";
+} else if (value > 0) {
+  color = "#00004B66";
 }
 </script>
