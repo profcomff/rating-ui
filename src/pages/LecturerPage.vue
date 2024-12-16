@@ -49,7 +49,7 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 
 <template>
 	<v-container class="pa-2 justify-center">
-		<v-btn class="mb-4" color="primary" text="Назад к поиску" @click="router.push('/')"></v-btn>
+		<v-btn class="mb-4" color="primary" text="Назад к поиску" rounded="lg" @click="router.push('/')"></v-btn>
 		<LecturerHeaderCard
 			:photo="lecturerPhoto"
 			:first-name="firstName ?? 'Ошибка'"
@@ -57,7 +57,7 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 			:middle-name="middleName ?? 'Ошибка'"
 			:subjects="lecturerSubjects"
 		/>
-		<div class="d-table w-100 my-4">
+		<div class="d-table w-100 my-2">
 			<AppRatingBar :value="howKind" label="доброта"></AppRatingBar>
 			<AppRatingBar :value="howFree" label="халявность"></AppRatingBar>
 			<AppRatingBar :value="howClear" label="понятность"></AppRatingBar>
@@ -69,7 +69,7 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 						<template #prepend>
 							<v-icon :icon="'mdi-tree-outline'"></v-icon>
 						</template>
-						<template #title>{{ lecturer?.mark_general?.toFixed(2) ?? 'нет оценки' }}</template>
+						<template #title>{{ lecturer?.mark_general?.toFixed(2) ?? '—' }}</template>
 						<template #text
 							>{{ lecturer?.comments?.length ?? 'нет' }}
 							{{ adaptNumeral(lecturer?.comments?.length, 'отзыв', 'отзыва', 'отзывов') }}</template
@@ -93,24 +93,23 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 						<TheReviewCard :comment="review" :photo="Placeholder" @comment-deleted="$router.go" />
 					</template>
 				</template>
-				<template #footer="{ pageCount, nextPage, prevPage }">
+				<template #footer="{ pageCount }">
 					<v-pagination
 						v-model="page"
 						active-color="primary"
 						variant="elevated"
+						total-visible="1"
 						:length="pageCount"
-						:show-first-last-page="false"
-						@next="nextPage"
-						@prev="prevPage"
+						:show-first-last-page="true"
 					></v-pagination>
 				</template>
 			</v-data-iterator>
 
-			<v-footer class="position-fixed bottom-0 pa-0 mb-3 pr-4">
+			<v-footer class="position-fixed bottom-0 pa-0 mb-3 pr-12">
 				<v-btn
 					:icon="'mdi-pen'"
 					color="secondary"
-					class="footer-button px-0"
+					class="footer-button mr-1"
 					rounded="pill"
 					variant="flat"
 					@click="router.push({ path: 'review', query: { lecturer_id: lecturerId } })"
@@ -129,8 +128,6 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 				Оставить первый отзыв
 			</v-btn>
 		</div>
-
-		<!-- <v-fab class="position-fixed bottom-0 mb-10" :icon="'mdi-pen'" color="primary" /> -->
 	</v-container>
 </template>
 

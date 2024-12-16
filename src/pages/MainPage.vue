@@ -21,7 +21,6 @@ const itemsPerPage = 10;
 const totalPages: Ref<number> = ref(1);
 
 // search state
-console.log(searchStore.getParams());
 const name = ref(searchStore.name);
 const subject: Ref<Subject> = ref(searchStore.subject);
 let order = ref(searchStore.order);
@@ -33,9 +32,6 @@ const lecturers: Ref<Lecturer[] | undefined> = ref();
 const lecturersPhotos = ref<string[]>(Array<string>(itemsPerPage));
 
 await loadLecturers();
-
-// Эти две строчки -- колдовство с тем, чтобы при возвращении не на 1 страницу
-// отображались лекторы
 
 function toLecturerPage(id: number) {
 	searchStore.setParams(name.value, subject.value, order.value, ascending.value, page.value);
@@ -58,7 +54,6 @@ async function loadLecturers() {
 		},
 	});
 	lecturers.value = res.data?.lecturers;
-	console.log(lecturers.value);
 	totalPages.value = res.data?.total ? Math.ceil(res.data?.total / itemsPerPage) : 1;
 	loadPhotos();
 }
@@ -91,22 +86,20 @@ async function changeAscOrder() {
 </script>
 
 <template>
-	<v-container class="ma-0 pa-0">
+	<v-container class="ma-0 py-2">
 		<v-data-iterator :items="lecturers" :items-per-page="itemsPerPage">
 			<template #header>
-				<v-card rounded="0" color="primary">
-					<TheSearchBar
-						v-model:search-query="name"
-						v-model:subject="subject"
-						v-model:order="order"
-						:is-admin="userAdmin"
-						:ascending="ascending"
-						@update:subject="filterLecturers"
-						@update:order="orderLecturers"
-						@update:search-query="findLecturer"
-						@changed-asc-desc="changeAscOrder"
-					/>
-				</v-card>
+				<TheSearchBar
+					v-model:search-query="name"
+					v-model:subject="subject"
+					v-model:order="order"
+					:is-admin="userAdmin"
+					:ascending="ascending"
+					@update:subject="filterLecturers"
+					@update:order="orderLecturers"
+					@update:search-query="findLecturer"
+					@changed-asc-desc="changeAscOrder"
+				/>
 			</template>
 
 			<template #default="{ items }">
@@ -115,6 +108,7 @@ async function changeAscOrder() {
 					:key="idx"
 					:lecturer="item.raw"
 					:photo="lecturersPhotos[idx]"
+					:rating="(page - 1) * itemsPerPage + idx + 1"
 					class="py-0"
 					variant="elevated"
 					@click="toLecturerPage(item.raw.id)"
@@ -135,10 +129,7 @@ async function changeAscOrder() {
 						:total-visible="1"
 						:show-first-last-page="true"
 						ellipsis=""
-						@next="loadLecturers"
-						@prev="loadLecturers"
-						@first="loadLecturers"
-						@last="loadLecturers"
+						@update:model-value="loadLecturers"
 					/>
 				</div>
 			</template>

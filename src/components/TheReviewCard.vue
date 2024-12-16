@@ -1,5 +1,5 @@
 <template>
-  <v-card class="my-1 px-0" variant="elevated" rounded>
+  <v-card class="my-2 px-0" variant="elevated" rounded="xl">
     <template #prepend>
       <div class="d-flex align-center">
         <v-avatar size="50" rounded="circle" class="mr-2">
@@ -27,7 +27,7 @@
           Понятность: <strong>{{ comment.raw.mark_clarity }}</strong>
         </v-col>
       </v-row>
-      <p class="mt-2">{{ comment.raw.text }}</p>
+      <p v-if="comment.raw.text" class="mt-2">{{ comment.raw.text }}</p>
     </template>
     <template #append>
       <v-col class="text-right">

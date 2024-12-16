@@ -6,7 +6,7 @@ export const useSearchStore = defineStore('search', () => {
 	const name = ref<string>('');
 	const subject = ref<Subject>('');
 	const order = ref<string>('по общей оценке');
-	const ascending = ref<boolean>(true);
+	const ascending = ref<boolean>(false);
 	const page = ref<number>(1);
 
 	const getParams = () => {

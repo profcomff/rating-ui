@@ -3,16 +3,14 @@
     id="start"
     v-model="searchQuery"
     prepend-inner-icon="mdi-magnify"
-    class="mx-2 py-2"
+    class="mt-2"
     variant="outlined"
     density="compact"
     placeholder="Поиск преподавателя"
     clearable
     hide-details="auto"
     single-line
-    rounded="pill"
-    :bg-color="'grey'"
-    :base-color="'grey'"
+    rounded="lg"
     @update:model-value="emits('find-lecturer')"
   >
     <template #append-inner>
@@ -22,12 +20,12 @@
             v-bind="props"
             :icon="'mdi-filter-variant'"
             color="grey"
-            variant="flat"
+            variant="text"
             focused
             density="compact"
           />
         </template>
-        <v-card width="400">
+        <v-card class="w-100">
           <template #text>
             <v-combobox
               v-model="subject"
@@ -35,17 +33,19 @@
               label="Предмет"
               :items="[''].concat(SUBJECTS)"
               density="compact"
+              variant="outlined"
               hide-details="auto"
               clearable
               @click:clear="subject = ''"
               @click.stop
             />
-            <v-row class="w-100" no-gutters>
+            <v-row class="w-100 mb-2" no-gutters align="center">
               <v-select
                 v-model="order"
                 class="text-body-1"
                 label="Сортировка"
                 :items="orderTypes"
+                variant="outlined"
                 density="compact"
                 hide-details="auto"
                 @click.stop
@@ -53,7 +53,7 @@
               <v-btn
                 :icon="iconAscDesc"
                 density="comfortable"
-                variant="flat"
+                variant="plain"
                 @click.stop="changeAscDesc"
               ></v-btn>
             </v-row>
@@ -109,9 +109,9 @@ iconAscDesc.value = propsParent.ascending
 
 function changeAscDesc() {
   iconAscDesc.value =
-    iconAscDesc.value === "mdi-sort-alphabetical-ascending"
-      ? "mdi-sort-alphabetical-descending"
-      : "mdi-sort-alphabetical-ascending";
+    iconAscDesc.value === "mdi-sort-alphabetical-descending"
+      ? "mdi-sort-alphabetical-ascending"
+      : "mdi-sort-alphabetical-descending";
   emits("changed-asc-desc");
 }
 </script>
