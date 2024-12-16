@@ -13,7 +13,7 @@
         <div
           class="position-absolute top-0 left-0 text-caption font-weight-bold bg-white rounded-xl border-sm px-1"
         >
-          1234
+          {{ rating }}
         </div>
       </div>
     </template>
@@ -29,7 +29,9 @@
       <div class="text-body-2">
         <v-chip-group v-if="displaySubjects">
           <v-chip
-            v-for="subject in lecturer.subjects.slice(0, 2)"
+            v-for="subject in subjectsToShow.length > 1
+              ? subjectsToShow.slice(0, 2)
+              : subjectsToShow"
             :key="subject"
             :text="subject"
             size="small"
@@ -37,7 +39,7 @@
             :ripple="false"
           />
           <v-chip
-            v-if="lecturer.subjects.length > 2"
+            v-if="subjectsToShow.length > 2"
             :key="'more'"
             size="small"
             readonly
@@ -58,21 +60,28 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { Subject } from "@/models";
+import { onUpdated, ref } from "vue";
 import { useDisplay } from "vuetify";
 
 const { mobile } = useDisplay();
 const props = defineProps({
   lecturer: { type: Object, required: true },
   photo: { type: String, required: true },
+  rating: { type: Number, required: true },
 });
 
 const displaySubjects = ref(false);
-displaySubjects.value =
-  props.lecturer.subjects &&
-  props.lecturer.subjects.length > 0 &&
-  props.lecturer.subjects[0] !== null;
-
+const subjectsToShow = ref<Subject[]>([]);
 const height = ref(120);
-height.value = displaySubjects.value ? 160 : 120;
+
+onUpdated(() => {
+  subjectsToShow.value =
+    props.lecturer.subjects !== null
+      ? props.lecturer.subjects.filter((item: string) => item !== null)
+      : null;
+  displaySubjects.value =
+    subjectsToShow.value && subjectsToShow.value.length > 0;
+  height.value = displaySubjects.value ? 160 : 120;
+});
 </script>

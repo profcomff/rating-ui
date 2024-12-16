@@ -8,13 +8,15 @@
     :color="color"
   >
     <v-row no-gutters justify="space-between">
-      <v-col cols="4">-2</v-col>
-      <v-col>
-        <div class="text-black text-center">
+      <v-col cols="3">
+        <span class="text-left ml-1 font-weight-bold">-2</span>
+      </v-col>
+      <v-col cols="5">
+        <div class="text-center font-weight-bold">
           {{ label }}: {{ displayValue }}
         </div>
       </v-col>
-      <v-col class="text-right">+2</v-col>
+      <v-col cols="3" class="text-right mr-1 font-weight-bold">+2</v-col>
     </v-row>
   </v-progress-linear>
 </template>
