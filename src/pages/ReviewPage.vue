@@ -8,8 +8,12 @@ import { useToastStore } from '@/store/toastStore';
 import { ToastType } from '@/models';
 import { router } from '@/router';
 import { PHOTO_BASE_PATH, SUBJECTS } from '@/constants';
+import { useProfileStore } from '@/store';
 
 const toastStore = useToastStore();
+const profileStore = useProfileStore();
+const reviewSubjects = SUBJECTS.slice();
+reviewSubjects.unshift('Другой предмет');
 
 const kindReview = ref(0);
 const freebieReview = ref(0);
@@ -43,11 +47,11 @@ const lecturerSubjects = ref(lecturer?.subjects);
 const photo = lecturer?.avatar_link ? `${PHOTO_BASE_PATH}${lecturer?.avatar_link}` : Placeholder;
 const subjectQuery = ref('');
 const warningMessage = ref('');
-const isAnonymous = ref(false);
+const isAnonymous = ref(true);
 
 async function sendReview() {
 	warningMessage.value = '';
-	if (lecturer && lecturerId && subjectQuery.value !== '' && SUBJECTS.includes(subjectQuery.value)) {
+	if (lecturer && lecturerId && subjectQuery.value !== '' && reviewSubjects.includes(subjectQuery.value)) {
 		const { response } = await apiClient.POST('/rating/comment', {
 			params: { query: { lecturer_id: Number(lecturerId) } },
 			body: {
@@ -75,6 +79,12 @@ async function sendReview() {
 					title: 'Слишком частая отправка отзывов',
 					type: ToastType.Warn,
 					description: 'Подождите немного перед тем, как отправить следующий отзыв',
+				});
+			} else if (profileStore.token === 'null') {
+				toastStore.push({
+					title: 'Вы не вошли в аккаунт',
+					type: ToastType.Error,
+					description: 'Отзыв могут оставить только зарегистрированные пользователи',
 				});
 			} else {
 				toastStore.push({
@@ -127,7 +137,7 @@ async function sendReview() {
 			hide-details="auto"
 			label="Выберите предмет"
 			required
-			:items="SUBJECTS"
+			:items="reviewSubjects"
 		/>
 
 		<the-review-buttons v-model:review="kindReview" property="Доброта"></the-review-buttons>
@@ -147,9 +157,9 @@ async function sendReview() {
 					Общая оценка: {{ Number(generalReview) > 0 ? '+' + generalReview : generalReview }}
 				</div>
 			</div>
-			<div>
+			<!-- <div>
 				<v-switch v-model="isAnonymous" color="primary" label="Аноимный отзыв" hide-details />
-			</div>
+			</div> -->
 
 			<v-btn color="secondary" class="mt-3" rounded="pill" text="отправить" @click="sendReview"></v-btn>
 		</div>

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { LocalStorage, LocalStorageItem } from '../models/LocalStorage';
+import { setupAuth } from '@profcomff/api-uilib';
 
 export const useProfileStore = defineStore('profile', () => {
 	const id = ref<number | null>(null);
@@ -22,7 +23,7 @@ export const useProfileStore = defineStore('profile', () => {
 		const urlScopes = url.searchParams.get('scopes')?.split(',');
 
 		if (urlToken === null && urlScopes === undefined) {
-			token.value = localToken === null ? undefined : localToken;
+			token.value = localToken === 'null' ? undefined : (localToken ?? undefined);
 			sessionScopes.value = localScopes;
 		} else {
 			token.value = urlToken === null ? undefined : urlToken;
@@ -30,6 +31,8 @@ export const useProfileStore = defineStore('profile', () => {
 			LocalStorage.set(LocalStorageItem.Token, urlToken);
 			LocalStorage.set(LocalStorageItem.TokenScopes, urlScopes ?? []);
 		}
+
+		setupAuth(token.value);
 
 		const currId = url.searchParams.get('user_id') ?? LocalStorage.get(LocalStorageItem.UserId) ?? undefined;
 		if (currId) {
