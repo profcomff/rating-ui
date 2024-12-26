@@ -43,7 +43,7 @@ const lecturerSubjects = ref(lecturer?.subjects);
 const photo = lecturer?.avatar_link ? `${PHOTO_BASE_PATH}${lecturer?.avatar_link}` : Placeholder;
 const subjectQuery = ref('');
 const warningMessage = ref('');
-const isAnonymous = ref(false);
+const isAnonymous = ref(true);
 
 async function sendReview() {
 	warningMessage.value = '';
@@ -147,9 +147,9 @@ async function sendReview() {
 					Общая оценка: {{ Number(generalReview) > 0 ? '+' + generalReview : generalReview }}
 				</div>
 			</div>
-			<div>
+			<!-- <div>
 				<v-switch v-model="isAnonymous" color="primary" label="Аноимный отзыв" hide-details />
-			</div>
+			</div> -->
 
 			<v-btn color="secondary" class="mt-3" rounded="pill" text="отправить" @click="sendReview"></v-btn>
 		</div>
