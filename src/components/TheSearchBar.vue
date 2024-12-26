@@ -14,7 +14,7 @@
 		@update:model-value="emits('find-lecturer')"
 	>
 		<template #append-inner>
-			<v-menu location-strategy="connected" location="start">
+			<v-menu location-strategy="connected" scroll-strategy="close" location="start">
 				<template #activator="{ props }">
 					<v-btn
 						v-bind="props"
