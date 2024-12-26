@@ -8,8 +8,10 @@ import { useToastStore } from '@/store/toastStore';
 import { ToastType } from '@/models';
 import { router } from '@/router';
 import { PHOTO_BASE_PATH, SUBJECTS } from '@/constants';
+import { useProfileStore } from '@/store';
 
 const toastStore = useToastStore();
+const profileStore = useProfileStore();
 
 const kindReview = ref(0);
 const freebieReview = ref(0);
@@ -75,6 +77,12 @@ async function sendReview() {
 					title: 'Слишком частая отправка отзывов',
 					type: ToastType.Warn,
 					description: 'Подождите немного перед тем, как отправить следующий отзыв',
+				});
+			} else if (profileStore.token === 'null') {
+				toastStore.push({
+					title: 'Вы не вошли в аккаунт',
+					type: ToastType.Error,
+					description: 'Отзыв могут оставить только зарегистрированные пользователи',
 				});
 			} else {
 				toastStore.push({

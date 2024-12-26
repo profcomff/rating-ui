@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useProfileStore } from '@/store';
 import { onMounted } from 'vue';
-import { setupAuth } from '@profcomff/api-uilib';
 import ToastList from '@/components/ToastList.vue';
 
 const profileStore = useProfileStore();
@@ -9,7 +8,6 @@ const profileStore = useProfileStore();
 onMounted(() => {
 	profileStore.fromUrl();
 	console.log(document.location.toString());
-	setupAuth(profileStore.token);
 });
 </script>
 
