@@ -63,8 +63,8 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 			<AppRatingBar :value="howClear" label="понятность"></AppRatingBar>
 		</div>
 		<div class="mb-4">
-			<v-row justify="center" no-gutters>
-				<v-col cols="md-2">
+			<v-row justify="space-between" no-gutters>
+				<v-col :cols="mobile ? '4' : '2'">
 					<v-card class="pr-1 mr-1" height="100px" variant="tonal" min-width="100px" rounded="xl">
 						<template #prepend>
 							<v-icon :icon="'mdi-tree-outline'"></v-icon>
@@ -76,10 +76,13 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 						>
 					</v-card>
 				</v-col>
-				<v-col cols="xs-2">
+				<v-col :cols="mobile ? '8' : '10'">
 					<v-card class="pl-1 ml-1" height="100px" color="#eee" variant="flat" rounded="xl">
 						<v-card-item :class="mobile ? 'text-caption' : 'text-body-1'">
-							<p>В рейтинге учитываются лишь отзывы, оставленные за последние 3 года</p>
+							<p>
+								В рейтинге учитываются как отзывы из "старой" Дубинушки, так и новые, которые прошли
+								модерацию
+							</p>
 						</v-card-item>
 					</v-card>
 				</v-col>
