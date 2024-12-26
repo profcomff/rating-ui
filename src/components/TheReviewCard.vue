@@ -8,7 +8,7 @@
 			</div>
 		</template>
 		<template #title>
-			<div class="text-h6">{{ 'Анонимный отзыв' }}</div>
+			<div class="text-h6">{{ 'Анонимный' }}</div>
 		</template>
 		<template #subtitle>
 			<div class="text-h7">
