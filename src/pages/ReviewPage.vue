@@ -12,6 +12,8 @@ import { useProfileStore } from '@/store';
 
 const toastStore = useToastStore();
 const profileStore = useProfileStore();
+const reviewSubjects = SUBJECTS.slice();
+reviewSubjects.unshift('Другой предмет');
 
 const kindReview = ref(0);
 const freebieReview = ref(0);
@@ -49,7 +51,7 @@ const isAnonymous = ref(true);
 
 async function sendReview() {
 	warningMessage.value = '';
-	if (lecturer && lecturerId && subjectQuery.value !== '' && SUBJECTS.includes(subjectQuery.value)) {
+	if (lecturer && lecturerId && subjectQuery.value !== '' && reviewSubjects.includes(subjectQuery.value)) {
 		const { response } = await apiClient.POST('/rating/comment', {
 			params: { query: { lecturer_id: Number(lecturerId) } },
 			body: {
@@ -135,7 +137,7 @@ async function sendReview() {
 			hide-details="auto"
 			label="Выберите предмет"
 			required
-			:items="SUBJECTS"
+			:items="reviewSubjects"
 		/>
 
 		<the-review-buttons v-model:review="kindReview" property="Доброта"></the-review-buttons>
