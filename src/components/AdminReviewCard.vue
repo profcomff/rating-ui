@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUpdated } from 'vue';
+import { ref, onMounted } from 'vue';
 import apiClient from '@/api';
 import { ToastType } from '@/models';
 import { useToastStore } from '@/store/toastStore';
@@ -43,8 +43,6 @@ onMounted(async () => {
 		: 'Неизвестный лектор';
 	formattedDate.value = Intl.DateTimeFormat().format(Date.parse(props.comment.raw.create_ts));
 });
-
-onUpdated(() => console.log(123));
 
 async function getLecturerName(lecturerId: string) {
 	const { data } = await apiClient.GET('/rating/lecturer/{id}', {

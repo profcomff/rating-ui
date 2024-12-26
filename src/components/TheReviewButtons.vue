@@ -23,6 +23,5 @@ defineProps({
 
 function getReview(value: number) {
 	review.value = value;
-	console.log('child', review.value);
 }
 </script>

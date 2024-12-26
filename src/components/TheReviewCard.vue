@@ -77,7 +77,6 @@ const markGeneral = ref(0);
 const redactedText = ref<String[]>([]);
 
 async function deleteComment() {
-	console.log(propsLocal.comment);
 	await apiClient.DELETE('/rating/comment/{uuid}', {
 		params: { path: { uuid: propsLocal.comment.raw.uuid } },
 	});

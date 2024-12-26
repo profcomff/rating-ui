@@ -7,7 +7,6 @@ const profileStore = useProfileStore();
 
 onMounted(() => {
 	profileStore.fromUrl();
-	console.log(document.location.toString());
 });
 </script>
 

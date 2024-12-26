@@ -19,10 +19,8 @@ export const useProfileStore = defineStore('profile', () => {
 
 		const localToken = LocalStorage.get(LocalStorageItem.Token);
 		const localScopes = LocalStorage.getObject<string[]>(LocalStorageItem.TokenScopes);
-		console.log('local', localToken, localScopes);
 		const urlToken = url.searchParams.get('token');
 		const urlScopes = url.searchParams.get('scopes')?.split(',');
-		console.log('url', urlToken, urlScopes);
 
 		if (urlToken === null && urlScopes === undefined) {
 			token.value = localToken === 'null' ? undefined : (localToken ?? undefined);
@@ -34,7 +32,6 @@ export const useProfileStore = defineStore('profile', () => {
 			LocalStorage.set(LocalStorageItem.TokenScopes, urlScopes ?? []);
 		}
 
-		console.log('token:', token.value);
 		setupAuth(token.value);
 
 		const currId = url.searchParams.get('user_id') ?? LocalStorage.get(LocalStorageItem.UserId) ?? undefined;
