@@ -27,11 +27,13 @@
 					Понятность: <strong>{{ comment.raw.mark_clarity }}</strong>
 				</v-col>
 			</v-row>
-			<p v-if="comment.raw.text" class="mt-2">{{ comment.raw.text }}</p>
+			<div v-for="(paragraph, idx) in redactedText" :key="idx">
+				<p class="mt-2">{{ paragraph }}</p>
+			</div>
 		</template>
 		<template #append>
 			<v-col class="text-right">
-				<strong>{{ (mark_general > 0 ? '+' : '') + mark_general.toFixed(2) }}</strong>
+				<strong>{{ (markGeneral > 0 ? '+' : '') + markGeneral.toFixed(2) }}</strong>
 			</v-col>
 			<v-col v-if="isUserAdmin">
 				<v-menu location-strategy="connected" location="bottom">
@@ -58,13 +60,12 @@
 
 <script setup lang="ts">
 import apiClient from '@/api';
-import { onUpdated, ref } from 'vue';
+import { onMounted, onUpdated, ref } from 'vue';
 import { useProfileStore } from '@/store';
 
 const profileStore = useProfileStore();
 const isUserAdmin = ref(false);
 isUserAdmin.value = profileStore.isAdmin();
-
 const propsLocal = defineProps({
 	photo: { type: String, required: true },
 	comment: { type: Object, required: true },
@@ -72,7 +73,8 @@ const propsLocal = defineProps({
 
 const emit = defineEmits(['comment-deleted']);
 
-const mark_general = ref(0);
+const markGeneral = ref(0);
+const redactedText = ref<String[]>([]);
 
 async function deleteComment() {
 	console.log(propsLocal.comment);
@@ -82,12 +84,30 @@ async function deleteComment() {
 	emit('comment-deleted');
 }
 
-onUpdated(
-	() =>
-		(mark_general.value =
-			(propsLocal.comment.raw.mark_clarity +
-				propsLocal.comment.raw.mark_kindness +
-				propsLocal.comment.raw.mark_freebie) /
-			3),
-);
+function cleanupText(text: string) {
+	return text
+		.replace(/&lt;/g, '<')
+		.replace(/&rt;/g, '>')
+		.replace(/\\\\&quot;/g, '"')
+		.replace(/\\\\/g, '\\')
+		.split('\\n');
+}
+
+onUpdated(() => {
+	markGeneral.value =
+		(propsLocal.comment.raw.mark_clarity +
+			propsLocal.comment.raw.mark_kindness +
+			propsLocal.comment.raw.mark_freebie) /
+		3;
+	redactedText.value = cleanupText(propsLocal.comment.raw.text);
+});
+
+onMounted(() => {
+	markGeneral.value =
+		(propsLocal.comment.raw.mark_clarity +
+			propsLocal.comment.raw.mark_kindness +
+			propsLocal.comment.raw.mark_freebie) /
+		3;
+	redactedText.value = cleanupText(propsLocal.comment.raw.text);
+});
 </script>
