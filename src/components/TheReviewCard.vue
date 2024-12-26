@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import apiClient from '@/api';
-import { ref } from 'vue';
+import { onUpdated, ref } from 'vue';
 import { useProfileStore } from '@/store';
 
 const profileStore = useProfileStore();
@@ -72,9 +72,7 @@ const propsLocal = defineProps({
 
 const emit = defineEmits(['comment-deleted']);
 
-const mark_general =
-	(propsLocal.comment.raw.mark_clarity + propsLocal.comment.raw.mark_kindness + propsLocal.comment.raw.mark_freebie) /
-	3;
+const mark_general = ref(0);
 
 async function deleteComment() {
 	console.log(propsLocal.comment);
@@ -83,4 +81,13 @@ async function deleteComment() {
 	});
 	emit('comment-deleted');
 }
+
+onUpdated(
+	() =>
+		(mark_general.value =
+			(propsLocal.comment.raw.mark_clarity +
+				propsLocal.comment.raw.mark_kindness +
+				propsLocal.comment.raw.mark_freebie) /
+			3),
+);
 </script>
