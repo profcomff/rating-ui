@@ -94,6 +94,7 @@ function cleanupText(text: string) {
 		.replace(/\\r/g, '')
 		.replace(/<br \/>/g, '')
 		.replace(/\\"/g, '"')
+		.replace(/\\"/g, '"')
 		.split('\\n');
 }
 
