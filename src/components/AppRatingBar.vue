@@ -4,7 +4,7 @@
 			class="w-50 text-body-2 my-2 text-small"
 			:size="mobile ? 110 : 130"
 			height="20"
-			max="4"
+			max="2"
 			reverse
 			:model-value="value < 0 ? -value : 0"
 			:color="color"
@@ -13,7 +13,7 @@
 			class="w-50 text-body-2 my-2 text-small"
 			:size="mobile ? 110 : 130"
 			height="20"
-			max="4"
+			max="2"
 			:model-value="value > 0 ? value : 0"
 			:color="color"
 		></v-progress-linear>
