@@ -64,8 +64,14 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 		</div>
 		<div class="mb-4">
 			<v-row justify="space-between" no-gutters>
-				<v-col :cols="mobile ? '4' : '2'">
-					<v-card class="pr-1 mr-1" height="100px" variant="tonal" min-width="100px" rounded="xl">
+				<v-col :cols="mobile ? '5' : '2'">
+					<v-card
+						class="pr-1 mr-1"
+						:height="mobile ? '110px' : '100px'"
+						variant="tonal"
+						min-width="100px"
+						rounded="xl"
+					>
 						<template #prepend>
 							<v-icon :icon="'mdi-tree-outline'"></v-icon>
 						</template>
@@ -76,8 +82,14 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 						>
 					</v-card>
 				</v-col>
-				<v-col :cols="mobile ? '8' : '10'">
-					<v-card class="pl-1 ml-1" height="100px" color="#eee" variant="flat" rounded="xl">
+				<v-col :cols="mobile ? '7' : '10'">
+					<v-card
+						class="pl-1 ml-1"
+						:height="mobile ? '110px' : '100px'"
+						color="#eee"
+						variant="flat"
+						rounded="xl"
+					>
 						<v-card-item :class="mobile ? 'text-caption' : 'text-body-1'">
 							<p>
 								В рейтинге учитываются как отзывы из "старой" Дубинушки, так и новые, которые прошли
