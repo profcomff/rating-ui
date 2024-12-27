@@ -46,11 +46,31 @@ const middleName = ref(lecturer?.middle_name);
 const lecturerSubjects = ref(lecturer?.subjects);
 const photo = lecturer?.avatar_link ? `${PHOTO_BASE_PATH}${lecturer?.avatar_link}` : Placeholder;
 const subjectQuery = ref('');
-const warningMessage = ref('');
+const subjectWarningMessage = ref('');
+const textWarningMessage = ref('');
 const isAnonymous = ref(true);
 
+async function checkUnallowedSymbols(text: string) {
+	const unallowedSymbols = /[^a-zA-Zа-яА-Я!?&"'.,-^(){}[\]/ \n]+/g;
+	const foundSymbols = text.match(unallowedSymbols);
+	if (!foundSymbols) {
+		return false;
+	} else {
+		return foundSymbols;
+	}
+}
+
 async function sendReview() {
-	warningMessage.value = '';
+	subjectWarningMessage.value = '';
+	textWarningMessage.value = '';
+	const unallowedSymbols = await checkUnallowedSymbols(reviewText.value);
+	if (unallowedSymbols !== false) {
+		console.log(unallowedSymbols);
+		textWarningMessage.value =
+			'Недопустимые символы: ' + unallowedSymbols.reduce((x, acc) => acc + (acc.includes(x) ? '' : x));
+		console.log(textWarningMessage.value);
+		return;
+	}
 	if (lecturer && lecturerId && subjectQuery.value !== '' && reviewSubjects.includes(subjectQuery.value)) {
 		const { response } = await apiClient.POST('/rating/comment', {
 			params: { query: { lecturer_id: Number(lecturerId) } },
@@ -96,9 +116,9 @@ async function sendReview() {
 		}
 	} else {
 		if (subjectQuery.value == '' || subjectQuery.value == null) {
-			warningMessage.value = 'Выберите предмет';
+			subjectWarningMessage.value = 'Выберите предмет';
 		} else if (!SUBJECTS.includes(subjectQuery.value)) {
-			warningMessage.value = 'Введите корректный предмет';
+			subjectWarningMessage.value = 'Введите корректный предмет';
 		} else {
 			toastStore.push({
 				title: 'Что-то пошло не так...',
@@ -133,7 +153,7 @@ async function sendReview() {
 		/>
 		<v-combobox
 			v-model="subjectQuery"
-			:error-messages="warningMessage"
+			:error-messages="subjectWarningMessage"
 			hide-details="auto"
 			label="Выберите предмет"
 			required
@@ -147,9 +167,10 @@ async function sendReview() {
 		<div class="mx-2 mt-2">
 			<v-textarea
 				v-model="reviewText"
+				:error-messages="textWarningMessage"
 				density="compact"
 				label="Ваше мнение о преподавателе (необязательно)"
-				hide-details
+				hide-details="auto"
 			></v-textarea>
 			<div class="d-flex align-center mt-4">
 				<v-icon :icon="'mdi-star'"></v-icon>
