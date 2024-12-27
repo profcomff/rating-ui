@@ -17,13 +17,13 @@
 		</template>
 		<template #text>
 			<v-row no-gutters justify="space-between">
-				<v-col>
+				<v-col :cols="mobile ? 3 : 'auto'">
 					Доброта: <strong>{{ comment.raw.mark_kindness }}</strong>
 				</v-col>
-				<v-col class="text-center">
+				<v-col class="text-center" :cols="mobile ? 4 : 'auto'">
 					Халявность: <strong>{{ comment.raw.mark_freebie }}</strong>
 				</v-col>
-				<v-col class="text-right">
+				<v-col class="text-right" :cols="mobile ? 4 : 'auto'">
 					Понятность: <strong>{{ comment.raw.mark_clarity }}</strong>
 				</v-col>
 			</v-row>
@@ -62,8 +62,10 @@
 import apiClient from '@/api';
 import { onMounted, onUpdated, ref } from 'vue';
 import { useProfileStore } from '@/store';
+import { useDisplay } from 'vuetify';
 
 const profileStore = useProfileStore();
+const { mobile } = useDisplay();
 const isUserAdmin = ref(false);
 isUserAdmin.value = profileStore.isAdmin();
 const propsLocal = defineProps({
