@@ -88,9 +88,12 @@ async function deleteComment() {
 function cleanupText(text: string) {
 	return text
 		.replace(/&lt;/g, '<')
-		.replace(/&rt;/g, '>')
+		.replace(/&gt;/g, '>')
 		.replace(/\\\\&quot;/g, '"')
 		.replace(/\\\\/g, '\\')
+		.replace(/\\r/g, '')
+		.replace(/<br \/>/g, '')
+		.replace(/\\"/g, '"')
 		.split('\\n');
 }
 
