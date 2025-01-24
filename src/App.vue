@@ -6,7 +6,11 @@ import ToastList from '@/components/ToastList.vue';
 const profileStore = useProfileStore();
 
 onMounted(() => {
+	profileStore.clearLocalStorage();
 	profileStore.fromUrl();
+	if (!profileStore.isLoggedIn) {
+		console.log('Вы не залогинены, отзыв оставить не получится');
+	}
 });
 </script>
 
