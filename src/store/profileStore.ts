@@ -20,6 +20,7 @@ export const useProfileStore = defineStore('profile', () => {
 		if (urlToken === null) {
 			token.value = undefined;
 			isLoggedIn.value = false;
+			sessionScopes.value = [];
 		} else {
 			token.value = urlToken;
 			isLoggedIn.value = true;
