@@ -2,11 +2,23 @@
 import { useProfileStore } from '@/store';
 import { onMounted } from 'vue';
 import ToastList from '@/components/ToastList.vue';
+import { useToastStore } from './store/toastStore';
+import { ToastType } from './models';
 
 const profileStore = useProfileStore();
+const toastStore = useToastStore();
 
 onMounted(() => {
+	profileStore.clearLocalStorage();
 	profileStore.fromUrl();
+	if (!profileStore.isLoggedIn) {
+		toastStore.push({
+			title: 'Не получится оставить отзыв',
+			description: 'Вы не привязали ЛК МГУ к своему профилю или не вошли в профиль',
+			type: ToastType.Error,
+		});
+	}
+	console.log(profileStore.token);
 });
 </script>
 
