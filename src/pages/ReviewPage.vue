@@ -100,11 +100,11 @@ async function sendReview() {
 					type: ToastType.Warn,
 					description: 'Подождите немного перед тем, как отправить следующий отзыв',
 				});
-			} else if (profileStore.token === 'null') {
+			} else if (!profileStore.token) {
 				toastStore.push({
-					title: 'Вы не вошли в аккаунт',
+					title: 'Не получится оставить отзыв',
+					description: 'Вы не привязали ЛК МГУ к своему профилю или не вошли в профиль',
 					type: ToastType.Error,
-					description: 'Отзыв могут оставить только зарегистрированные пользователи',
 				});
 			} else {
 				toastStore.push({
