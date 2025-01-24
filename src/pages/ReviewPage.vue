@@ -102,8 +102,7 @@ async function sendReview() {
 				});
 			} else if (!profileStore.token) {
 				toastStore.push({
-					title: 'Не получится оставить отзыв',
-					description: 'Вы не привязали ЛК МГУ к своему профилю или не вошли в профиль',
+					title: 'Войдите в профиль, чтобы оставить отзыв',
 					type: ToastType.Error,
 				});
 			} else {

@@ -14,7 +14,7 @@ onMounted(() => {
 	if (!profileStore.isLoggedIn) {
 		toastStore.push({
 			title: 'Не получится оставить отзыв',
-			description: 'Вы не привязали ЛК МГУ к своему профилю или не вошли в профиль',
+			description: 'Вы не вошли в профиль',
 			type: ToastType.Error,
 		});
 	}
