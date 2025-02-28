@@ -85,7 +85,7 @@ const propsParent = defineProps({
 const searchQuery = defineModel('searchQuery', { type: String });
 const subject = defineModel('subject', { type: String });
 const order = defineModel('order', { type: String });
-const orderTypes = ['по общей оценке', 'по доброте', 'по халявности', 'по понятности', 'по фамилии'];
+const orderTypes = ['по релевантности', 'по общей оценке', 'по доброте', 'по халявности', 'по понятности', 'по фамилии'];
 const iconAscDesc = ref<string>('');
 
 const emits = defineEmits({

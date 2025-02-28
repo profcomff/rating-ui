@@ -23,7 +23,7 @@ const totalPages: Ref<number> = ref(1);
 // search state
 const name = ref(searchStore.name);
 const subject: Ref<Subject> = ref(searchStore.subject);
-let order = ref(searchStore.order);
+let order = ref(searchStore.order || 'по релевантности');
 const orderValues: Ref<Order> = ref(OrderFromText[order.value as keyof typeof OrderFromText]);
 const ascending = ref(searchStore.ascending);
 const page = ref(searchStore.page);
