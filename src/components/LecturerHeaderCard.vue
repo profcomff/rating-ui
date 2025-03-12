@@ -31,7 +31,7 @@ const props = defineProps({
 	firstName: { type: String, required: true },
 	middleName: { type: String, required: true },
 	subjects: {
-		type: null as unknown as PropType<Array<String> | null>,
+		type: null as unknown as PropType<Array<string> | null>,
 		required: false,
 		default: null,
 	},
