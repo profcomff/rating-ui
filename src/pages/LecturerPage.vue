@@ -40,9 +40,9 @@ async function loadLecturer() {
 	return res.data;
 }
 
-let howKind = lecturer?.mark_kindness ?? 0;
-let howFree = lecturer?.mark_freebie ?? 0;
-let howClear = lecturer?.mark_clarity ?? 0;
+const howKind = lecturer?.mark_kindness ?? 0;
+const howFree = lecturer?.mark_freebie ?? 0;
+const howClear = lecturer?.mark_clarity ?? 0;
 
 const lecturerPhoto = getPhoto(avatarLink.value);
 </script>

@@ -10,7 +10,7 @@
     "lint": "eslint src/",
     "lint:deadcode": "knip --exclude binaries,dependencies,unlisted",
 		"lint:circular": "dpdm --exit-code circular:1 --no-tree --no-warning --progress false --transform ./src/main.ts",
-    "format": "prettier src/ --write",
+    "format": "eslint src/ --fix && prettier src/ --write",
     "stylelint": "stylelint 'src/**/*.{vue,css}' --fix",
     "check": "vue-tsc && pnpm run format && pnpm run lint && pnpm run stylelint",
     "test": "echo ok"
