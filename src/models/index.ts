@@ -1,6 +1,5 @@
 import { components } from '@profcomff/api-uilib/src/openapi/rating';
 
-export type Review = components['schemas']['CommentGet'];
 export type Comment = components['schemas']['CommentGetAll'];
 
 export enum ToastType {

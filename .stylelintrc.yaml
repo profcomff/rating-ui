@@ -1,6 +1,3 @@
-processors:
-    - '@mapbox/stylelint-processor-arbitrary-tags':
-          fileFilterRegex: [/\.vue$/]
 extends:
     - stylelint-config-standard
     - stylelint-config-recommended-vue
@@ -9,6 +6,5 @@ plugins:
 rules:
     color-function-notation: modern
     selector-nested-pattern: '&'
-    no-empty-first-line: null
     no-empty-source: null
     csstools/use-nesting: true
