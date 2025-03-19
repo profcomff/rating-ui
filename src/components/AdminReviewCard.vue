@@ -7,9 +7,9 @@
 			<div class="text-h7">{{ formattedDate }} | {{ 'Анонимный отзыв' }}</div>
 		</template>
 		<div class="px-4 py-2">
-			<p ref="textElement" class="text-subtitle-2" :class="{ 'line-clamp': !expanded }">{{ comment.raw.text }}</p>
+			<p ref="commentText" class="text-subtitle-2" :class="{ 'line-clamp': !expanded }">{{ comment.raw.text }}</p>
 		</div>
-		<v-btn v-if="hasOverflow" variant="text" class="text-caption" @click="expanded = !expanded">
+		<v-btn v-if="showExpandButton" variant="text" class="text-caption" @click="expanded = !expanded">
 			{{ expanded ? 'Свернуть' : 'Развернуть' }}
 		</v-btn>
 		<template #actions>
@@ -49,8 +49,8 @@ const toastStore = useToastStore();
 const lecturerName = ref('');
 const formattedDate = ref('');
 const expanded = ref(false);
-const textElement = ref<HTMLElement | null>(null);
-const hasOverflow = ref(false);
+const showExpandButton = ref(false);
+const commentText = ref<HTMLElement | null>(null);
 
 onMounted(async () => {
 	const lecturer = await getLecturerName(props.comment.raw.lecturer_id);
@@ -60,20 +60,59 @@ onMounted(async () => {
 	formattedDate.value = Intl.DateTimeFormat().format(Date.parse(props.comment.raw.create_ts));
 
 	await nextTick();
-	checkOverflow();
-});
-
-function checkOverflow() {
-	if (textElement.value) {
-		const el = textElement.value;
-		hasOverflow.value = el.scrollHeight > el.clientHeight;
+	if (commentText.value) {
+		showExpandButton.value = commentText.value.scrollHeight > commentText.value.clientHeight;
 	}
-}
+});
 
 async function getLecturerName(lecturerId: string) {
 	const { data } = await apiClient.GET('/rating/lecturer/{id}', {
 		params: { path: { id: Number(lecturerId) } },
 	});
 	return data;
+}
+
+async function approveComment(id: string) {
+	const { response } = await apiClient.PATCH('/rating/comment/{uuid}', {
+		params: {
+			path: { uuid: id },
+			query: { review_status: 'approved' },
+		},
+	});
+	if (response.ok) {
+		toastStore.push({
+			title: 'Отзыв одобрен',
+			type: ToastType.Info,
+		});
+		emit('decided');
+	} else {
+		toastStore.push({
+			title: 'Ошибка при одобрении',
+			type: ToastType.Error,
+			description: response.statusText,
+		});
+	}
+}
+
+async function dismissComment(id: string) {
+	const { response } = await apiClient.PATCH('/rating/comment/{uuid}', {
+		params: {
+			path: { uuid: id },
+			query: { review_status: 'dismissed' },
+		},
+	});
+	if (response.ok) {
+		toastStore.push({
+			title: 'Отзыв отклонен',
+			type: ToastType.Info,
+		});
+		emit('decided');
+	} else {
+		toastStore.push({
+			title: 'Ошибка при отклонении',
+			type: ToastType.Error,
+			description: response.statusText,
+		});
+	}
 }
 </script>
