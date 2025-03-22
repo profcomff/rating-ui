@@ -6,9 +6,12 @@
 		<template #subtitle>
 			<div class="text-h7">{{ formattedDate }} | {{ 'Анонимный отзыв' }}</div>
 		</template>
-		<template #text>
-			<p class="text-subtitle-2">{{ comment.raw.text }}</p>
-		</template>
+		<div class="px-4 py-2">
+			<p ref="commentText" class="text-subtitle-2" :class="{ 'line-clamp': !expanded }">{{ comment.raw.text }}</p>
+		</div>
+		<v-btn v-if="showExpandButton" variant="text" class="text-caption" @click="expanded = !expanded">
+			{{ expanded ? 'Свернуть' : 'Развернуть' }}
+		</v-btn>
 		<template #actions>
 			<v-btn class="font-weight-bold" color="primary" variant="text" @click="approveComment(comment.raw.uuid)">
 				Одобрить
@@ -20,8 +23,18 @@
 	</v-card>
 </template>
 
+<style scoped>
+.line-clamp {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	white-space: pre-line;
+}
+</style>
+
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import apiClient from '@/api';
 import { ToastType } from '@/models';
 import { useToastStore } from '@/store/toastStore';
@@ -35,6 +48,9 @@ const emit = defineEmits(['decided']);
 const toastStore = useToastStore();
 const lecturerName = ref('');
 const formattedDate = ref('');
+const expanded = ref(false);
+const showExpandButton = ref(false);
+const commentText = ref<HTMLElement | null>(null);
 
 onMounted(async () => {
 	const lecturer = await getLecturerName(props.comment.raw.lecturer_id);
@@ -42,6 +58,11 @@ onMounted(async () => {
 		? [lecturer.last_name, lecturer.first_name, lecturer.middle_name].join(' ')
 		: 'Неизвестный лектор';
 	formattedDate.value = Intl.DateTimeFormat().format(Date.parse(props.comment.raw.create_ts));
+
+	await nextTick();
+	if (commentText.value) {
+		showExpandButton.value = commentText.value.scrollHeight > commentText.value.clientHeight;
+	}
 });
 
 async function getLecturerName(lecturerId: string) {
@@ -66,7 +87,7 @@ async function approveComment(id: string) {
 		emit('decided');
 	} else {
 		toastStore.push({
-			title: 'Что-то пошло не так при одобрении отзыва',
+			title: 'Ошибка при одобрении',
 			type: ToastType.Error,
 			description: response.statusText,
 		});
@@ -88,7 +109,7 @@ async function dismissComment(id: string) {
 		emit('decided');
 	} else {
 		toastStore.push({
-			title: 'Что-то пошло не так при отклонении отзыва',
+			title: 'Ошибка при отклонении',
 			type: ToastType.Error,
 			description: response.statusText,
 		});
