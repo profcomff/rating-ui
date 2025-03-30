@@ -18,3 +18,32 @@ export function adaptNumeral(number: number | undefined, singular: string, plura
 		}
 	}
 }
+
+/**
+ * Копирует URL с параметрами в буфер обмена
+ * @param params Объект с параметрами для URL
+ * @param path Путь URL (например, 'lecturer')
+ * @returns Promise<boolean> Успешно ли скопирован URL
+ */
+export async function copyUrlToClipboard(params: Record<string, any>, path: string = ''): Promise<boolean> {
+	try {
+		const url = new URL(window.location.href);
+		const baseUrl = `${url.origin}${url.pathname}`;
+
+		// Создаем новый URL с базовым путем и добавляем указанный путь
+		const shareUrl = new URL(path, baseUrl);
+
+		// Добавляем все параметры в URL
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== null && value !== '') {
+				shareUrl.searchParams.set(key, String(value));
+			}
+		});
+
+		await navigator.clipboard.writeText(shareUrl.toString());
+		return true;
+	} catch (error) {
+		console.error('Ошибка при копировании URL:', error);
+		return false;
+	}
+}

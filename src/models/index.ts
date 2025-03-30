@@ -15,7 +15,14 @@ export interface Toast {
 	description?: string;
 }
 
-export type Order = 'mark_general' | 'mark_kindness' | 'mark_freebie' | 'mark_clarity' | 'mark_weighted' | 'last_name' | undefined;
+export type Order =
+	| 'mark_general'
+	| 'mark_kindness'
+	| 'mark_freebie'
+	| 'mark_clarity'
+	| 'mark_weighted'
+	| 'last_name'
+	| undefined;
 export enum OrderFromText {
 	'по релевантности' = 'mark_weighted',
 	'по общей оценке' = 'mark_general',

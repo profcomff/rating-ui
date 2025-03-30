@@ -57,6 +57,17 @@
 								@click.stop="changeAscDesc"
 							></v-btn>
 						</v-row>
+
+						<v-btn
+							class="w-100 mb-2"
+							color="primary"
+							variant="tonal"
+							density="default"
+							prepend-icon="mdi-share-variant"
+							text="Поделиться поиском"
+							@click="shareSearch"
+						/>
+
 						<v-btn
 							v-if="isAdmin"
 							class="w-100"
@@ -71,22 +82,34 @@
 			</v-menu>
 		</template>
 	</v-text-field>
+
+	<v-snackbar v-model="shareSuccess" color="success" timeout="2000"> Ссылка скопирована в буфер обмена </v-snackbar>
 </template>
 
 <script setup lang="ts">
 import { SUBJECTS } from '@/constants';
 import { ref } from 'vue';
+import { copyUrlToClipboard } from '@/utils';
 
 const propsParent = defineProps({
 	isAdmin: { type: Boolean, required: true },
 	ascending: { type: Boolean, required: true },
+	page: { type: Number, default: 1 },
 });
 
 const searchQuery = defineModel('searchQuery', { type: String });
 const subject = defineModel('subject', { type: String });
 const order = defineModel('order', { type: String });
-const orderTypes = ['по релевантности', 'по общей оценке', 'по доброте', 'по халявности', 'по понятности', 'по фамилии'];
+const orderTypes = [
+	'по релевантности',
+	'по общей оценке',
+	'по доброте',
+	'по халявности',
+	'по понятности',
+	'по фамилии',
+];
 const iconAscDesc = ref<string>('');
+const shareSuccess = ref(false);
 
 const emits = defineEmits({
 	'find-lecturer': () => {
@@ -105,5 +128,23 @@ function changeAscDesc() {
 			? 'mdi-sort-alphabetical-ascending'
 			: 'mdi-sort-alphabetical-descending';
 	emits('changed-asc-desc');
+}
+
+async function shareSearch() {
+	const params: Record<string, any> = {};
+
+	if (searchQuery.value) params.query = searchQuery.value;
+	if (order.value && order.value !== 'по релевантности') params.order = order.value;
+	if (subject.value) params.subject = subject.value;
+	if (propsParent.page > 1) params.page = propsParent.page;
+
+	// Значение ascending обратное иконке (если иконка ascending, то значение false)
+	const isAscending = iconAscDesc.value === 'mdi-sort-alphabetical-ascending';
+	if (!isAscending) params.asc = false;
+
+	shareSuccess.value = await copyUrlToClipboard(params);
+	setTimeout(() => {
+		shareSuccess.value = false;
+	}, 2000);
 }
 </script>

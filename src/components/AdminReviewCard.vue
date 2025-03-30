@@ -19,9 +19,6 @@
 			<v-btn class="font-weight-bold" color="#B3261E" variant="text" @click="dismissComment(comment.raw.uuid)">
 				Отклонить
 			</v-btn>
-			<v-btn class="font-weight-bold" color="primary" variant="text" @click="copyLecturerLink">
-				Копировать ссылку
-			</v-btn>
 		</template>
 	</v-card>
 </template>
@@ -41,7 +38,6 @@ import { ref, onMounted, nextTick } from 'vue';
 import apiClient from '@/api';
 import { ToastType } from '@/models';
 import { useToastStore } from '@/store/toastStore';
-import { getLecturerUrl, copyToClipboard } from '@/utils/urlUtils';
 
 const props = defineProps({
 	comment: { type: Object, required: true },
@@ -116,23 +112,6 @@ async function dismissComment(id: string) {
 			title: 'Ошибка при отклонении',
 			type: ToastType.Error,
 			description: response.statusText,
-		});
-	}
-}
-
-async function copyLecturerLink() {
-	try {
-		const url = getLecturerUrl(Number(props.comment.raw.lecturer_id));
-		await copyToClipboard(url);
-		toastStore.push({
-			title: 'Ссылка скопирована',
-			type: ToastType.Info,
-		});
-	} catch (error) {
-		toastStore.push({
-			title: 'Ошибка при копировании ссылки',
-			type: ToastType.Error,
-			description: 'Не удалось скопировать ссылку в буфер обмена',
 		});
 	}
 }

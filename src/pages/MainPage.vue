@@ -24,7 +24,7 @@ const totalPages: Ref<number> = ref(1);
 const name = ref(searchStore.name);
 const subject: Ref<Subject> = ref(searchStore.subject);
 let order = ref(searchStore.order || 'по релевантности');
-const orderValues: Ref<Order> = ref(OrderFromText[order.value as keyof typeof OrderFromText]);
+const orderValues = ref(OrderFromText[order.value as keyof typeof OrderFromText]);
 const ascending = ref(searchStore.ascending);
 const page = ref(searchStore.page);
 
@@ -95,6 +95,7 @@ async function changeAscOrder() {
 					v-model:order="order"
 					:is-admin="userAdmin"
 					:ascending="ascending"
+					:page="page"
 					@update:subject="filterLecturers"
 					@update:order="orderLecturers"
 					@update:search-query="findLecturer"
