@@ -76,7 +76,7 @@ const propsLocal = defineProps({
 const emit = defineEmits(['comment-deleted']);
 
 const markGeneral = ref(0);
-const redactedText = ref<String[]>([]);
+const redactedText = ref<string[]>([]);
 
 async function deleteComment() {
 	await apiClient.DELETE('/rating/comment/{uuid}', {
