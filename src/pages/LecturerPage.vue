@@ -7,7 +7,7 @@ import Placeholder from '@/assets/profile_image_placeholder.webp';
 import AppRatingBar from '@/components/AppRatingBar.vue';
 import TheReviewCard from '@/components/TheReviewCard.vue';
 import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
-import { adaptNumeral, getPhoto } from '@/utils';
+import { adaptNumeral, getPhoto, copyUrlToClipboard } from '@/utils';
 
 const { mobile } = useDisplay();
 
@@ -25,6 +25,7 @@ const lastName = ref(lecturer?.last_name);
 const middleName = ref(lecturer?.middle_name);
 const avatarLink = ref(lecturer?.avatar_link);
 const lecturerSubjects = ref(lecturer?.subjects);
+const shareSuccess = ref(false);
 
 async function loadLecturer() {
 	const res = await apiClient.GET(`/rating/lecturer/{id}`, {
@@ -45,6 +46,13 @@ const howFree = lecturer?.mark_freebie ?? 0;
 const howClear = lecturer?.mark_clarity ?? 0;
 
 const lecturerPhoto = getPhoto(avatarLink.value);
+
+async function shareLecturerPage() {
+	shareSuccess.value = await copyUrlToClipboard({ lecturer_id: lecturerId }, 'lecturer');
+	setTimeout(() => {
+		shareSuccess.value = false;
+	}, 2000);
+}
 </script>
 
 <template>
@@ -62,6 +70,23 @@ const lecturerPhoto = getPhoto(avatarLink.value);
 			<AppRatingBar :value="howFree" label="халявность"></AppRatingBar>
 			<AppRatingBar :value="howClear" label="понятность"></AppRatingBar>
 		</div>
+
+		<v-btn
+			color="primary"
+			variant="tonal"
+			block
+			rounded="lg"
+			class="mb-3"
+			prepend-icon="mdi-share-variant"
+			@click="shareLecturerPage"
+		>
+			Поделиться
+		</v-btn>
+
+		<v-snackbar v-model="shareSuccess" color="success" timeout="2000">
+			Ссылка скопирована в буфер обмена
+		</v-snackbar>
+
 		<div class="mb-4">
 			<v-row justify="space-between" no-gutters>
 				<v-col :cols="mobile ? '5' : '2'">

@@ -23,8 +23,8 @@ const totalPages: Ref<number> = ref(1);
 // search state
 const name = ref(searchStore.name);
 const subject: Ref<Subject> = ref(searchStore.subject);
-const order = ref(searchStore.order || 'по релевантности');
-const orderValues: Ref<Order> = ref(OrderFromText[order.value as keyof typeof OrderFromText]);
+let order = ref(searchStore.order || 'по релевантности');
+const orderValues = ref(OrderFromText[order.value as keyof typeof OrderFromText] as Order);
 const ascending = ref(searchStore.ascending);
 const page = ref(searchStore.page);
 
@@ -69,7 +69,7 @@ async function findLecturer() {
 
 async function orderLecturers() {
 	page.value = 1;
-	orderValues.value = OrderFromText[order.value as keyof typeof OrderFromText];
+	orderValues.value = OrderFromText[order.value as keyof typeof OrderFromText] as Order;
 	await loadLecturers();
 }
 
@@ -95,6 +95,7 @@ async function changeAscOrder() {
 					v-model:order="order"
 					:is-admin="userAdmin"
 					:ascending="ascending"
+					:page="page"
 					@update:subject="filterLecturers"
 					@update:order="orderLecturers"
 					@update:search-query="findLecturer"
