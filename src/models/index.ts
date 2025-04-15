@@ -22,6 +22,7 @@ export type Order =
 	| 'mark_weighted'
 	| 'last_name'
 	| undefined;
+
 export enum OrderFromText {
 	'по релевантности' = 'mark_weighted',
 	'по общей оценке' = 'mark_general',
@@ -30,5 +31,6 @@ export enum OrderFromText {
 	'по понятности' = 'mark_clarity',
 	'по фамилии' = 'last_name',
 }
+
 export type Subject = string;
 export type Lecturer = components['schemas']['LecturerGet'];
