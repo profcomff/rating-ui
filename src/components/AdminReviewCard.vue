@@ -73,7 +73,7 @@ async function getLecturerName(lecturerId: string) {
 }
 
 async function approveComment(id: string) {
-	const { response } = await apiClient.PATCH('/rating/comment/{uuid}', {
+	const { response } = await apiClient.PATCH('/rating/comment/{uuid}/review', {
 		params: {
 			path: { uuid: id },
 			query: { review_status: 'approved' },
@@ -95,7 +95,7 @@ async function approveComment(id: string) {
 }
 
 async function dismissComment(id: string) {
-	const { response } = await apiClient.PATCH('/rating/comment/{uuid}', {
+	const { response } = await apiClient.PATCH('/rating/comment/{uuid}/review', {
 		params: {
 			path: { uuid: id },
 			query: { review_status: 'dismissed' },
