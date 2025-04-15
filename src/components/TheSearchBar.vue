@@ -131,6 +131,7 @@ function changeAscDesc() {
 }
 
 async function shareSearch() {
+	/* eslint-disable @typescript-eslint/no-explicit-any */
 	const params: Record<string, any> = {};
 
 	if (searchQuery.value) params.query = searchQuery.value;

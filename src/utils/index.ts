@@ -25,6 +25,7 @@ export function adaptNumeral(number: number | undefined, singular: string, plura
  * @param path Путь URL (например, 'lecturer')
  * @returns Promise<boolean> Успешно ли скопирован URL
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function copyUrlToClipboard(params: Record<string, any>, path: string = ''): Promise<boolean> {
 	try {
 		const url = new URL(window.location.href);
