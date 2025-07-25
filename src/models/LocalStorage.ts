@@ -2,6 +2,7 @@ export enum LocalStorageItem {
 	Token = 'token',
 	TokenScopes = 'token-scopes',
 	UserId = 'user-id',
+	ReviewList = 'review-list',
 }
 
 export class LocalStorage {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import apiClient from '@/api';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import TheReviewButtons from '@/components/TheReviewButtons.vue';
@@ -8,10 +8,11 @@ import { useToastStore } from '@/store/toastStore';
 import { ToastType } from '@/models';
 import { router } from '@/router';
 import { PHOTO_BASE_PATH, SUBJECTS } from '@/constants';
-import { useProfileStore } from '@/store';
+import { useProfileStore, useReviewStore } from '@/store';
 
 const toastStore = useToastStore();
 const profileStore = useProfileStore();
+const reviewStore = useReviewStore();
 const reviewSubjects = SUBJECTS.slice();
 reviewSubjects.unshift('Другой предмет');
 
@@ -49,6 +50,34 @@ const subjectQuery = ref('');
 const subjectWarningMessage = ref('');
 const textWarningMessage = ref('');
 const isAnonymous = ref(true);
+const isSubmitted = ref(false);
+
+onMounted(() => {
+	if (!lecturerId) return;
+
+	const draft = reviewStore.getById(lecturerId);
+	if (draft) {
+		subjectQuery.value = draft.subject;
+		reviewText.value = draft.text;
+		kindReview.value = draft.mark_kindness;
+		freebieReview.value = draft.mark_freebie;
+		clearReview.value = draft.mark_clarity;
+		isAnonymous.value = draft.is_anonymous;
+	}
+});
+
+onUnmounted(() => {
+	if (lecturerId && !isSubmitted.value) {
+		reviewStore.save(lecturerId, {
+			text: reviewText.value,
+			subject: subjectQuery.value,
+			mark_clarity: clearReview.value,
+			mark_freebie: freebieReview.value,
+			mark_kindness: kindReview.value,
+			is_anonymous: isAnonymous.value,
+		});
+	}
+});
 
 async function checkUnallowedSymbols(text: string) {
 	const unallowedSymbols = /[^a-zA-Zа-яА-Я!?&"'.,-^(){}[\]/ \n]+/g;
@@ -84,6 +113,9 @@ async function sendReview() {
 			},
 		});
 		if (response.ok) {
+			isSubmitted.value = true;
+			reviewStore.removeById(lecturerId);
+
 			toastStore.push({
 				title: 'Отзыв отправлен!',
 				type: ToastType.Info,
