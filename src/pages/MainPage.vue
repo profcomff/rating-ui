@@ -5,7 +5,7 @@ import apiClient from '@/api';
 import { useProfileStore } from '@/store';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import TheSearchBar from '@/components/TheSearchBar.vue';
-import TheLecturerSearchCard from '@/components/TheLecturerSearchCard.vue';
+import TheLecturerSearchCard from '@/components/TheLecturerSearchCompactCard.vue';
 import { Lecturer, Order, OrderFromText, Subject } from '@/models';
 import { getPhoto } from '@/utils';
 import { useSearchStore } from '@/store/searchStore';
@@ -89,31 +89,16 @@ async function changeAscOrder() {
 	<v-container class="ma-0 py-2">
 		<v-data-iterator :items="lecturers" :items-per-page="itemsPerPage">
 			<template #header>
-				<TheSearchBar
-					v-model:search-query="name"
-					v-model:subject="subject"
-					v-model:order="order"
-					:is-admin="userAdmin"
-					:ascending="ascending"
-					:page="page"
-					@update:subject="filterLecturers"
-					@update:order="orderLecturers"
-					@update:search-query="findLecturer"
-					@changed-asc-desc="changeAscOrder"
-				/>
+				<TheSearchBar v-model:search-query="name" v-model:subject="subject" v-model:order="order"
+					:is-admin="userAdmin" :ascending="ascending" :page="page" @update:subject="filterLecturers"
+					@update:order="orderLecturers" @update:search-query="findLecturer"
+					@changed-asc-desc="changeAscOrder" />
 			</template>
 
 			<template #default="{ items }">
-				<TheLecturerSearchCard
-					v-for="(item, idx) in items"
-					:key="idx"
-					:lecturer="item.raw"
-					:photo="lecturersPhotos[idx]"
-					:rating="(page - 1) * itemsPerPage + idx + 1"
-					class="py-0"
-					variant="elevated"
-					@click="toLecturerPage(item.raw.id)"
-				/>
+				<TheLecturerSearchCard v-for="(item, idx) in items" :key="idx" :lecturer="item.raw"
+					:photo="lecturersPhotos[idx]" :rating="(page - 1) * itemsPerPage + idx + 1" class="py-0"
+					variant="elevated" @click="toLecturerPage(item.raw.id)" />
 			</template>
 
 			<template #no-data>
@@ -122,16 +107,9 @@ async function changeAscOrder() {
 
 			<template #footer>
 				<div v-if="lecturers && totalPages > 1">
-					<v-pagination
-						v-model="page"
-						active-color="primary"
-						variant="elevated"
-						:length="totalPages"
-						:total-visible="1"
-						:show-first-last-page="true"
-						ellipsis=""
-						@update:model-value="loadLecturers"
-					/>
+					<v-pagination v-model="page" active-color="primary" variant="elevated" :length="totalPages"
+						:total-visible="1" :show-first-last-page="true" ellipsis=""
+						@update:model-value="loadLecturers" />
 				</div>
 			</template>
 		</v-data-iterator>
