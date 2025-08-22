@@ -93,17 +93,33 @@ async function changeAscOrder() {
 
 <template>
 	<v-container class="ma-0 py-2">
-		<TheSearchBar v-model:search-query="name" v-model:subject="subject" v-model:order="order" :is-admin="userAdmin"
-			:ascending="ascending" :page="page" @update:subject="filterLecturers" @update:order="orderLecturers"
-			@update:search-query="findLecturer" @changed-asc-desc="changeAscOrder" />
+		<TheSearchBar
+			v-model:search-query="name"
+			v-model:subject="subject"
+			v-model:order="order"
+			:is-admin="userAdmin"
+			:ascending="ascending"
+			:page="page"
+			@update:subject="filterLecturers"
+			@update:order="orderLecturers"
+			@update:search-query="findLecturer"
+			@changed-asc-desc="changeAscOrder"
+		/>
 
 		<!-- Обычный режим с карточками -->
 		<div v-if="!isCompactView">
 			<v-data-iterator :items="lecturers" :items-per-page="itemsPerPage">
 				<template #default="{ items }">
-					<TheLecturerSearchCard v-for="(item, idx) in items" :key="idx" :lecturer="item.raw"
-						:photo="lecturersPhotos[idx]" :rating="(page - 1) * itemsPerPage + idx + 1" class="py-0"
-						variant="elevated" @click="toLecturerPage(item.raw.id)" />
+					<TheLecturerSearchCard
+						v-for="(item, idx) in items"
+						:key="idx"
+						:lecturer="item.raw"
+						:photo="lecturersPhotos[idx]"
+						:rating="(page - 1) * itemsPerPage + idx + 1"
+						class="py-0"
+						variant="elevated"
+						@click="toLecturerPage(item.raw.id)"
+					/>
 				</template>
 
 				<template #no-data>
@@ -114,20 +130,36 @@ async function changeAscOrder() {
 
 		<!-- Компактный режим с таблицей -->
 		<div v-else>
-			<TheLecturerSearchCompactCard v-if="lecturers && lecturers.length > 0" :lecturers="lecturers"
-				:ratings="lecturerRatings" @lecturer-click="toLecturerPage" />
+			<TheLecturerSearchCompactCard
+				v-if="lecturers && lecturers.length > 0"
+				:lecturers="lecturers"
+				:ratings="lecturerRatings"
+				@lecturer-click="toLecturerPage"
+			/>
 			<div v-else class="ma-2">Ничего не нашли :(</div>
 		</div>
 
 		<!-- Пагинация и переключатель режима -->
 		<div v-if="lecturers && totalPages > 1" class="d-flex align-center justify-center mt-4">
-			<v-btn icon @click="isCompactView = !isCompactView" class="mr-2"
-				:title="isCompactView ? 'Обычный вид' : 'Компактный вид'">
+			<v-btn
+				icon
+				@click="isCompactView = !isCompactView"
+				class="mr-2"
+				:title="isCompactView ? 'Обычный вид' : 'Компактный вид'"
+			>
 				<v-icon>{{ isCompactView ? 'mdi-view-agenda' : 'mdi-table' }}</v-icon>
 			</v-btn>
 
-			<v-pagination v-model="page" active-color="primary" variant="elevated" :length="totalPages"
-				:total-visible="1" :show-first-last-page="true" ellipsis="" @update:model-value="loadLecturers" />
+			<v-pagination
+				v-model="page"
+				active-color="primary"
+				variant="elevated"
+				:length="totalPages"
+				:total-visible="1"
+				:show-first-last-page="true"
+				ellipsis=""
+				@update:model-value="loadLecturers"
+			/>
 		</div>
 	</v-container>
 </template>
