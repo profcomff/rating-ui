@@ -19,19 +19,21 @@
 		</template>
 
 		<template #[`item.subjects`]="{ item }">
-			<template v-if="getFilteredSubjects(item.raw.subjects).length > 0">
+			<v-chip-group v-if="getFilteredSubjects(item.raw.subjects).length > 0" class="my-1">
 				<v-chip
 					v-for="(subject, idx) in getFilteredSubjects(item.raw.subjects).slice(0, 2)"
 					:key="idx"
 					size="small"
-					class="mr-1 mb-1"
+					readonly
+					:ripple="false"
+					class="mr-1"
 				>
 					{{ subject }}
 				</v-chip>
-				<v-chip v-if="getFilteredSubjects(item.raw.subjects).length > 2" size="small" variant="outlined">
+				<v-chip v-if="getFilteredSubjects(item.raw.subjects).length > 2" size="small" readonly :ripple="false">
 					еще {{ getFilteredSubjects(item.raw.subjects).length - 2 }}
 				</v-chip>
-			</template>
+			</v-chip-group>
 		</template>
 
 		<template #[`item.comments`]="{ item }">
@@ -70,7 +72,7 @@ const props = defineProps({
 const emit = defineEmits(['lecturerClick']);
 
 const headers: CustomDataTableHeader[] = [
-	{ title: '№', key: 'rating', width: '50px', sortable: false },
+	{ title: '#', key: 'rating', width: '50px', sortable: false },
 	{ title: 'ФИО', key: 'fullName', sortable: false },
 	{ title: 'Предметы', key: 'subjects', sortable: false },
 	{ title: 'Отзывы', key: 'comments', align: 'center', sortable: false },
@@ -85,6 +87,7 @@ const tableItems = computed(() => {
 	}));
 });
 
+// Фильтруем предметы, исключая null значения
 function getFilteredSubjects(subjects: string[] | null | undefined): string[] {
 	if (!subjects) return [];
 	return subjects.filter((subject): subject is string => subject !== null);
