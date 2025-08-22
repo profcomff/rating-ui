@@ -48,7 +48,7 @@ const props = defineProps({
 const emit = defineEmits(['lecturerClick']);
 
 const headers = [
-    { title: '#', key: 'rating', width: '50px', sortable: false },
+    { title: '№', key: 'rating', width: '50px', sortable: false },
     { title: 'ФИО', key: 'fullName', sortable: false },
     { title: 'Предметы', key: 'subjects', sortable: false },
     { title: 'Отзывы', key: 'comments', align: 'center', sortable: false },
