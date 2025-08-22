@@ -1,5 +1,5 @@
 <template>
-    <v-data-table :headers="headers" :items="tableItems" hide-default-header hide-default-footer disable-sort
+    <v-data-table :headers="headers" :items="tableItems" hide-default-footer disable-sort
         class="elevation-1 lecturer-table" @click:row="handleRowClick">
         <template #item.rating="{ index }">
             {{ ratings[index] }}
@@ -46,7 +46,7 @@ const props = defineProps({
 const emit = defineEmits(['lecturerClick']);
 
 const headers = [
-    { title: '#', key: 'rating', width: '50px', sortable: false },
+    { title: '№', key: 'rating', width: '50px', sortable: false },
     { title: 'ФИО', key: 'fullName', sortable: false },
     { title: 'Предметы', key: 'subjects', sortable: false },
     { title: 'Отзывы', key: 'comments', align: 'center', sortable: false },
