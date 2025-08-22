@@ -1,98 +1,87 @@
 <template>
-    <v-data-table :headers="headers" :items="[processedLecturer]" :search="search" :items-per-page="itemsPerPage"
-        item-value="id" density="compact" hide-default-header hide-default-footer>
-
-        <template #item.rating="{ item }">
-            <v-chip size="small">
-                {{ item.rating }}
-            </v-chip>
+    <v-data-table :headers="headers" :items="tableItems" hide-default-header hide-default-footer disable-sort
+        class="elevation-1 lecturer-table" @click:row="handleRowClick">
+        <template #item.rating="{ index }">
+            {{ ratings[index] }}
         </template>
 
-        <template #item.name="{ item }">
+        <template #item.fullName="{ item }">
             <div>
-                <div class="text-h6">{{ item.last_name }}</div>
-                <div class="text-caption">
-                    {{ item.first_name }} {{ item.middle_name }}
-                </div>
+                <strong>{{ item.raw.last_name }}</strong>
+                {{ item.raw.first_name }} {{ item.raw.middle_name }}
             </div>
         </template>
 
         <template #item.subjects="{ item }">
-            <v-chip-group>
-                <v-chip v-for="subject in item.subjectsToShow.slice(0, 2)" :key="subject" size="small"
-                    variant="outlined">
-                    {{ subject }}
-                </v-chip>
-                <v-chip v-if="item.subjectsToShow.length > 2" size="small" variant="tonal">
-                    ещё +{{ item.subjectsToShow.length - 2 }}
-                </v-chip>
-            </v-chip-group>
+            <v-chip v-for="(subject, idx) in (item.raw.subjects || []).slice(0, 2)" :key="idx" size="small"
+                class="mr-1 mb-1">
+                {{ subject }}
+            </v-chip>
+            <v-chip v-if="item.raw.subjects && item.raw.subjects.length > 2" size="small" variant="outlined">
+                еще {{ item.raw.subjects.length - 2 }}
+            </v-chip>
         </template>
 
         <template #item.comments="{ item }">
-            {{ item.comments?.length || '—' }}
+            {{ item.raw.comments?.length || '—' }}
         </template>
 
         <template #item.mark_general="{ item }">
-            <v-rating :model-value="item.mark_general" half-increments readonly size="small" density="compact" />
-            <div class="text-caption">
-                {{ item.mark_general > 0 ? '+' : '' }}{{ item.mark_general?.toFixed(2) || '—' }}
-            </div>
+            <v-avatar size="30" :color="getMarkColor(item.raw.mark_general)" class="white--text">
+                {{ formatMark(item.raw.mark_general) }}
+            </v-avatar>
         </template>
     </v-data-table>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
-import { useDisplay } from 'vuetify'
-
-const { mobile } = useDisplay()
+import { computed } from 'vue';
+import { Lecturer } from '@/models';
 
 const props = defineProps({
-    lecturer: { type: Object, required: true },
-    photo: { type: String, required: true },
-    rating: { type: Number, required: true },
-})
+    lecturers: { type: Array as () => Lecturer[], required: true },
+    ratings: { type: Array as () => number[], required: true }
+});
 
-const search = ref('')
-const itemsPerPage = ref(10)
-
-// Автоматическое определение количества элементов на странице
-const updateItemsPerPage = () => {
-    if (mobile.value) {
-        itemsPerPage.value = 5
-    } else {
-        // Рассчитываем, сколько элементов помещается на экране
-        const rowHeight = 60; // Предполагаемая высота строки
-        const tableHeaderHeight = 120; // Высота заголовка и поиска
-        const paginationHeight = 50; // Высота пагинации
-        const availableHeight = window.innerHeight - tableHeaderHeight - paginationHeight;
-        itemsPerPage.value = Math.max(1, Math.floor(availableHeight / rowHeight));
-    }
-}
-
-onMounted(() => {
-    updateItemsPerPage()
-    window.addEventListener('resize', updateItemsPerPage)
-})
-
-onUnmounted(() => {
-    window.removeEventListener('resize', updateItemsPerPage)
-})
+const emit = defineEmits(['lecturerClick']);
 
 const headers = [
-    { title: 'Рейтинг', key: 'rating', width: '100px' },
-    { title: 'ФИО', key: 'name', sortable: true },
-    { title: 'Предметы', key: 'subjects' },
-    { title: 'Отзывы', key: 'comments', align: 'end', width: '100px' },
-    { title: 'Оценка', key: 'mark_general', align: 'end', width: '130px' }
-]
+    { title: '#', key: 'rating', width: '50px', sortable: false },
+    { title: 'ФИО', key: 'fullName', sortable: false },
+    { title: 'Предметы', key: 'subjects', sortable: false },
+    { title: 'Отзывы', key: 'comments', align: 'center', sortable: false },
+    { title: 'Оценка', key: 'mark_general', align: 'center', sortable: false }
+];
 
-const processedLecturer = computed(() => {
-    return {
-        ...props.lecturer,
-        rating: props.rating,
-        subjectsToShow: props.lecturer.subjects?.filter(item => item !== null) || []
-    }
-})
+// Преобразование lecturers в нужный формат
+const tableItems = computed(() => {
+    if (!props.lecturers) return [];
+    return props.lecturers.map(lecturer => ({
+        raw: lecturer
+    }));
+});
+
+function handleRowClick(_event: any, { item }: any) {
+    emit('lecturerClick', item.raw.id);
+}
+
+function formatMark(mark: number) {
+    if (!mark && mark !== 0) return '—';
+    return mark > 0 ? `+${mark.toFixed(1)}` : mark.toFixed(1);
+}
+
+function getMarkColor(mark: number) {
+    if (!mark && mark !== 0) return 'grey';
+    return mark > 0 ? 'green' : mark === 0 ? 'grey' : 'red';
+}
 </script>
+
+<style scoped>
+.lecturer-table {
+    cursor: pointer;
+}
+
+:deep(.lecturer-table tbody tr:hover) {
+    background-color: rgb(0 0 0 / 4%);
+}
+</style>
