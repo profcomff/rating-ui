@@ -13,13 +13,15 @@
         </template>
 
         <template #item.subjects="{ item }">
-            <v-chip v-for="(subject, idx) in (item.raw.subjects || []).slice(0, 2)" :key="idx" size="small"
-                class="mr-1 mb-1">
-                {{ subject }}
-            </v-chip>
-            <v-chip v-if="item.raw.subjects && item.raw.subjects.length > 2" size="small" variant="outlined">
-                еще {{ item.raw.subjects.length - 2 }}
-            </v-chip>
+            <template v-if="getFilteredSubjects(item.raw.subjects).length > 0">
+                <v-chip v-for="(subject, idx) in getFilteredSubjects(item.raw.subjects).slice(0, 2)" :key="idx"
+                    size="small" class="mr-1 mb-1">
+                    {{ subject }}
+                </v-chip>
+                <v-chip v-if="getFilteredSubjects(item.raw.subjects).length > 2" size="small" variant="outlined">
+                    еще {{ getFilteredSubjects(item.raw.subjects).length - 2 }}
+                </v-chip>
+            </template>
         </template>
 
         <template #item.comments="{ item }">
@@ -46,20 +48,25 @@ const props = defineProps({
 const emit = defineEmits(['lecturerClick']);
 
 const headers = [
-    { title: '№', key: 'rating', width: '50px', sortable: false },
+    { title: '#', key: 'rating', width: '50px', sortable: false },
     { title: 'ФИО', key: 'fullName', sortable: false },
     { title: 'Предметы', key: 'subjects', sortable: false },
     { title: 'Отзывы', key: 'comments', align: 'center', sortable: false },
     { title: 'Оценка', key: 'mark_general', align: 'center', sortable: false }
 ];
 
-// Преобразование lecturers в нужный формат
+// Преобразую lecturers в нужный формат
 const tableItems = computed(() => {
     if (!props.lecturers) return [];
     return props.lecturers.map(lecturer => ({
         raw: lecturer
     }));
 });
+
+function getFilteredSubjects(subjects: string[] | null): string[] {
+    if (!subjects) return [];
+    return subjects.filter(subject => subject !== null);
+}
 
 function handleRowClick(_event: any, { item }: any) {
     emit('lecturerClick', item.raw.id);
@@ -79,6 +86,11 @@ function getMarkColor(mark: number) {
 <style scoped>
 .lecturer-table {
     cursor: pointer;
+}
+
+:deep(.lecturer-table thead th) {
+    font-weight: bold;
+    background-color: #f5f5f5;
 }
 
 :deep(.lecturer-table tbody tr:hover) {
