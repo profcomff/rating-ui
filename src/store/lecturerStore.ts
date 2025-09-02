@@ -1,6 +1,4 @@
-// src/store/lecturerStore.ts
-
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import apiClient from '@/api';
 import { Lecturer, Order } from '@/models';
@@ -22,8 +20,6 @@ export const useLecturerStore = defineStore('lecturer', () => {
 	const lecturersPhotos = ref<string[]>([]);
 	const totalPages = ref(1);
 
-	// Getters (нет, но можно добавить при необходимости)
-
 	// Actions
 	async function fetchLecturers(params: FetchLecturersParams) {
 		const offset = (params.page - 1) * params.itemsPerPage;
@@ -44,7 +40,6 @@ export const useLecturerStore = defineStore('lecturer', () => {
 		lecturers.value = res.data?.lecturers || [];
 		totalPages.value = res.data?.total ? Math.ceil(res.data.total / params.itemsPerPage) : 1;
 
-		// Загрузка фотографий
 		lecturersPhotos.value = lecturers.value.map(item => getPhoto(item.avatar_link)) ?? [Placeholder];
 	}
 
