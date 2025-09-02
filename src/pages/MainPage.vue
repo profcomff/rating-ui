@@ -4,22 +4,24 @@ import { storeToRefs } from 'pinia';
 import { router } from '@/router';
 import { useProfileStore } from '@/store';
 import { useSearchStore } from '@/store/searchStore';
-import { useLecturerStore } from '@/store/lecturerStore'; // Импорт нового стора
+import { useLecturerStore } from '@/store/lecturerStore';
+import { useMainPageStateStore } from '@/store/mainPageStateStore'; // Обновленный импорт
 import { Order, OrderFromText, Subject } from '@/models';
 
 import TheSearchBar from '@/components/TheSearchBar.vue';
 import TheLecturerSearchCard from '@/components/TheLecturerSearchCard.vue';
-import TheLecturerSearchTable from '@/components/TheLecturerSearchTable.vue'; // Переименованный импорт
+import TheLecturerSearchTable from '@/components/TheLecturerSearchTable.vue';
 
 const profileStore = useProfileStore();
 const searchStore = useSearchStore();
-const lecturerStore = useLecturerStore(); // Инициализация стора
+const lecturerStore = useLecturerStore();
+const mainPageStateStore = useMainPageStateStore(); // Обновленная инициализация
 
-const { lecturers, lecturersPhotos, totalPages } = storeToRefs(lecturerStore); // Получение состояния
+const { lecturers, lecturersPhotos, totalPages } = storeToRefs(lecturerStore);
+const { isCompactView } = storeToRefs(mainPageStateStore); // Получение состояния из нового стора
 
 const userAdmin = ref(profileStore.isAdmin());
 const itemsPerPage = 10;
-const isCompactView = ref(false);
 
 // Параметры поиска
 const name = ref(searchStore.name);
@@ -59,6 +61,10 @@ watch(page, updateLecturersList);
 function toLecturerPage(id: number) {
 	searchStore.setParams(name.value, subject.value, order.value, ascending.value, page.value);
 	router.push({ path: 'lecturer', query: { lecturer_id: id } });
+}
+
+function toggleViewMode() {
+	mainPageStateStore.toggleCompactView(); // Используем метод из нового стора
 }
 </script>
 
@@ -113,12 +119,7 @@ function toLecturerPage(id: number) {
 		</div>
 
 		<div v-if="lecturers && totalPages > 1" class="d-flex align-center justify-center mt-4">
-			<v-btn
-				icon
-				class="mr-2"
-				:title="isCompactView ? 'Обычный вид' : 'Компактный вид'"
-				@click="isCompactView = !isCompactView"
-			>
+			<v-btn icon class="mr-2" :title="isCompactView ? 'Обычный вид' : 'Компактный вид'" @click="toggleViewMode">
 				<v-icon>{{ isCompactView ? 'mdi-view-agenda' : 'mdi-table' }}</v-icon>
 			</v-btn>
 
