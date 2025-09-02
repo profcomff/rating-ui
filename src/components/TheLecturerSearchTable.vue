@@ -4,18 +4,21 @@
 		:items="tableItems"
 		hide-default-footer
 		disable-sort
-		class="elevation-1 lecturer-table"
+		class="lecturer-table"
 		@click:row="handleRowClick"
 	>
 		<template #[`item.rating`]="{ index }">
 			{{ ratings[index] }}
 		</template>
 
-		<template #[`item.fullName`]="{ item }">
-			<div>
-				<strong>{{ item.raw.last_name }}</strong>
-				{{ item.raw.first_name }} {{ item.raw.middle_name }}
-			</div>
+		<template
+			#[`item.fullName`]="{
+				item: {
+					raw: { last_name, first_name, middle_name },
+				},
+			}"
+		>
+			<strong>{{ last_name }}</strong> {{ first_name }} {{ middle_name }}
 		</template>
 
 		<template #[`item.subjects`]="{ item }">
@@ -30,8 +33,8 @@
 				>
 					{{ subject }}
 				</v-chip>
-				<v-chip v-if="getFilteredSubjects(item.raw.subjects).length > 2" size="small" readonly :ripple="false">
-					еще {{ getFilteredSubjects(item.raw.subjects).length - 2 }}
+				<v-chip v-if="isSubjectOverflow(item.raw.subjects)" size="small" readonly :ripple="false">
+					еще {{ remainingSubjectsCount(item.raw.subjects) }}
 				</v-chip>
 			</v-chip-group>
 		</template>
@@ -51,6 +54,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Lecturer } from '@/models';
+import { formatMark, getMarkColor } from '@/utils/marks'; // Импорт из нового файла
 
 interface TableItem {
 	raw: Lecturer;
@@ -79,7 +83,6 @@ const headers: CustomDataTableHeader[] = [
 	{ title: 'Оценка', key: 'mark_general', align: 'center', sortable: false },
 ];
 
-// Преобразуем lecturers в формат, понятный для v-data-table
 const tableItems = computed(() => {
 	if (!props.lecturers) return [];
 	return props.lecturers.map(lecturer => ({
@@ -87,24 +90,23 @@ const tableItems = computed(() => {
 	}));
 });
 
-// Фильтруем предметы, исключая null значения
 function getFilteredSubjects(subjects: string[] | null | undefined): string[] {
 	if (!subjects) return [];
 	return subjects.filter((subject): subject is string => subject !== null);
 }
 
+// Условие для отображения плашки "еще N"
+function isSubjectOverflow(subjects: string[] | null | undefined): boolean {
+	return getFilteredSubjects(subjects).length > 2;
+}
+
+// Расчет количества оставшихся предметов
+function remainingSubjectsCount(subjects: string[] | null | undefined): number {
+	return getFilteredSubjects(subjects).length - 2;
+}
+
 function handleRowClick(event: Event, { item }: { item: TableItem }) {
 	emit('lecturerClick', item.raw.id);
-}
-
-function formatMark(mark: number | null | undefined): string {
-	if (mark === null || mark === undefined) return '—';
-	return mark > 0 ? `+${mark.toFixed(1)}` : mark.toFixed(1);
-}
-
-function getMarkColor(mark: number | null | undefined): string {
-	if (mark === null || mark === undefined) return 'grey';
-	return mark > 0 ? 'green' : mark === 0 ? 'grey' : 'red';
 }
 </script>
 
