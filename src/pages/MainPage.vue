@@ -6,7 +6,7 @@ import { useProfileStore } from '@/store';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import TheSearchBar from '@/components/TheSearchBar.vue';
 import TheLecturerSearchCard from '@/components/TheLecturerSearchCard.vue';
-import TheLecturerSearchCompactCard from '@/components/TheLecturerSearchCompactCard.vue';
+import TheLecturerSearchCompactCard from '@/components/TheLecturerSearchTable.vue';
 import { Lecturer, Order, OrderFromText, Subject } from '@/models';
 import { getPhoto } from '@/utils';
 import { useSearchStore } from '@/store/searchStore';
