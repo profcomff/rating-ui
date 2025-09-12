@@ -79,25 +79,40 @@ onUnmounted(() => {
 	}
 });
 
-async function checkUnallowedSymbols(text: string) {
-	const unallowedSymbols = /[^a-zA-Zа-яА-Я!?&"'.,-^(){}[\]/ \n]+/g;
-	const foundSymbols = text.match(unallowedSymbols);
-	if (!foundSymbols) {
-		return false;
-	} else {
-		return foundSymbols;
+function validateReviewText(text: string): boolean | string {
+	if (text.length > 1000) {
+		return 'Максимальная длина - 1000 символов!';
 	}
+
+	/*
+	^ - начало строки
+    [] - группа разрешенных символов
+	a-zA-Zа-яА-Я - английские и русские буквы
+	,.?!&'";:\-(){}/ - знаки препинания и некоторые символы
+	\s - пробел
+	* - встречается сколько угодно раз
+	$ - конец строки
+    */
+	const validReviewRegex = /^[a-zA-Zа-яА-Я,.?!'";:\-()/\s]*$/
+	if (!validReviewRegex.test(text)) {
+		return 'Недопустимые символы! Разрешены только: буквы, знаки препинания и пробелы.'
+	}
+
+	return true;
 }
+
+const reviewTextRules = [validateReviewText];
+const isReviewTextValid = computed(() => {
+	return validateReviewText(reviewText.value) === true;
+});
 
 async function sendReview() {
 	subjectWarningMessage.value = '';
 	textWarningMessage.value = '';
-	const unallowedSymbols = await checkUnallowedSymbols(reviewText.value);
-	if (unallowedSymbols !== false) {
-		console.log(unallowedSymbols);
-		textWarningMessage.value =
-			'Недопустимые символы: ' + unallowedSymbols.reduce((x, acc) => acc + (acc.includes(x) ? '' : x));
-		console.log(textWarningMessage.value);
+
+	if (!validateReviewText(reviewText.value)) {
+		textWarningMessage.value = 'Длина больше 1000 или обнаружены недопустимые символы. Разрешены только: буквы, знаки препинания и пробелы.';
+        console.log(textWarningMessage.value);
 		return;
 	}
 	if (lecturer && lecturerId && subjectQuery.value !== '' && reviewSubjects.includes(subjectQuery.value)) {
@@ -199,6 +214,7 @@ async function sendReview() {
 			<v-textarea
 				v-model="reviewText"
 				:error-messages="textWarningMessage"
+				:rules="reviewTextRules"
 				density="compact"
 				label="Ваше мнение о преподавателе (необязательно)"
 				hide-details="auto"
@@ -213,7 +229,7 @@ async function sendReview() {
 				<v-switch v-model="isAnonymous" color="primary" label="Аноимный отзыв" hide-details />
 			</div> -->
 
-			<v-btn color="secondary" class="mt-3" rounded="pill" text="отправить" @click="sendReview"></v-btn>
+			<v-btn color="secondary" class="mt-3" rounded="pill" text="отправить" @click="sendReview" :disabled="!isReviewTextValid"></v-btn>
 		</div>
 	</v-container>
 </template>
