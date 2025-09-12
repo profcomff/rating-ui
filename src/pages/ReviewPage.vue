@@ -93,9 +93,9 @@ function validateReviewText(text: string): boolean | string {
 	* - встречается сколько угодно раз
 	$ - конец строки
     */
-	const validReviewRegex = /^[a-zA-Zа-яА-Я,.?!'";:\-()/\s]*$/
+	const validReviewRegex = /^[a-zA-Zа-яА-Я,.?!'";:\-()/\s]*$/;
 	if (!validReviewRegex.test(text)) {
-		return 'Недопустимые символы! Разрешены только: буквы, знаки препинания и пробелы.'
+		return 'Недопустимые символы! Разрешены только: буквы, знаки препинания и пробелы.';
 	}
 
 	return true;
@@ -111,8 +111,9 @@ async function sendReview() {
 	textWarningMessage.value = '';
 
 	if (!validateReviewText(reviewText.value)) {
-		textWarningMessage.value = 'Длина больше 1000 или обнаружены недопустимые символы. Разрешены только: буквы, знаки препинания и пробелы.';
-        console.log(textWarningMessage.value);
+		textWarningMessage.value =
+			'Длина больше 1000 или обнаружены недопустимые символы. Разрешены только: буквы, знаки препинания и пробелы.';
+		console.log(textWarningMessage.value);
 		return;
 	}
 	if (lecturer && lecturerId && subjectQuery.value !== '' && reviewSubjects.includes(subjectQuery.value)) {
@@ -229,7 +230,14 @@ async function sendReview() {
 				<v-switch v-model="isAnonymous" color="primary" label="Аноимный отзыв" hide-details />
 			</div> -->
 
-			<v-btn color="secondary" class="mt-3" rounded="pill" text="отправить" @click="sendReview" :disabled="!isReviewTextValid"></v-btn>
+			<v-btn
+				color="secondary"
+				class="mt-3"
+				rounded="pill"
+				text="отправить"
+				@click="sendReview"
+				:disabled="!isReviewTextValid"
+			></v-btn>
 		</div>
 	</v-container>
 </template>
