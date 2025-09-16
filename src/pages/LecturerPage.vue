@@ -33,7 +33,7 @@ async function loadLecturer() {
 				id: Number(lecturerId),
 			},
 			query: {
-				info: ['comments', 'mark'],
+				info: ['comments'],
 			},
 		},
 	});
