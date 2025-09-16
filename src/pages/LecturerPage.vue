@@ -10,7 +10,6 @@ import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
 import { adaptNumeral, getPhoto, copyUrlToClipboard } from '@/utils';
 
 const { mobile } = useDisplay();
-
 const router = useRouter();
 
 const page = ref(1);
@@ -34,7 +33,7 @@ async function loadLecturer() {
 				id: Number(lecturerId),
 			},
 			query: {
-				info: ['comments', 'mark'],
+				info: ['comments'],
 			},
 		},
 	});
