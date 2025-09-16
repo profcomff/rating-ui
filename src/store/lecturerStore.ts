@@ -29,10 +29,9 @@ export const useLecturerStore = defineStore('lecturer', () => {
 					limit: params.itemsPerPage,
 					name: params.name,
 					offset,
-					info: ['comments', 'mark'],
+					info: ['comments'],
 					subject: params.subject,
-					order_by: params.orderBy,
-					asc_order: params.ascending,
+					order_by: `${params.ascending ? '+' : '-'}${params.orderBy ?? 'mark_general'}`,
 				},
 			},
 		});
