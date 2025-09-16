@@ -20,7 +20,7 @@ const mainPageStateStore = useMainPageStateStore(); // Обновленная и
 const { lecturers, lecturersPhotos, totalPages } = storeToRefs(lecturerStore);
 const { isCompactView } = storeToRefs(mainPageStateStore); // Получение состояния из нового стора
 
-const userAdmin = ref(profileStore.isAdmin());
+const userAdmin = computed(() => profileStore.isAdmin());
 const itemsPerPage = 10;
 
 // Параметры поиска
