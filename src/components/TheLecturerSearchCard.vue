@@ -39,7 +39,7 @@
 				<!-- <div v-else class="text-caption-2">Нет предметов</div> -->
 				<div>отзывы: {{ lecturer.comments?.length ?? '—' }}</div>
 				<div>
-					оценка: {{ lecturer.mark_general > 0 ? '+' : '' }}{{ lecturer.mark_general?.toFixed(2) ?? '—' }}
+					оценка: {{ lecturer.mark_weighted > 0 ? '+' : '' }}{{ lecturer.mark_weighted.toFixed(2) ?? '—' }}
 				</div>
 			</div>
 		</template>

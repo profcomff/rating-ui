@@ -31,8 +31,8 @@ importers:
         specifier: ^7.4.47
         version: 7.4.47
       '@profcomff/api-uilib':
-        specifier: ^2025.4.15
-        version: 2025.4.15
+        specifier: ^2025.10.15
+        version: 2025.10.15
       '@types/node':
         specifier: ^22.13.10
         version: 22.13.10
@@ -649,8 +649,8 @@ packages:
     resolution: {integrity: sha512-cq8o4cWH0ibXh9VGi5P20Tu9XF/0fFXl9EUinr9QfTM7a7p0oTA4iJRCQWppXR1Pg8dSM0UCItCkPwsk9qWWYA==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
-  '@profcomff/api-uilib@2025.4.15':
-    resolution: {integrity: sha512-uCRxCblplBY56NORHcqiP5GVgF7GCiXUYwYBiHXymq9cLvnwzT+Dk0yCyQ5gDWkNtlQ+BnXnpyr82FPdTI1xkg==}
+  '@profcomff/api-uilib@2025.10.15':
+    resolution: {integrity: sha512-M4/PlFfMR85bBNXyY3ejTaHlvcLc0Y5Oq4PQUoQm+oYW/zEOLJrAb2UjGOw9ZUUEcQTRpW1rs/2LCqeMpGGZVg==}
 
   '@redocly/ajv@8.11.2':
     resolution: {integrity: sha512-io1JpnwtIcvojV7QKDUSIuMN/ikdOUd1ReEnUnMKGfDVridQZ31J0MmIuqwuRjWDZfmvr+Q0MqCcfHM2gTivOg==}
@@ -781,8 +781,8 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
-  '@types/estree@1.0.7':
-    resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
+  '@types/estree@1.0.8':
+    resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -2872,7 +2872,7 @@ snapshots:
 
   '@pkgr/core@0.1.1': {}
 
-  '@profcomff/api-uilib@2025.4.15':
+  '@profcomff/api-uilib@2025.10.15':
     dependencies:
       openapi-fetch: 0.10.6
 
@@ -2974,13 +2974,13 @@ snapshots:
 
   '@types/eslint@9.6.1':
     dependencies:
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
     optional: true
 
   '@types/estree@1.0.6': {}
 
-  '@types/estree@1.0.7':
+  '@types/estree@1.0.8':
     optional: true
 
   '@types/json-schema@7.0.15': {}
