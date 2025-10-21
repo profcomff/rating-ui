@@ -12,6 +12,7 @@ interface FetchLecturersParams {
 	subject?: string;
 	orderBy?: Order;
 	ascending?: boolean;
+	mark?: string;
 }
 
 export const useLecturerStore = defineStore('lecturer', () => {
@@ -23,16 +24,23 @@ export const useLecturerStore = defineStore('lecturer', () => {
 	// Actions
 	async function fetchLecturers(params: FetchLecturersParams) {
 		const offset = (params.page - 1) * params.itemsPerPage;
+
+		// Создаем объект параметров запроса
+		const queryParams: Record<string, unknown> = {
+			limit: params.itemsPerPage,
+			offset,
+			info: ['comments'],
+			order_by: `${params.ascending ? '+' : '-'}${params.orderBy ?? 'mark_general'}`,
+		};
+
+		// Добавляем опциональные параметры
+		if (params.name) queryParams.name = params.name;
+		if (params.subject) queryParams.subject = params.subject;
+		if (params.mark) queryParams.mark = params.mark;
+
 		const res = await apiClient.GET('/rating/lecturer', {
 			params: {
-				query: {
-					limit: params.itemsPerPage,
-					name: params.name,
-					offset,
-					info: ['comments'],
-					subject: params.subject,
-					order_by: `${params.ascending ? '+' : '-'}${params.orderBy ?? 'mark_general'}`,
-				},
+				query: queryParams,
 			},
 		});
 
