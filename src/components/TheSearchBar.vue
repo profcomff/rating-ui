@@ -39,6 +39,21 @@
 							@click:clear="subject = ''"
 							@click.stop
 						/>
+
+						<v-text-field
+							v-model="mark"
+							class="text-body-1 mb-2"
+							label="Минимальный рейтинг от -2 до 2"
+							type="number"
+							min="-2"
+							max="2"
+							step="0.1"
+							density="compact"
+							variant="outlined"
+							hide-details="auto"
+							@click.stop
+						/>
+
 						<v-row class="w-100 mb-2" no-gutters align="center">
 							<v-select
 								v-model="order"
@@ -100,6 +115,8 @@ const propsParent = defineProps({
 const searchQuery = defineModel('searchQuery', { type: String });
 const subject = defineModel('subject', { type: String });
 const order = defineModel('order', { type: String });
+const mark = defineModel('mark', { type: String });
+
 const orderTypes = [
 	'по релевантности',
 	'по общей оценке',
@@ -130,6 +147,7 @@ function changeAscDesc() {
 	emits('changed-asc-desc');
 }
 
+
 async function shareSearch() {
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	const params: Record<string, any> = {};
@@ -138,6 +156,7 @@ async function shareSearch() {
 	if (order.value && order.value !== 'по релевантности') params.order = order.value;
 	if (subject.value) params.subject = subject.value;
 	if (propsParent.page > 1) params.page = propsParent.page;
+	if (mark.value) params.mark = mark.value;
 
 	// Значение ascending обратное иконке (если иконка ascending, то значение false)
 	const isAscending = iconAscDesc.value === 'mdi-sort-alphabetical-ascending';
