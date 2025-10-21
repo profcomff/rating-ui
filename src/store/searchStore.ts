@@ -8,17 +8,33 @@ export const useSearchStore = defineStore('search', () => {
 	const order = ref<string>('по общей оценке');
 	const ascending = ref<boolean>(false);
 	const page = ref<number>(1);
+	const mark = ref<string>('');
 
 	const getParams = () => {
-		return name.value, subject.value, order.value, ascending.value, page.value;
+		return {
+			name: name.value,
+			subject: subject.value,
+			order: order.value,
+			ascending: ascending.value,
+			page: page.value,
+			mark: mark.value,
+		};
 	};
 
-	const setParams = (oldName: string, oldSubject: Subject, oldOrder: string, oldAsc: boolean, oldPage: number) => {
+	const setParams = (
+		oldName: string,
+		oldSubject: Subject,
+		oldOrder: string,
+		oldAsc: boolean,
+		oldPage: number,
+		oldMark?: string,
+	) => {
 		name.value = oldName;
 		subject.value = oldSubject;
 		order.value = oldOrder;
 		ascending.value = oldAsc;
 		page.value = oldPage;
+		mark.value = oldMark || '';
 	};
 
 	return {
@@ -27,6 +43,7 @@ export const useSearchStore = defineStore('search', () => {
 		order,
 		ascending,
 		page,
+		mark,
 
 		getParams,
 		setParams,

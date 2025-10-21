@@ -29,6 +29,7 @@ const subject = ref<Subject>(searchStore.subject);
 const order = ref(searchStore.order || 'по релевантности');
 const ascending = ref(searchStore.ascending);
 const page = ref(searchStore.page);
+const mark = ref(searchStore.mark || '');
 
 // Вычисляем порядковые номера для компактного режима
 const lecturerRatings = computed(() => {
@@ -44,6 +45,7 @@ async function updateLecturersList() {
 		subject: subject.value,
 		orderBy: OrderFromText[order.value as keyof typeof OrderFromText] as Order,
 		ascending: ascending.value,
+		mark: mark.value || undefined,
 	});
 }
 
@@ -56,10 +58,11 @@ async function onSearchParamChange() {
 	await updateLecturersList();
 }
 
+watch(mark, onSearchParamChange);
 watch(page, updateLecturersList);
 
 function toLecturerPage(id: number) {
-	searchStore.setParams(name.value, subject.value, order.value, ascending.value, page.value);
+	searchStore.setParams(name.value, subject.value, order.value, ascending.value, page.value, mark.value);
 	router.push({ path: 'lecturer', query: { lecturer_id: id } });
 }
 
@@ -74,6 +77,7 @@ function toggleViewMode() {
 			v-model:search-query="name"
 			v-model:subject="subject"
 			v-model:order="order"
+			v-model:mark="mark"
 			:is-admin="userAdmin"
 			:ascending="ascending"
 			:page="page"
