@@ -147,7 +147,6 @@ function changeAscDesc() {
 	emits('changed-asc-desc');
 }
 
-
 async function shareSearch() {
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	const params: Record<string, any> = {};

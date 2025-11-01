@@ -8,11 +8,13 @@
     "docker-build": "vue-tsc && vite build --base=/ui",
     "preview": "vite preview",
     "lint": "eslint src/",
+    "lint:hard": "pnpm lint && pnpm lint:deadcode && pnpm lint:circular",
     "lint:deadcode": "knip --exclude binaries,dependencies,unlisted",
     "lint:circular": "dpdm --exit-code circular:1 --no-tree --no-warning --progress false --transform ./src/main.ts",
     "format": "eslint src/ --fix && prettier src/ --write",
     "stylelint": "stylelint 'src/**/*.{vue,css}' --fix",
-    "check": "vue-tsc && pnpm run format && pnpm run lint && pnpm run stylelint",
+    "check": "vue-tsc && pnpm lint && pnpm format && pnpm stylelint",
+    "check:hard": "vue-tsc && pnpm lint:hard && pnpm format && pnpm stylelint",
     "test": "echo ok"
   },
   "dependencies": {
@@ -25,7 +27,7 @@
     "@eslint/eslintrc": "^3.3.0",
     "@eslint/js": "^9.22.0",
     "@mdi/font": "^7.4.47",
-    "@profcomff/api-uilib": "^2025.10.15",
+    "@profcomff/api-uilib": "^2025.11.1-test",
     "@types/node": "^22.13.10",
     "@typescript-eslint/eslint-plugin": "^8.26.1",
     "@typescript-eslint/parser": "^8.26.1",
