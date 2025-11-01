@@ -13,7 +13,7 @@ async function loadComments(offset: number) {
 			query: {
 				limit: 10,
 				offset,
-				order_by: ['create_ts'],
+				order_by: 'create_ts',
 				unreviewed: true,
 			},
 		},

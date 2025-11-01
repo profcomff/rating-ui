@@ -40,9 +40,9 @@ async function loadLecturer() {
 	return res.data;
 }
 
-const howKind = lecturer?.mark_kindness ?? 0;
-const howFree = lecturer?.mark_freebie ?? 0;
-const howClear = lecturer?.mark_clarity ?? 0;
+const howKind = lecturer?.mark_kindness_weighted ?? 0;
+const howFree = lecturer?.mark_freebie_weighted ?? 0;
+const howClear = lecturer?.mark_clarity_weighted ?? 0;
 
 const lecturerPhoto = getPhoto(avatarLink.value);
 
@@ -99,7 +99,7 @@ async function shareLecturerPage() {
 						<template #prepend>
 							<v-icon :icon="'mdi-tree-outline'"></v-icon>
 						</template>
-						<template #title>{{ lecturer?.mark_general?.toFixed(2) ?? '—' }}</template>
+						<template #title>{{ lecturer?.mark_weighted?.toFixed(2) ?? '—' }}</template>
 						<template #text
 							>{{ lecturer?.comments?.length ?? 'нет' }}
 							{{ adaptNumeral(lecturer?.comments?.length, 'отзыв', 'отзыва', 'отзывов') }}</template
