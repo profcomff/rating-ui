@@ -8,9 +8,10 @@ import { ToastType } from './models';
 const profileStore = useProfileStore();
 const toastStore = useToastStore();
 
-onMounted(() => {
+onMounted(async () => {
 	profileStore.clearLocalStorage();
 	profileStore.fromUrl();
+	if (import.meta.env.MODE === 'development') await profileStore.setupDevAdminSession(null);
 	if (!profileStore.isLoggedIn) {
 		toastStore.push({
 			title: 'Не получится оставить отзыв',
