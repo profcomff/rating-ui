@@ -57,7 +57,8 @@
 		</template>
 		<template #actions>
 			<v-btn
-				@click="changeReactionLike()"
+				class="px-0"
+				@click="changeReaction('like')"
 				density="compact"
 				size="large"
 				:color="isLiked ? 'primary' : 'default'"
@@ -66,7 +67,8 @@
 				{{ like_count }}
 			</v-btn>
 			<v-btn
-				@click="changeReactionDislike()"
+				class="px-0"
+				@click="changeReaction('dislike')"
 				density="compact"
 				size="large"
 				:color="isDisliked ? 'primary' : 'default'"
@@ -103,39 +105,32 @@ const emit = defineEmits(['comment-deleted']);
 const markGeneral = ref(0);
 const redactedText = ref<string[]>([]);
 
-async function changeReactionLike() {
+async function changeReaction(action: 'like' | 'dislike') {
 	try {
 		const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
 			params: {
 				path: {
 					uuid: propsLocal.comment.raw.uuid,
-					reaction: 'like',
+					reaction: action,
 				},
 			},
 		});
-		like_count.value = response.data.like_count;
-		isLiked.value = !isLiked.value;
+		like_count.value = response.data?.like_count;
+		dislike_count.value = response.data?.dislike_count;
+		if (action === 'like') {
+			like_count.value = response.data?.like_count;
+			isLiked.value = !isLiked.value;
+			isDisliked.value = false;
+		} else if (action === 'dislike') {
+			isDisliked.value = !isDisliked.value;
+			isLiked.value = false;
+		}
 	} catch (error) {
-		console.error('Ошибка лайка:', error);
+		console.error('Ошибка реакции:', error);
 	}
 }
 
-async function changeReactionDislike() {
-		try {
-		const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
-			params: {
-				path: {
-					uuid: propsLocal.comment.raw.uuid,
-					reaction: 'dislike',
-				},
-			},
-		});
-		dislike_count.value = response.data.dislike_count;
-		isDisliked.value = !isDisliked.value;
-	} catch (error) {
-		console.error('Ошибка дизлайка:', error);
-	}
-}
+
 
 async function deleteComment() {
 	await apiClient.DELETE('/rating/comment/{uuid}', {
