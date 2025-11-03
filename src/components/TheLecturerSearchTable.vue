@@ -43,9 +43,9 @@
 			{{ item.raw.comments?.length || '—' }}
 		</template>
 
-		<template #[`item.mark_general`]="{ item }">
-			<v-avatar size="30" :color="getMarkColor(item.raw.mark_general)" class="white--text">
-				{{ formatMark(item.raw.mark_general) }}
+		<template #[`item.mark_weighted`]="{ item }">
+			<v-avatar size="30" :color="getMarkColor(item.raw.mark_weighted)" class="white--text">
+				{{ formatMark(item.raw.mark_weighted) }}
 			</v-avatar>
 		</template>
 	</v-data-table>
@@ -80,7 +80,7 @@ const headers: CustomDataTableHeader[] = [
 	{ title: 'ФИО', key: 'fullName', sortable: false },
 	{ title: 'Предметы', key: 'subjects', sortable: false },
 	{ title: 'Отзывы', key: 'comments', align: 'center', sortable: false },
-	{ title: 'Оценка', key: 'mark_general', align: 'center', sortable: false },
+	{ title: 'Оценка', key: 'mark_weighted', align: 'center', sortable: false },
 ];
 
 const tableItems = computed(() => {
