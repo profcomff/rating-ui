@@ -57,7 +57,8 @@
 		</template>
 		<template #actions>
 			<v-btn
-				class="px-0"
+				class="px-0 pl-4"
+				style="max-width: 51px; min-width: 51px;"
 				@click="changeReaction('like')"
 				density="compact"
 				size="large"
@@ -67,7 +68,8 @@
 				{{ like_count }}
 			</v-btn>
 			<v-btn
-				class="px-0"
+				class="px-0 pl-4"
+				style="max-width: 51px; min-width: 51px;"
 				@click="changeReaction('dislike')"
 				density="compact"
 				size="large"
