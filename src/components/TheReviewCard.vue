@@ -55,6 +55,26 @@
 				</v-menu>
 			</v-col>
 		</template>
+		<template #actions>
+			<v-btn
+				@click="changeReactionLike()"
+				density="compact"
+				size="large"
+				:color="isLiked ? 'primary' : 'default'"
+				:prepend-icon="isLiked ? 'mdi-thumb-up' : 'mdi-thumb-up-outline'"
+			>
+				{{ like_count }}
+			</v-btn>
+			<v-btn
+				@click="changeReactionDislike()"
+				density="compact"
+				size="large"
+				:color="isDisliked ? 'primary' : 'default'"
+				:prepend-icon="isDisliked ? 'mdi-thumb-down' : 'mdi-thumb-down-outline'"
+			>
+				{{ dislike_count }}
+			</v-btn>
+		</template>
 	</v-card>
 </template>
 
@@ -72,11 +92,50 @@ const propsLocal = defineProps({
 	photo: { type: String, required: true },
 	comment: { type: Object, required: true },
 });
+const isLiked = ref(false);
+const like_count = ref(propsLocal.comment.raw.like_count);
+
+const isDisliked = ref(false);
+const dislike_count = ref(propsLocal.comment.raw.dislike_count);
 
 const emit = defineEmits(['comment-deleted']);
 
 const markGeneral = ref(0);
 const redactedText = ref<string[]>([]);
+
+async function changeReactionLike() {
+	try {
+		const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
+			params: {
+				path: {
+					uuid: propsLocal.comment.raw.uuid,
+					reaction: 'like',
+				},
+			},
+		});
+		like_count.value = response.data.like_count;
+		isLiked.value = !isLiked.value;
+	} catch (error) {
+		console.error('Ошибка лайка:', error);
+	}
+}
+
+async function changeReactionDislike() {
+		try {
+		const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
+			params: {
+				path: {
+					uuid: propsLocal.comment.raw.uuid,
+					reaction: 'dislike',
+				},
+			},
+		});
+		dislike_count.value = response.data.dislike_count;
+		isDisliked.value = !isDisliked.value;
+	} catch (error) {
+		console.error('Ошибка дизлайка:', error);
+	}
+}
 
 async function deleteComment() {
 	await apiClient.DELETE('/rating/comment/{uuid}', {
