@@ -58,7 +58,7 @@
 		<template #actions>
 			<v-btn
 				class="px-0 pl-4"
-				style="max-width: 51px; min-width: 51px;"
+				style="max-width: 51px; min-width: 51px"
 				@click="changeReaction('like')"
 				density="compact"
 				size="large"
@@ -69,7 +69,7 @@
 			</v-btn>
 			<v-btn
 				class="px-0 pl-4"
-				style="max-width: 51px; min-width: 51px;"
+				style="max-width: 51px; min-width: 51px"
 				@click="changeReaction('dislike')"
 				density="compact"
 				size="large"
@@ -108,31 +108,28 @@ const markGeneral = ref(0);
 const redactedText = ref<string[]>([]);
 
 async function changeReaction(action: 'like' | 'dislike') {
-	try {
-		const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
-			params: {
-				path: {
-					uuid: propsLocal.comment.raw.uuid,
-					reaction: action,
-				},
+	const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
+		params: {
+			path: {
+				uuid: propsLocal.comment.raw.uuid,
+				reaction: action,
 			},
-		});
-		like_count.value = response.data?.like_count;
-		dislike_count.value = response.data?.dislike_count;
-		if (action === 'like') {
-			like_count.value = response.data?.like_count;
-			isLiked.value = !isLiked.value;
-			isDisliked.value = false;
-		} else if (action === 'dislike') {
-			isDisliked.value = !isDisliked.value;
-			isLiked.value = false;
-		}
-	} catch (error) {
-		console.error('Ошибка реакции:', error);
+		},
+	});
+	if (response.error) {
+		console.error('Ошибка реакции:', response.error);
+		return;
+	}
+	like_count.value = response.data?.like_count ?? like_count.value
+	dislike_count.value = response.data?.dislike_count ?? dislike_count.value
+	if (action === 'like') {
+		isLiked.value = !isLiked.value;
+		isDisliked.value = false;
+	} else if (action === 'dislike') {
+		isDisliked.value = !isDisliked.value;
+		isLiked.value = false;
 	}
 }
-
-
 
 async function deleteComment() {
 	await apiClient.DELETE('/rating/comment/{uuid}', {
