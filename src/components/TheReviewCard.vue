@@ -129,7 +129,7 @@ onUpdated(() => {
 			propsLocal.comment.raw.mark_freebie) /
 		3;
 	redactedText.value = cleanupText(propsLocal.comment.raw.text);
-	checkExpandButton()
+	checkExpandButton();
 });
 
 onMounted(() => {
@@ -139,6 +139,6 @@ onMounted(() => {
 			propsLocal.comment.raw.mark_freebie) /
 		3;
 	redactedText.value = cleanupText(propsLocal.comment.raw.text);
-	checkExpandButton()
+	checkExpandButton();
 });
 </script>
