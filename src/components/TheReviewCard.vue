@@ -28,8 +28,11 @@
 				</v-col>
 			</v-row>
 			<div v-for="(paragraph, idx) in redactedText" :key="idx">
-				<p class="mt-2">{{ paragraph }}</p>
+				<p ref="commentText" class="mt-2" :class="{ 'line-clamp': !expanded }">{{ paragraph }}</p>
 			</div>
+			<v-btn v-if="showExpandButton" variant="text" class="text-caption mt-2" @click="expanded = !expanded">
+				{{ expanded ? 'Свернуть' : 'Развернуть' }}
+			</v-btn>
 		</template>
 		<template #append>
 			<v-col class="text-right">
@@ -58,9 +61,19 @@
 	</v-card>
 </template>
 
+<style scoped>
+.line-clamp {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	white-space: pre-line;
+}
+</style>
+
 <script setup lang="ts">
 import apiClient from '@/api';
-import { onMounted, onUpdated, ref } from 'vue';
+import { onMounted, onUpdated, ref, nextTick } from 'vue';
 import { useProfileStore } from '@/store';
 import { useDisplay } from 'vuetify';
 
@@ -77,6 +90,9 @@ const emit = defineEmits(['comment-deleted']);
 
 const markGeneral = ref(0);
 const redactedText = ref<string[]>([]);
+const expanded = ref(false);
+const showExpandButton = ref(false);
+const commentText = ref<HTMLElement[]>([]);
 
 async function deleteComment() {
 	await apiClient.DELETE('/rating/comment/{uuid}', {
@@ -98,6 +114,14 @@ function cleanupText(text: string) {
 		.split('\\n');
 }
 
+async function checkExpandButton() {
+	await nextTick();
+	if (commentText.value.length > 0) {
+		const hasOverflow = commentText.value.some(el => el.scrollHeight > el.clientHeight);
+		showExpandButton.value = hasOverflow;
+	}
+}
+
 onUpdated(() => {
 	markGeneral.value =
 		(propsLocal.comment.raw.mark_clarity +
@@ -105,6 +129,7 @@ onUpdated(() => {
 			propsLocal.comment.raw.mark_freebie) /
 		3;
 	redactedText.value = cleanupText(propsLocal.comment.raw.text);
+	checkExpandButton()
 });
 
 onMounted(() => {
@@ -114,5 +139,6 @@ onMounted(() => {
 			propsLocal.comment.raw.mark_freebie) /
 		3;
 	redactedText.value = cleanupText(propsLocal.comment.raw.text);
+	checkExpandButton()
 });
 </script>
