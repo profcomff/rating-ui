@@ -27,8 +27,10 @@
 					Понятность: <strong>{{ comment.raw.mark_clarity }}</strong>
 				</v-col>
 			</v-row>
-			<div v-for="(paragraph, idx) in redactedText" :key="idx">
-				<p ref="commentText" class="mt-2" :class="{ 'line-clamp': !expanded }">{{ paragraph }}</p>
+			<div :class="{ 'line-clamp': !expanded }">
+				<p v-for="(paragraph, idx) in redactedText" :key="idx" ref="commentText" class="mt-2">
+					{{ paragraph }}
+				</p>
 			</div>
 			<v-btn v-if="showExpandButton" variant="text" class="text-caption mt-2" @click="expanded = !expanded">
 				{{ expanded ? 'Свернуть' : 'Развернуть' }}
