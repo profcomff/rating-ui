@@ -75,7 +75,7 @@
 
 <script setup lang="ts">
 import apiClient from '@/api';
-import { onMounted, onUpdated, ref, nextTick } from 'vue';
+import { onMounted, onUpdated, ref, nextTick, watch } from 'vue';
 import { useProfileStore } from '@/store';
 import { useDisplay } from 'vuetify';
 
@@ -143,4 +143,12 @@ onMounted(() => {
 	redactedText.value = cleanupText(propsLocal.comment.raw.text);
 	checkExpandButton();
 });
+
+watch(
+	() => propsLocal.comment.raw.uuid,
+	() => {
+		expanded.value = false;
+		nextTick(checkExpandButton);
+	},
+);
 </script>
