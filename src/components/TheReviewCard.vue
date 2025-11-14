@@ -55,6 +55,7 @@
 					<v-card width="200">
 						<template #text>
 							<v-btn class="w-100" color="red" text="Удалить" @click.stop="deleteComment" />
+							<v-btn class="w-100" text="Копировать ID" @click.stop="copyCommentID" />
 						</template>
 					</v-card>
 				</v-menu>
@@ -78,6 +79,8 @@ import apiClient from '@/api';
 import { onMounted, onUpdated, ref, nextTick, watch } from 'vue';
 import { useProfileStore } from '@/store';
 import { useDisplay } from 'vuetify';
+import { useToastStore } from '@/store/toastStore';
+import { ToastType } from '@/models';
 
 const profileStore = useProfileStore();
 const { mobile } = useDisplay();
@@ -95,12 +98,46 @@ const redactedText = ref<string[]>([]);
 const expanded = ref(false);
 const showExpandButton = ref(false);
 const commentText = ref<HTMLElement[]>([]);
+const toastStore = useToastStore();
 
 async function deleteComment() {
 	await apiClient.DELETE('/rating/comment/{uuid}', {
 		params: { path: { uuid: propsLocal.comment.raw.uuid } },
 	});
 	emit('comment-deleted');
+}
+
+async function copyCommentID() {
+	if (!propsLocal.comment.raw.uuid) {
+		toastStore.push({
+			title: 'Ошибка при копировании.',
+			type: ToastType.Error,
+			description: 'ID комментария не найден.',
+		});
+		return;
+	}
+
+	try {
+		const type = 'text/plain';
+		const clipboardItemData = {
+			[type]: propsLocal.comment.raw.uuid,
+		};
+		const clipboardItem = new ClipboardItem(clipboardItemData);
+		await navigator.clipboard.write([clipboardItem]);
+
+		toastStore.push({
+			title: 'ID успешно скопирован!',
+			type: ToastType.Info,
+			description: 'ID комментария успешно скопирован в буфер обмена.',
+		});
+	} catch (err) {
+		console.error('Ошибка при копировании', err);
+		toastStore.push({
+			title: 'Ошибка при копировании.',
+			type: ToastType.Error,
+			description: 'Не удалось скопировать ID.',
+		});
+	}
 }
 
 function cleanupText(text: string) {
