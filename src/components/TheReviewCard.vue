@@ -54,8 +54,10 @@
 					</template>
 					<v-card width="200">
 						<template #text>
-							<v-btn class="w-100" color="red" text="Удалить" @click.stop="deleteComment" />
-							<v-btn class="w-100" text="Копировать ID" @click.stop="copyCommentID" />
+							<v-card-text class="d-flex flex-column" style="gap: 12px;">
+								<v-btn class="w-100" text="Копировать ID" @click.stop="copyCommentID" />
+								<v-btn class="w-100" color="red" text="Удалить" @click.stop="deleteComment" />
+							</v-card-text>
 						</template>
 					</v-card>
 				</v-menu>
@@ -126,12 +128,10 @@ async function copyCommentID() {
 		await navigator.clipboard.write([clipboardItem]);
 
 		toastStore.push({
-			title: 'ID успешно скопирован!',
+			title: 'ID комментария скопирован в буфер обмена',
 			type: ToastType.Info,
-			description: 'ID комментария успешно скопирован в буфер обмена.',
 		});
-	} catch (err) {
-		console.error('Ошибка при копировании', err);
+	} catch {
 		toastStore.push({
 			title: 'Ошибка при копировании.',
 			type: ToastType.Error,
