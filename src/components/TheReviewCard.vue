@@ -53,9 +53,10 @@
 						/>
 					</template>
 					<v-card width="200">
-						<template #text>
-							<v-btn class="w-100" color="red" text="Удалить" @click.stop="deleteComment" />
-						</template>
+						<v-card-actions class="d-flex flex-column" style="gap: 8px">
+							<v-btn block variant="elevated" text="Копировать ID" @click.stop="copyCommentID" />
+							<v-btn block color="red" variant="elevated" text="Удалить" @click.stop="deleteComment" />
+						</v-card-actions>
 					</v-card>
 				</v-menu>
 			</v-col>
@@ -78,6 +79,8 @@ import apiClient from '@/api';
 import { onMounted, onUpdated, ref, nextTick, watch } from 'vue';
 import { useProfileStore } from '@/store';
 import { useDisplay } from 'vuetify';
+import { useToastStore } from '@/store/toastStore';
+import { ToastType } from '@/models';
 
 const profileStore = useProfileStore();
 const { mobile } = useDisplay();
@@ -95,12 +98,44 @@ const redactedText = ref<string[]>([]);
 const expanded = ref(false);
 const showExpandButton = ref(false);
 const commentText = ref<HTMLElement[]>([]);
+const toastStore = useToastStore();
 
 async function deleteComment() {
 	await apiClient.DELETE('/rating/comment/{uuid}', {
 		params: { path: { uuid: propsLocal.comment.raw.uuid } },
 	});
 	emit('comment-deleted');
+}
+
+async function copyCommentID() {
+	if (!propsLocal.comment.raw.uuid) {
+		toastStore.push({
+			title: 'Ошибка при копировании.',
+			type: ToastType.Error,
+			description: 'ID комментария не найден.',
+		});
+		return;
+	}
+
+	try {
+		const type = 'text/plain';
+		const clipboardItemData = {
+			[type]: propsLocal.comment.raw.uuid,
+		};
+		const clipboardItem = new ClipboardItem(clipboardItemData);
+		await navigator.clipboard.write([clipboardItem]);
+
+		toastStore.push({
+			title: 'ID комментария скопирован в буфер обмена',
+			type: ToastType.Info,
+		});
+	} catch {
+		toastStore.push({
+			title: 'Ошибка при копировании.',
+			type: ToastType.Error,
+			description: 'Не удалось скопировать ID.',
+		});
+	}
 }
 
 function cleanupText(text: string) {
