@@ -53,12 +53,10 @@
 						/>
 					</template>
 					<v-card width="200">
-						<template #text>
-							<v-card-text class="d-flex flex-column" style="gap: 12px">
-								<v-btn class="w-100" text="Копировать ID" @click.stop="copyCommentID" />
-								<v-btn class="w-100" color="red" text="Удалить" @click.stop="deleteComment" />
-							</v-card-text>
-						</template>
+						<v-card-actions class="d-flex flex-column" style="gap: 8px">
+							<v-btn block variant="elevated" text="Копировать ID" @click.stop="copyCommentID" />
+							<v-btn block color="red" variant="elevated" text="Удалить" @click.stop="deleteComment" />
+						</v-card-actions>
 					</v-card>
 				</v-menu>
 			</v-col>
