@@ -61,6 +61,30 @@
 				</v-menu>
 			</v-col>
 		</template>
+		<template #actions>
+			<v-btn
+				class="px-0 pl-4"
+				style="max-width: 51px; min-width: 51px"
+				@click="changeReaction('like')"
+				density="compact"
+				size="large"
+				:color="isLiked ? 'primary' : 'default'"
+				:prepend-icon="isLiked ? 'mdi-thumb-up' : 'mdi-thumb-up-outline'"
+			>
+				{{ like_count }}
+			</v-btn>
+			<v-btn
+				class="px-0 pl-4"
+				style="max-width: 51px; min-width: 51px"
+				@click="changeReaction('dislike')"
+				density="compact"
+				size="large"
+				:color="isDisliked ? 'primary' : 'default'"
+				:prepend-icon="isDisliked ? 'mdi-thumb-down' : 'mdi-thumb-down-outline'"
+			>
+				{{ dislike_count }}
+			</v-btn>
+		</template>
 	</v-card>
 </template>
 
@@ -90,6 +114,11 @@ const propsLocal = defineProps({
 	photo: { type: String, required: true },
 	comment: { type: Object, required: true },
 });
+const isLiked = ref(false);
+const like_count = ref(propsLocal.comment.raw.like_count);
+
+const isDisliked = ref(false);
+const dislike_count = ref(propsLocal.comment.raw.dislike_count);
 
 const emit = defineEmits(['comment-deleted']);
 
@@ -99,6 +128,30 @@ const expanded = ref(false);
 const showExpandButton = ref(false);
 const commentText = ref<HTMLElement[]>([]);
 const toastStore = useToastStore();
+
+async function changeReaction(action: 'like' | 'dislike') {
+	const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
+		params: {
+			path: {
+				uuid: propsLocal.comment.raw.uuid,
+				reaction: action,
+			},
+		},
+	});
+	if (response.error) {
+		console.error('Ошибка реакции:', response.error);
+		return;
+	}
+	like_count.value = response.data?.like_count ?? like_count.value
+	dislike_count.value = response.data?.dislike_count ?? dislike_count.value
+	if (action === 'like') {
+		isLiked.value = !isLiked.value;
+		isDisliked.value = false;
+	} else if (action === 'dislike') {
+		isDisliked.value = !isDisliked.value;
+		isLiked.value = false;
+	}
+}
 
 async function deleteComment() {
 	await apiClient.DELETE('/rating/comment/{uuid}', {
