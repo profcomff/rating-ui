@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import apiClient from '@/api';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import AppRatingBar from '@/components/AppRatingBar.vue';
@@ -15,18 +15,20 @@ const router = useRouter();
 const page = ref(1);
 const itemsPerPage = 3;
 
+const selectedSubject = ref<string | null>(null);
+
 const url = new URL(document.location.toString());
 const lecturerId = url.searchParams.get('lecturer_id');
 
-const lecturer = await loadLecturer();
-const firstName = ref(lecturer?.first_name);
-const lastName = ref(lecturer?.last_name);
-const middleName = ref(lecturer?.middle_name);
-const avatarLink = ref(lecturer?.avatar_link);
-const lecturerSubjects = ref(lecturer?.subjects);
+const lecturer = ref<any>(null);
+const firstName = computed(() => lecturer.value?.first_name);
+const lastName = computed(() => lecturer.value?.last_name);
+const middleName = computed(() => lecturer.value?.middle_name);
+const avatarLink = computed(() => lecturer.value?.avatar_link);
+const lecturerSubjects = computed(() => lecturer.value?.subjects ?? []);
 const shareSuccess = ref(false);
 
-async function loadLecturer() {
+async function loadLecturer(subject?: string | null) {
 	const res = await apiClient.GET(`/rating/lecturer/{id}`, {
 		params: {
 			path: {
@@ -34,17 +36,29 @@ async function loadLecturer() {
 			},
 			query: {
 				info: ['comments'],
+				subject: subject ?? undefined,
 			},
 		},
 	});
 	return res.data;
 }
 
-const howKind = lecturer?.mark_kindness_weighted ?? 0;
-const howFree = lecturer?.mark_freebie_weighted ?? 0;
-const howClear = lecturer?.mark_clarity_weighted ?? 0;
+async function init() {
+	lecturer.value = await loadLecturer();
+}
+await init();
 
-const lecturerPhoto = getPhoto(avatarLink.value);
+async function filterBySubject(subject: string | null) {
+	selectedSubject.value = subject;
+	lecturer.value = await loadLecturer(subject);
+	page.value = 1;
+}
+
+const howKind = computed(() => lecturer.value?.mark_kindness_weighted ?? 0);
+const howFree = computed(() => lecturer.value?.mark_freebie_weighted ?? 0);
+const howClear = computed(() => lecturer.value?.mark_clarity_weighted ?? 0);
+
+const lecturerPhoto = computed(() => getPhoto(avatarLink.value));
 
 async function shareLecturerPage() {
 	shareSuccess.value = await copyUrlToClipboard({ lecturer_id: lecturerId }, 'lecturer');
@@ -56,7 +70,8 @@ async function shareLecturerPage() {
 
 <template>
 	<v-container class="pa-2 justify-center">
-		<v-btn class="mb-4" color="primary" text="Назад к поиску" rounded="lg" @click="router.push('/')"></v-btn>
+		<v-btn class="mb-4" color="primary" text="Назад к поиску" rounded="lg" @click="router.push('/')" />
+
 		<LecturerHeaderCard
 			:photo="lecturerPhoto"
 			:first-name="firstName ?? 'Ошибка'"
@@ -64,6 +79,23 @@ async function shareLecturerPage() {
 			:middle-name="middleName ?? 'Ошибка'"
 			:subjects="lecturerSubjects"
 		/>
+
+		<div class="mb-3">
+			<v-chip class="mr-2 mb-2" :color="selectedSubject === null ? 'primary' : ''" @click="filterBySubject(null)">
+				Все
+			</v-chip>
+
+			<v-chip
+				v-for="subject in lecturerSubjects"
+				:key="subject"
+				class="mr-2 mb-2"
+				:color="selectedSubject === subject ? 'primary' : ''"
+				@click="filterBySubject(subject)"
+			>
+				{{ subject }}
+			</v-chip>
+		</div>
+
 		<div class="d-table w-100 my-2">
 			<AppRatingBar :value="howKind" label="доброта"></AppRatingBar>
 			<AppRatingBar :value="howFree" label="халявность"></AppRatingBar>
@@ -97,15 +129,18 @@ async function shareLecturerPage() {
 						rounded="xl"
 					>
 						<template #prepend>
-							<v-icon :icon="'mdi-tree-outline'"></v-icon>
+							<v-icon icon="mdi-tree-outline" />
 						</template>
-						<template #title>{{ lecturer?.mark_weighted?.toFixed(2) ?? '—' }}</template>
-						<template #text
-							>{{ lecturer?.comments?.length ?? 'нет' }}
-							{{ adaptNumeral(lecturer?.comments?.length, 'отзыв', 'отзыва', 'отзывов') }}</template
-						>
+						<template #title>
+							{{ lecturer?.mark_weighted?.toFixed(2) ?? '—' }}
+						</template>
+						<template #text>
+							{{ lecturer?.comments?.length ?? 'нет' }}
+							{{ adaptNumeral(lecturer?.comments?.length, 'отзыв', 'отзыва', 'отзывов') }}
+						</template>
 					</v-card>
 				</v-col>
+
 				<v-col :cols="mobile ? '7' : '10'">
 					<v-card
 						class="pl-1 ml-1"
@@ -146,7 +181,7 @@ async function shareLecturerPage() {
 
 			<v-footer class="position-fixed bottom-0 pa-0 mb-3 pr-12">
 				<v-btn
-					:icon="'mdi-pen'"
+					icon="mdi-pen"
 					color="secondary"
 					class="footer-button mr-1"
 					rounded="pill"
