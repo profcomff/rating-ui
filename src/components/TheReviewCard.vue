@@ -35,6 +35,16 @@
 			<v-btn v-if="showExpandButton" variant="text" class="text-caption mt-2" @click="expanded = !expanded">
 				{{ expanded ? 'Свернуть' : 'Развернуть' }}
 			</v-btn>
+			<div v-if="comment.raw.subject" class="mt-2">
+				<v-chip
+					size="small"
+					color="grey-lighten-3"
+					variant="flat"
+					class="text-grey-darken-1 font-weight-medium"
+				>
+					{{ comment.raw.subject }}
+				</v-chip>
+			</div>
 		</template>
 		<template #append>
 			<v-col class="text-right">
