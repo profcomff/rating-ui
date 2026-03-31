@@ -2,12 +2,12 @@
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { ref, computed } from 'vue';
-import apiClient from '@/api';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import AppRatingBar from '@/components/AppRatingBar.vue';
 import TheReviewCard from '@/components/TheReviewCard.vue';
 import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
-import { adaptNumeral, getPhoto, copyUrlToClipboard } from '@/utils';
+import { adaptNumeral, copyUrlToClipboard } from '@/utils';
+import { useLecturerPageStore } from '@/store/lecturerPageStore';
 
 const { mobile } = useDisplay();
 const router = useRouter();
@@ -15,50 +15,31 @@ const router = useRouter();
 const page = ref(1);
 const itemsPerPage = 3;
 
-const selectedSubject = ref<string | null>(null);
+const store = useLecturerPageStore();
 
 const url = new URL(document.location.toString());
-const lecturerId = url.searchParams.get('lecturer_id');
+const lecturerIdParam = url.searchParams.get('lecturer_id');
+const lecturerId = Number(lecturerIdParam);
 
-const lecturer = ref<any>(null);
+await store.init(lecturerId);
+
+const lecturer = computed(() => store.lecturer);
+const selectedSubject = computed(() => store.selectedSubject);
+const lecturerPhoto = computed(() => store.lecturerPhoto);
 const firstName = computed(() => lecturer.value?.first_name);
 const lastName = computed(() => lecturer.value?.last_name);
 const middleName = computed(() => lecturer.value?.middle_name);
-const avatarLink = computed(() => lecturer.value?.avatar_link);
 const lecturerSubjects = computed(() => lecturer.value?.subjects ?? []);
 const shareSuccess = ref(false);
-
-async function loadLecturer(subject?: string | null) {
-	const res = await apiClient.GET(`/rating/lecturer/{id}`, {
-		params: {
-			path: {
-				id: Number(lecturerId),
-			},
-			query: {
-				info: ['comments'],
-				subject: subject ?? undefined,
-			},
-		},
-	});
-	return res.data;
-}
-
-async function init() {
-	lecturer.value = await loadLecturer();
-}
-await init();
-
-async function filterBySubject(subject: string | null) {
-	selectedSubject.value = subject;
-	lecturer.value = await loadLecturer(subject);
-	page.value = 1;
-}
 
 const howKind = computed(() => lecturer.value?.mark_kindness_weighted ?? 0);
 const howFree = computed(() => lecturer.value?.mark_freebie_weighted ?? 0);
 const howClear = computed(() => lecturer.value?.mark_clarity_weighted ?? 0);
 
-const lecturerPhoto = computed(() => getPhoto(avatarLink.value));
+function filteredBySubject(subject: string | null) {
+	store.filteredBySubject(subject);
+	page.value = 1;
+}
 
 async function shareLecturerPage() {
 	shareSuccess.value = await copyUrlToClipboard({ lecturer_id: lecturerId }, 'lecturer');
@@ -81,7 +62,11 @@ async function shareLecturerPage() {
 		/>
 
 		<div class="mb-3">
-			<v-chip class="mr-2 mb-2" :color="selectedSubject === null ? 'primary' : ''" @click="filterBySubject(null)">
+			<v-chip
+				class="mr-2 mb-2"
+				:color="selectedSubject === null ? 'primary' : ''"
+				@click="filteredBySubject(null)"
+			>
 				Все
 			</v-chip>
 
@@ -90,7 +75,7 @@ async function shareLecturerPage() {
 				:key="subject"
 				class="mr-2 mb-2"
 				:color="selectedSubject === subject ? 'primary' : ''"
-				@click="filterBySubject(subject)"
+				@click="filteredBySubject(subject)"
 			>
 				{{ subject }}
 			</v-chip>
