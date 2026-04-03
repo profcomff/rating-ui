@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
-import { ref, computed } from 'vue';
+import { ref, toRefs } from 'vue';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import AppRatingBar from '@/components/AppRatingBar.vue';
 import TheReviewCard from '@/components/TheReviewCard.vue';
@@ -23,21 +23,12 @@ const lecturerId = Number(lecturerIdParam);
 
 await store.init(lecturerId);
 
-const lecturer = computed(() => store.lecturer);
-const selectedSubject = computed(() => store.selectedSubject);
-const lecturerPhoto = computed(() => store.lecturerPhoto);
-const firstName = computed(() => lecturer.value?.first_name);
-const lastName = computed(() => lecturer.value?.last_name);
-const middleName = computed(() => lecturer.value?.middle_name);
-const lecturerSubjects = computed(() => lecturer.value?.subjects ?? []);
+const { lecturer, selectedSubject, lecturerPhoto, howClear, howFree, howKind, lecturerSubjects } = toRefs(store);
+
 const shareSuccess = ref(false);
 
-const howKind = computed(() => lecturer.value?.mark_kindness_weighted ?? 0);
-const howFree = computed(() => lecturer.value?.mark_freebie_weighted ?? 0);
-const howClear = computed(() => lecturer.value?.mark_clarity_weighted ?? 0);
-
-function filteredBySubject(subject: string | null) {
-	store.filteredBySubject(subject);
+function handleFilter(subject: string | null) {
+	store.handleFilter(subject);
 	page.value = 1;
 }
 
@@ -55,18 +46,14 @@ async function shareLecturerPage() {
 
 		<LecturerHeaderCard
 			:photo="lecturerPhoto"
-			:first-name="firstName ?? 'Ошибка'"
-			:last-name="lastName ?? 'Ошибка'"
-			:middle-name="middleName ?? 'Ошибка'"
+			:first-name="lecturer?.first_name ?? 'Ошибка'"
+			:last-name="lecturer?.last_name ?? 'Ошибка'"
+			:middle-name="lecturer?.middle_name ?? 'Ошибка'"
 			:subjects="lecturerSubjects"
 		/>
 
 		<div class="mb-3">
-			<v-chip
-				class="mr-2 mb-2"
-				:color="selectedSubject === null ? 'primary' : ''"
-				@click="filteredBySubject(null)"
-			>
+			<v-chip class="mr-2 mb-2" :color="selectedSubject === null ? 'primary' : ''" @click="handleFilter(null)">
 				Все
 			</v-chip>
 
@@ -75,7 +62,7 @@ async function shareLecturerPage() {
 				:key="subject"
 				class="mr-2 mb-2"
 				:color="selectedSubject === subject ? 'primary' : ''"
-				@click="filteredBySubject(subject)"
+				@click="handleFilter(subject)"
 			>
 				{{ subject }}
 			</v-chip>
