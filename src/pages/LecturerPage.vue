@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
-import { ref, toRefs } from 'vue';
+import { ref, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import AppRatingBar from '@/components/AppRatingBar.vue';
 import TheReviewCard from '@/components/TheReviewCard.vue';
@@ -15,20 +16,23 @@ const router = useRouter();
 const page = ref(1);
 const itemsPerPage = 3;
 
-const store = useLecturerPageStore();
+const lecturerPageStore = useLecturerPageStore();
 
 const url = new URL(document.location.toString());
 const lecturerIdParam = url.searchParams.get('lecturer_id');
 const lecturerId = Number(lecturerIdParam);
 
-await store.init(lecturerId);
+onMounted(() => {
+	lecturerPageStore.init(lecturerId);
+});
 
-const { lecturer, selectedSubject, lecturerPhoto, howClear, howFree, howKind, lecturerSubjects } = toRefs(store);
+const { lecturer, selectedSubject, lecturerPhoto, howClear, howFree, howKind, lecturerSubjects } =
+	storeToRefs(lecturerPageStore);
 
 const shareSuccess = ref(false);
 
 function handleFilter(subject: string | null) {
-	store.handleFilter(subject);
+	lecturerPageStore.handleFilter(subject);
 	page.value = 1;
 }
 
