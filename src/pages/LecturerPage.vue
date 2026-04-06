@@ -32,7 +32,7 @@ const { lecturer, selectedSubject, lecturerPhoto, howClear, howFree, howKind, le
 const shareSuccess = ref(false);
 
 function handleFilter(subject: string | null) {
-	lecturerPageStore.handleFilter(subject);
+	lecturerPageStore.filterComments(subject);
 	page.value = 1;
 }
 
@@ -54,23 +54,9 @@ async function shareLecturerPage() {
 			:last-name="lecturer?.last_name ?? 'Ошибка'"
 			:middle-name="lecturer?.middle_name ?? 'Ошибка'"
 			:subjects="lecturerSubjects"
+			:selected-subject="selectedSubject"
+			@select-subject="handleFilter"
 		/>
-
-		<div class="mb-3">
-			<v-chip class="mr-2 mb-2" :color="selectedSubject === null ? 'primary' : ''" @click="handleFilter(null)">
-				Все
-			</v-chip>
-
-			<v-chip
-				v-for="subject in lecturerSubjects"
-				:key="subject"
-				class="mr-2 mb-2"
-				:color="selectedSubject === subject ? 'primary' : ''"
-				@click="handleFilter(subject)"
-			>
-				{{ subject }}
-			</v-chip>
-		</div>
 
 		<div class="d-table w-100 my-2">
 			<AppRatingBar :value="howKind" label="доброта"></AppRatingBar>

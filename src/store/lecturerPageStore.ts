@@ -16,7 +16,7 @@ export const useLecturerPageStore = defineStore('lecturerPage', () => {
 	const howClear = computed(() => lecturer.value?.mark_clarity_weighted ?? 0);
 	const lecturerSubjects = computed(() => lecturer.value?.subjects ?? []);
 
-	async function fetchLecturer(subject?: string | null) {
+	async function fetchLecturer() {
 		if (!lecturerId.value) return;
 
 		loading.value = true;
@@ -26,8 +26,7 @@ export const useLecturerPageStore = defineStore('lecturerPage', () => {
 				params: {
 					path: { id: lecturerId.value },
 					query: {
-						info: ['comments'],
-						subject: subject ?? undefined,
+						info: [],
 					},
 				},
 			});
@@ -43,15 +42,38 @@ export const useLecturerPageStore = defineStore('lecturerPage', () => {
 		}
 	}
 
+	async function fetchComments(subject?: string | null) {
+		if (!lecturerId.value || !lecturer.value) return;
+
+		try {
+			const res = await apiClient.GET(`/rating/comment`, {
+				params: {
+					query: {
+						lecturer_id: lecturerId.value,
+						subject: subject ?? undefined,
+					},
+				},
+			});
+
+			const data = res.data;
+			if (!data) return;
+
+			lecturer.value.comments = data.comments ?? [];
+		} finally {
+			loading.value = false;
+		}
+	}
+
 	async function init(id: number) {
 		lecturerId.value = id;
 		selectedSubject.value = null;
 		await fetchLecturer();
+		await fetchComments();
 	}
 
-	async function handleFilter(subject: string | null) {
+	async function filterComments(subject: string | null) {
 		selectedSubject.value = subject;
-		await fetchLecturer(subject);
+		await fetchComments(subject);
 	}
 
 	return {
@@ -64,6 +86,6 @@ export const useLecturerPageStore = defineStore('lecturerPage', () => {
 		howFree,
 		lecturerSubjects,
 		init,
-		handleFilter,
+		filterComments,
 	};
 });
