@@ -23,7 +23,6 @@
 						:key="subject"
 						size="small"
 						:color="props.selectedSubject === subject ? 'primary' : ''"
-						@click="emit('select-subject', subject)"
 					>
 						{{ subject }}
 					</v-chip>

@@ -67,8 +67,8 @@ export const useLecturerPageStore = defineStore('lecturerPage', () => {
 	async function init(id: number) {
 		lecturerId.value = id;
 		selectedSubject.value = null;
-		await fetchLecturer();
-		await fetchComments();
+		fetchLecturer();
+		fetchComments();
 	}
 
 	async function filterComments(subject: string | null) {
