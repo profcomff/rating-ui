@@ -9,20 +9,17 @@
 		<template #subtitle>
 			<div class="text-body-1">{{ firstName }} {{ middleName }}</div>
 			<div class="text-body-2">
-				<v-chip-group>
-					<v-chip
-						size="small"
-						:color="props.selectedSubject === null ? 'primary' : ''"
-						@click="emit('select-subject', null)"
-					>
+				<v-chip-group v-model="selectedSubject">
+					<v-chip size="small" key="Все" :value="null" :color="!selectedSubject ? 'primary' : 'error'">
 						Все
 					</v-chip>
 
 					<v-chip
 						v-for="subject in subjectsToShow"
 						:key="subject"
+						:value="subject"
 						size="small"
-						:color="props.selectedSubject === subject ? 'primary' : ''"
+						:color="selectedSubject === subject ? 'primary' : ''"
 					>
 						{{ subject }}
 					</v-chip>
@@ -48,15 +45,12 @@ const props = defineProps({
 		required: false,
 		default: null,
 	},
-	selectedSubject: {
-		type: String as PropType<string | null>,
-		default: null,
-	},
 });
 
-const emit = defineEmits<{
-	(e: 'select-subject', subject: string | null): void;
-}>();
+const selectedSubject = defineModel('selectedSubject', {
+	type: String as PropType<string | null>,
+	default: null,
+});
 
 const subjectsToShow = computed(() => {
 	return props.subjects ? props.subjects.filter(item => item !== null) : [];

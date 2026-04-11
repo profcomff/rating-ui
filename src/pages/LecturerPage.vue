@@ -49,13 +49,13 @@ async function shareLecturerPage() {
 		<v-btn class="mb-4" color="primary" text="Назад к поиску" rounded="lg" @click="router.push('/')" />
 
 		<LecturerHeaderCard
+			v-model:selected-subject="selectedSubject"
 			:photo="lecturerPhoto"
 			:first-name="lecturer?.first_name ?? 'Ошибка'"
 			:last-name="lecturer?.last_name ?? 'Ошибка'"
 			:middle-name="lecturer?.middle_name ?? 'Ошибка'"
 			:subjects="lecturerSubjects"
-			:selected-subject="selectedSubject"
-			@select-subject="handleFilter"
+			@update:selected-subject="handleFilter"
 		/>
 
 		<div class="d-table w-100 my-2">
@@ -125,7 +125,7 @@ async function shareLecturerPage() {
 		<div v-if="lecturer?.comments">
 			<v-data-iterator class="mr-0 pa-0" :page="page" :items="lecturer?.comments" :items-per-page="itemsPerPage">
 				<template #default="{ items: reviews }">
-					<template v-for="review in reviews" :key="review.uuid">
+					<template v-for="review in reviews" :key="review.raw.uuid">
 						<TheReviewCard :comment="review" :photo="Placeholder" @comment-deleted="$router.go" />
 					</template>
 				</template>
