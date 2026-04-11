@@ -1,5 +1,5 @@
-<script async setup lang="ts">
-import { ref, computed, watch } from 'vue';
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { router } from '@/router';
 import { useProfileStore } from '@/store';
@@ -50,7 +50,7 @@ async function updateLecturersList() {
 }
 
 // Загрузка при первой загрузке
-await updateLecturersList();
+onMounted(updateLecturersList);
 
 // Обработчики изменений
 async function onSearchParamChange() {
