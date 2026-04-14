@@ -59,7 +59,7 @@
 			<v-btn
 				class="px-0 pl-4"
 				style="max-width: 51px; min-width: 51px"
-				@click="changeReaction('like')"
+				@click="likeComment()"
 				density="compact"
 				size="large"
 				:color="isLiked ? 'primary' : 'default'"
@@ -70,7 +70,7 @@
 			<v-btn
 				class="px-0 pl-4"
 				style="max-width: 51px; min-width: 51px"
-				@click="changeReaction('dislike')"
+				@click="dislikeComment()"
 				density="compact"
 				size="large"
 				:color="isDisliked ? 'primary' : 'default'"
@@ -84,7 +84,7 @@
 
 <script setup lang="ts">
 import apiClient from '@/api';
-import { onMounted, onUpdated, ref } from 'vue';
+import { computed, onMounted, onUpdated, ref } from 'vue';
 import { useProfileStore } from '@/store';
 import { useDisplay } from 'vuetify';
 
@@ -96,23 +96,23 @@ const propsLocal = defineProps({
 	photo: { type: String, required: true },
 	comment: { type: Object, required: true },
 });
-const isLiked = ref(false);
+const isLiked = computed(()=>propsLocal.comment.is_liked);
 const like_count = ref(propsLocal.comment.raw.like_count);
 
-const isDisliked = ref(false);
+const isDisliked = computed(()=>propsLocal.comment.is_disliked);
 const dislike_count = ref(propsLocal.comment.raw.dislike_count);
 
-const emit = defineEmits(['comment-deleted']);
+const emit = defineEmits(['comment-deleted', 'comment-reaction']);
 
 const markGeneral = ref(0);
 const redactedText = ref<string[]>([]);
 
-async function changeReaction(action: 'like' | 'dislike') {
+async function likeComment(){
 	const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
 		params: {
 			path: {
 				uuid: propsLocal.comment.raw.uuid,
-				reaction: action,
+				reaction: 'like',
 			},
 		},
 	});
@@ -120,15 +120,27 @@ async function changeReaction(action: 'like' | 'dislike') {
 		console.error('Ошибка реакции:', response.error);
 		return;
 	}
-	like_count.value = response.data?.like_count ?? like_count.value
+	like_count.value = response.data?.like_count ?? like_count.value;
 	dislike_count.value = response.data?.dislike_count ?? dislike_count.value
-	if (action === 'like') {
-		isLiked.value = !isLiked.value;
-		isDisliked.value = false;
-	} else if (action === 'dislike') {
-		isDisliked.value = !isDisliked.value;
-		isLiked.value = false;
+	emit('comment-reaction', response.data);
+}
+
+async function dislikeComment(){
+	const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
+		params: {
+			path: {
+				uuid: propsLocal.comment.raw.uuid,
+				reaction: 'dislike',
+			},
+		},
+	});
+	if (response.error) {
+		console.error('Ошибка реакции:', response.error);
+		return;
 	}
+	like_count.value = response.data?.like_count ?? like_count.value;
+	dislike_count.value = response.data?.dislike_count ?? dislike_count.value
+	emit('comment-reaction', response.data);
 }
 
 async function deleteComment() {
