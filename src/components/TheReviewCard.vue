@@ -27,8 +27,23 @@
 					Понятность: <strong>{{ comment.raw.mark_clarity }}</strong>
 				</v-col>
 			</v-row>
-			<div v-for="(paragraph, idx) in redactedText" :key="idx">
-				<p class="mt-2">{{ paragraph }}</p>
+			<div :class="{ 'line-clamp': !expanded }">
+				<p v-for="(paragraph, idx) in redactedText" :key="idx" ref="commentText" class="mt-2">
+					{{ paragraph }}
+				</p>
+			</div>
+			<v-btn v-if="showExpandButton" variant="text" class="text-caption mt-2" @click="expanded = !expanded">
+				{{ expanded ? 'Свернуть' : 'Развернуть' }}
+			</v-btn>
+			<div v-if="comment.raw.subject" class="mt-2">
+				<v-chip
+					size="small"
+					color="grey-lighten-3"
+					variant="flat"
+					class="text-grey-darken-1 font-weight-medium"
+				>
+					{{ comment.raw.subject }}
+				</v-chip>
 			</div>
 		</template>
 		<template #append>
@@ -48,9 +63,10 @@
 						/>
 					</template>
 					<v-card width="200">
-						<template #text>
-							<v-btn class="w-100" color="red" text="Удалить" @click.stop="deleteComment" />
-						</template>
+						<v-card-actions class="d-flex flex-column" style="gap: 8px">
+							<v-btn block variant="elevated" text="Копировать ID" @click.stop="copyCommentID" />
+							<v-btn block color="red" variant="elevated" text="Удалить" @click.stop="deleteComment" />
+						</v-card-actions>
 					</v-card>
 				</v-menu>
 			</v-col>
@@ -82,11 +98,23 @@
 	</v-card>
 </template>
 
+<style scoped>
+.line-clamp {
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	white-space: pre-line;
+}
+</style>
+
 <script setup lang="ts">
 import apiClient from '@/api';
 import { computed, onMounted, onUpdated, ref } from 'vue';
 import { useProfileStore } from '@/store';
 import { useDisplay } from 'vuetify';
+import { useToastStore } from '@/store/toastStore';
+import { ToastType } from '@/models';
 
 const profileStore = useProfileStore();
 const { mobile } = useDisplay();
@@ -106,6 +134,10 @@ const emit = defineEmits(['comment-deleted', 'comment-reaction']);
 
 const markGeneral = ref(0);
 const redactedText = ref<string[]>([]);
+const expanded = ref(false);
+const showExpandButton = ref(false);
+const commentText = ref<HTMLElement[]>([]);
+const toastStore = useToastStore();
 
 async function likeComment(){
 	const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
@@ -150,6 +182,37 @@ async function deleteComment() {
 	emit('comment-deleted');
 }
 
+async function copyCommentID() {
+	if (!propsLocal.comment.raw.uuid) {
+		toastStore.push({
+			title: 'Ошибка при копировании.',
+			type: ToastType.Error,
+			description: 'ID комментария не найден.',
+		});
+		return;
+	}
+
+	try {
+		const type = 'text/plain';
+		const clipboardItemData = {
+			[type]: propsLocal.comment.raw.uuid,
+		};
+		const clipboardItem = new ClipboardItem(clipboardItemData);
+		await navigator.clipboard.write([clipboardItem]);
+
+		toastStore.push({
+			title: 'ID комментария скопирован в буфер обмена',
+			type: ToastType.Info,
+		});
+	} catch {
+		toastStore.push({
+			title: 'Ошибка при копировании.',
+			type: ToastType.Error,
+			description: 'Не удалось скопировать ID.',
+		});
+	}
+}
+
 function cleanupText(text: string) {
 	return text
 		.replace(/&lt;/g, '<')
@@ -163,6 +226,14 @@ function cleanupText(text: string) {
 		.split('\\n');
 }
 
+async function checkExpandButton() {
+	await nextTick();
+	if (commentText.value.length > 0) {
+		const hasOverflow = commentText.value.some(el => el.scrollHeight > el.clientHeight);
+		showExpandButton.value = hasOverflow;
+	}
+}
+
 onUpdated(() => {
 	markGeneral.value =
 		(propsLocal.comment.raw.mark_clarity +
@@ -170,6 +241,7 @@ onUpdated(() => {
 			propsLocal.comment.raw.mark_freebie) /
 		3;
 	redactedText.value = cleanupText(propsLocal.comment.raw.text);
+	checkExpandButton();
 });
 
 onMounted(() => {
@@ -179,5 +251,14 @@ onMounted(() => {
 			propsLocal.comment.raw.mark_freebie) /
 		3;
 	redactedText.value = cleanupText(propsLocal.comment.raw.text);
+	checkExpandButton();
 });
+
+watch(
+	() => propsLocal.comment.raw.uuid,
+	() => {
+		expanded.value = false;
+		nextTick(checkExpandButton);
+	},
+);
 </script>

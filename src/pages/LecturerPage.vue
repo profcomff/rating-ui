@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
-import { ref } from 'vue';
-import apiClient from '@/api';
+import { ref, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import Placeholder from '@/assets/profile_image_placeholder.webp';
 import AppRatingBar from '@/components/AppRatingBar.vue';
 import TheReviewCard from '@/components/TheReviewCard.vue';
 import LecturerHeaderCard from '@/components/LecturerHeaderCard.vue';
-import { adaptNumeral, getPhoto, copyUrlToClipboard } from '@/utils';
+import { adaptNumeral, copyUrlToClipboard } from '@/utils';
+import { useLecturerPageStore } from '@/store/lecturerPageStore';
 
 const { mobile } = useDisplay();
 const router = useRouter();
@@ -15,36 +16,25 @@ const router = useRouter();
 const page = ref(1);
 const itemsPerPage = 3;
 
-const url = new URL(document.location.toString());
-const lecturerId = url.searchParams.get('lecturer_id');
+const lecturerPageStore = useLecturerPageStore();
 
-const lecturer = await loadLecturer();
-const firstName = ref(lecturer?.first_name);
-const lastName = ref(lecturer?.last_name);
-const middleName = ref(lecturer?.middle_name);
-const avatarLink = ref(lecturer?.avatar_link);
-const lecturerSubjects = ref(lecturer?.subjects);
+const url = new URL(document.location.toString());
+const lecturerIdParam = url.searchParams.get('lecturer_id');
+const lecturerId = Number(lecturerIdParam);
+
+onMounted(() => {
+	lecturerPageStore.init(lecturerId);
+});
+
+const { lecturer, selectedSubject, lecturerPhoto, howClear, howFree, howKind, lecturerSubjects } =
+	storeToRefs(lecturerPageStore);
+
 const shareSuccess = ref(false);
 
-async function loadLecturer() {
-	const res = await apiClient.GET(`/rating/lecturer/{id}`, {
-		params: {
-			path: {
-				id: Number(lecturerId),
-			},
-			query: {
-				info: ['comments'],
-			},
-		},
-	});
-	return res.data;
+function handleFilter(subject: string | null) {
+	lecturerPageStore.filterComments(subject);
+	page.value = 1;
 }
-
-const howKind = lecturer?.mark_kindness_weighted ?? 0;
-const howFree = lecturer?.mark_freebie_weighted ?? 0;
-const howClear = lecturer?.mark_clarity_weighted ?? 0;
-
-const lecturerPhoto = getPhoto(avatarLink.value);
 
 async function shareLecturerPage() {
 	shareSuccess.value = await copyUrlToClipboard({ lecturer_id: lecturerId }, 'lecturer');
@@ -56,14 +46,18 @@ async function shareLecturerPage() {
 
 <template>
 	<v-container class="pa-2 justify-center">
-		<v-btn class="mb-4" color="primary" text="Назад к поиску" rounded="lg" @click="router.push('/')"></v-btn>
+		<v-btn class="mb-4" color="primary" text="Назад к поиску" rounded="lg" @click="router.push('/')" />
+
 		<LecturerHeaderCard
+			v-model:selected-subject="selectedSubject"
 			:photo="lecturerPhoto"
-			:first-name="firstName ?? 'Ошибка'"
-			:last-name="lastName ?? 'Ошибка'"
-			:middle-name="middleName ?? 'Ошибка'"
+			:first-name="lecturer?.first_name ?? 'Ошибка'"
+			:last-name="lecturer?.last_name ?? 'Ошибка'"
+			:middle-name="lecturer?.middle_name ?? 'Ошибка'"
 			:subjects="lecturerSubjects"
+			@update:selected-subject="handleFilter"
 		/>
+
 		<div class="d-table w-100 my-2">
 			<AppRatingBar :value="howKind" label="доброта"></AppRatingBar>
 			<AppRatingBar :value="howFree" label="халявность"></AppRatingBar>
@@ -97,15 +91,18 @@ async function shareLecturerPage() {
 						rounded="xl"
 					>
 						<template #prepend>
-							<v-icon :icon="'mdi-tree-outline'"></v-icon>
+							<v-icon icon="mdi-tree-outline" />
 						</template>
-						<template #title>{{ lecturer?.mark_weighted?.toFixed(2) ?? '—' }}</template>
-						<template #text
-							>{{ lecturer?.comments?.length ?? 'нет' }}
-							{{ adaptNumeral(lecturer?.comments?.length, 'отзыв', 'отзыва', 'отзывов') }}</template
-						>
+						<template #title>
+							{{ lecturer?.mark_weighted?.toFixed(2) ?? '—' }}
+						</template>
+						<template #text>
+							{{ lecturer?.comments?.length ?? 'нет' }}
+							{{ adaptNumeral(lecturer?.comments?.length, 'отзыв', 'отзыва', 'отзывов') }}
+						</template>
 					</v-card>
 				</v-col>
+
 				<v-col :cols="mobile ? '7' : '10'">
 					<v-card
 						class="pl-1 ml-1"
@@ -128,7 +125,7 @@ async function shareLecturerPage() {
 		<div v-if="lecturer?.comments">
 			<v-data-iterator class="mr-0 pa-0" :page="page" :items="lecturer?.comments" :items-per-page="itemsPerPage">
 				<template #default="{ items: reviews }">
-					<template v-for="review in reviews" :key="review.uuid">
+					<template v-for="review in reviews" :key="review.raw.uuid">
 						<TheReviewCard :comment="review" :photo="Placeholder" @comment-deleted="$router.go" />
 					</template>
 				</template>
@@ -146,7 +143,7 @@ async function shareLecturerPage() {
 
 			<v-footer class="position-fixed bottom-0 pa-0 mb-3 pr-12">
 				<v-btn
-					:icon="'mdi-pen'"
+					icon="mdi-pen"
 					color="secondary"
 					class="footer-button mr-1"
 					rounded="pill"

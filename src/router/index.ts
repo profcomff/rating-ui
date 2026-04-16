@@ -1,5 +1,6 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import { useProfileStore } from '@/store';
+import { useLecturerPageStore } from '@/store/lecturerPageStore';
 
 const routes: RouteRecordRaw[] = [
 	{
@@ -9,6 +10,9 @@ const routes: RouteRecordRaw[] = [
 	{
 		path: '/lecturer',
 		component: () => import('@/pages/LecturerPage.vue'),
+		beforeEnter: () => {
+			useLecturerPageStore().reset();
+		},
 	},
 	{
 		path: '/review',

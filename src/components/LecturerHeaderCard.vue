@@ -9,8 +9,18 @@
 		<template #subtitle>
 			<div class="text-body-1">{{ firstName }} {{ middleName }}</div>
 			<div class="text-body-2">
-				<v-chip-group v-if="subjectsToShow">
-					<v-chip v-for="(subject, index) in subjectsToShow" :key="index" outlined size="small">
+				<v-chip-group v-model="selectedSubject">
+					<v-chip size="small" key="Все" :value="null" :color="!selectedSubject ? 'primary' : 'error'">
+						Все
+					</v-chip>
+
+					<v-chip
+						v-for="subject in subjectsToShow"
+						:key="subject"
+						:value="subject"
+						size="small"
+						:color="selectedSubject === subject ? 'primary' : ''"
+					>
 						{{ subject }}
 					</v-chip>
 				</v-chip-group>
@@ -20,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import { PropType, computed } from 'vue';
 import { useDisplay } from 'vuetify';
 
 const { mobile } = useDisplay();
@@ -37,5 +47,12 @@ const props = defineProps({
 	},
 });
 
-const subjectsToShow = props.subjects ? props.subjects.filter((item: unknown) => item !== null) : null;
+const selectedSubject = defineModel('selectedSubject', {
+	type: String as PropType<string | null>,
+	default: null,
+});
+
+const subjectsToShow = computed(() => {
+	return props.subjects ? props.subjects.filter(item => item !== null) : [];
+});
 </script>
