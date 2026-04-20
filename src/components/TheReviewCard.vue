@@ -110,7 +110,7 @@
 
 <script setup lang="ts">
 import apiClient from '@/api';
-import { computed, onMounted, onUpdated, ref } from 'vue';
+import { onMounted, onUpdated, ref, nextTick, watch } from 'vue';
 import { useProfileStore } from '@/store';
 import { useDisplay } from 'vuetify';
 import { useToastStore } from '@/store/toastStore';
@@ -124,10 +124,11 @@ const propsLocal = defineProps({
 	photo: { type: String, required: true },
 	comment: { type: Object, required: true },
 });
-const isLiked = computed(()=>propsLocal.comment.is_liked);
+
+const isLiked = ref(propsLocal.comment.is_liked);
 const like_count = ref(propsLocal.comment.raw.like_count);
 
-const isDisliked = computed(()=>propsLocal.comment.is_disliked);
+const isDisliked = ref(propsLocal.comment.is_disliked);
 const dislike_count = ref(propsLocal.comment.raw.dislike_count);
 
 const emit = defineEmits(['comment-deleted', 'comment-reaction']);
@@ -154,6 +155,8 @@ async function likeComment(){
 	}
 	like_count.value = response.data?.like_count ?? like_count.value;
 	dislike_count.value = response.data?.dislike_count ?? dislike_count.value
+	isLiked.value = !isLiked.value;
+	isDisliked.value =  false;
 	emit('comment-reaction', response.data);
 }
 
@@ -172,6 +175,8 @@ async function dislikeComment(){
 	}
 	like_count.value = response.data?.like_count ?? like_count.value;
 	dislike_count.value = response.data?.dislike_count ?? dislike_count.value
+	isDisliked.value = !isDisliked.value;
+	isLiked.value =  false;
 	emit('comment-reaction', response.data);
 }
 
