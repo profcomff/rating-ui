@@ -13,7 +13,7 @@
     "lint:circular": "dpdm --exit-code circular:1 --no-tree --no-warning --progress false --transform ./src/main.ts",
     "format": "eslint src/ --fix && prettier src/ --write",
     "stylelint": "stylelint 'src/**/*.{vue,css}' --fix",
-    "check": "vue-tsc && pnpm lint && pnpm format && pnpm stylelint",
+    "check": "vue-tsc && pnpm lint && pnpm format",
     "check:hard": "vue-tsc && pnpm lint:hard && pnpm format && pnpm stylelint",
     "test": "echo ok"
   },
