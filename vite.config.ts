@@ -5,6 +5,7 @@ import svgLoader from 'vite-svg-loader';
 import vue from '@vitejs/plugin-vue';
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 import { fileURLToPath } from 'url';
+import ViteFonts from 'unplugin-fonts/vite';
 
 export default defineConfig({
 	plugins: [
@@ -20,6 +21,17 @@ export default defineConfig({
 		}),
 		stylelint({
 			files: ['src/**/*.{vue,css}'],
+		}),
+		ViteFonts({
+			fontsource: {
+				families: [
+					{
+						name: 'Roboto',
+						weights: [100, 300, 400, 500, 700, 900],
+						styles: ['normal', 'italic'],
+					},
+				],
+			},
 		}),
 	],
 	css: {
