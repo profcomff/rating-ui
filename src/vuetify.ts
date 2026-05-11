@@ -1,6 +1,7 @@
 import '@mdi/font/css/materialdesignicons.css';
 import { createVuetify } from 'vuetify';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
+import { VuConfig } from '@profcomff/ui-kit';
 
 const profcomffLight = {
 	dark: false,
@@ -39,10 +40,12 @@ export const vuetify = createVuetify({
 			color: 'rgb(0, 1, 76)',
 		},
 	},
+	aliases: { ...VuConfig.aliases },
 	theme: {
 		defaultTheme: 'profcomffLight',
 		themes: {
 			profcomffLight,
+			VuTheme: VuConfig.theme.themes.profcomffLight,
 		},
 	},
 });

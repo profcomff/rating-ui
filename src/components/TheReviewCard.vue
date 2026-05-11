@@ -140,7 +140,7 @@ const showExpandButton = ref(false);
 const commentText = ref<HTMLElement[]>([]);
 const toastStore = useToastStore();
 
-async function likeComment(){
+async function likeComment() {
 	const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
 		params: {
 			path: {
@@ -154,13 +154,13 @@ async function likeComment(){
 		return;
 	}
 	like_count.value = response.data?.like_count ?? like_count.value;
-	dislike_count.value = response.data?.dislike_count ?? dislike_count.value
+	dislike_count.value = response.data?.dislike_count ?? dislike_count.value;
 	isLiked.value = !isLiked.value;
-	isDisliked.value =  false;
+	isDisliked.value = false;
 	emit('comment-reaction', response.data);
 }
 
-async function dislikeComment(){
+async function dislikeComment() {
 	const response = await apiClient.PUT('/rating/comment/{uuid}/{reaction}', {
 		params: {
 			path: {
@@ -174,9 +174,9 @@ async function dislikeComment(){
 		return;
 	}
 	like_count.value = response.data?.like_count ?? like_count.value;
-	dislike_count.value = response.data?.dislike_count ?? dislike_count.value
+	dislike_count.value = response.data?.dislike_count ?? dislike_count.value;
 	isDisliked.value = !isDisliked.value;
-	isLiked.value =  false;
+	isLiked.value = false;
 	emit('comment-reaction', response.data);
 }
 
